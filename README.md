@@ -1,5 +1,5 @@
-vrep_ros_bridge
-===============
+# vrep_ros_bridge
+
 
 <p>ROS V-Rep Bridge is a plugin for V-Rep developed by the Inria
 <a href="http://www.irisa.fr/lagadic" target="_parent">Lagadic</a> team located at <a href="http://www.inria.fr/rennes" target="_parent">Inria Rennes</a>.</p>
