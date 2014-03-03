@@ -1,0 +1,315 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b The Ros V-Rep Plugin 
+
+<!-- 
+Provide an overview of your package.
+-->
+
+\tableofcontents
+
+<!-- ########################################################################################## -->
+
+\section intro_sec Introduction
+
+<p>ROS V-Rep Bridge is a plugin for V-Rep developed by the Inria
+<a href="http://www.irisa.fr/lagadic" target="_parent">Lagadic</a> team located at <a href="http://www.inria.fr/rennes" target="_parent">Inria Rennes</a>.</p>
+
+<p> The main application of the plugin is to provide a communication interface between V-Rep and (ROS). The aim is to control the V-Rep simulation externally using ROS messages and ROS services.</p>
+
+
+
+<p>V-Rep is a General purpose 3D robot simulator with integrated development environment developed by <a href="http://www.coppeliarobotics.com/" target="_parent">Coppelia Robotics</a>. Sensors, mechanisms, robots and whole systems can be modelled and simulated in various ways</p>
+
+<!-- <p><a href="http://wiki.ros.org/telekyb" target="_parent">TeleKyb</a> is a software framework based on ROS, for the development of bilateral teleoperation system between human interfaces and groups of quadrotor Unmanned Aerial Vehicles (UAVs). It provides a high level closed-loop controller for mobile robots with modules for state estimation, trajectory planning,processing and tracking. It is developed in Max Planck Institute.</p> -->
+
+
+
+
+\section works_sec How it works
+
+<p>A plugin is a shared library that is automatically loaded by V-REP's main client application at program
+start-up. It searches objects in the scene that it knows how to manage. It creates ROS publishers to send information about the simulation (for example pose and velocity of object present in the scene) and it receives messages the outside (subscribers).</p>
+
+
+
+
+<p>How the plugin find the object in the scene? In V-Rep it is possible to add tag to the objects with an ID. In access.h we define a list of ID that correspond to our objects. The plugin looks for objects with a known ID and when it finds them, it creates a handler to manage them. We will use this method also to pass to the plugin some custom data ( for example the frequency of the vision sensor ).   </p>
+
+
+
+<p> The Plugin has the following handlers:
+
+
+- <a href="#Manip_subsec" target="_parent"> Manipulator handler</a>
+- <a href="#quadrotor_subsec" target="_parent"> Quadrotor handler</a>
+- <a href="#IMU_subsec" target="_parent"> Rigid body handler</a>:
+	- <a href="#Vision_subsec" target="_parent"> Vision Handler </a>
+	- <a href="#Pose_subsec" target="_parent"> Pose Handler</a>
+	- <a href="#Twist_subsec" target="_parent"> Twist Handler</a>
+- <a href="#IMU_subsec" target="_parent"> IMU Handler</a>
+
+ </p>
+
+<p>
+
+ Ros V-Rep Plugin used the pluginlib package <a href="http://www.http://wiki.ros.org/pluginlib" target="_parent">pluginlib package </a>. Pluginlib is a C++ library for loading and unloading plugins from within a ROS package. Plugins are dynamically loadable classes that are loaded from a runtime library (i.e. shared object, dynamically linked library). In this way ours handler are actually plugins with some dependencies. Ifwe don't need an handler or we don't have installed its dependencies we are still able to build our plugin ( this plugin will not be avaible). For example, the Quadrotor_Tel handler needs Telekyb, if we don't want to install Telekyb we can just add a file called CATKIN_IGNORE in the handler folder and it will not be considered. In spite of this the others handler will be avaible.
+ </p>
+
+
+\subsection Manip_subsec Manipulator
+
+The Manipulator handler searches a manipulator and it finds all its joints. After which it creates a ROS publisher JointStatus:
+- the position of the joint
+- the velocity of the joint
+- the effort that is applied in the joint
+
+In addition it gives us the possibility to control the joints using commands from ROS in serveral ways:
+
+- In position (fixed joint)
+- In motion mode
+- In torque/force mode:
+	- Position (PID controller)
+	- Velocity
+	- Force and torque
+
+\subsection quadrotor_subsec Quadrotor handler
+
+\subsubsection pubQuad Publisher:
+- Status: The message is composed by the Pose (linear position and angular position) and by the Twist (linear velocity and angular velocity) 
+\subsubsection subQuad Subscriber:
+- Commands: The message that contains the information to move the quadrotor. In the "DIRECT" modality we receive 4 force, each one for each motors, we compute the torque and we apply them (force and torque) to the quadrotor. This information is generated from TeleKyb.
+
+\subsubsection custdataQuad Custom Data:
+- quadrotor_data_tf_ratio: The propeller torque to force ratio.
+- quadrotor_data_ctrl_mode: The control mode of the quadrotor. It can be DIRECT or INTERNAL (Experimental).
+  
+
+
+\subsection IMU_subsec IMU
+<p>In V-Rep exist a sensor for the IMU that simulate a real one with a mass and a force sensor. The resul of the acceleration was a little bit noisy so a low-pass filter is applied.</p>
+
+\subsubsection pubIMU Publisher:
+- IMU : orientation, angular velocity and linear acceleration.
+
+\subsubsection custdataIMU Custom Data:
+- imu_data_mass: IMU mass.
+- imu_data_freq: The frequency at which the IMU readings must be published.
+- imu_data_cutoff: The cut-off frequency of the acceleration low-pass filters.
+
+
+\subsection Vision_subsec Vision Sensor
+The quadrotor is equipped with a camera on the bottom. In V-Rep after a double-click on the Vision-Sensor, we can set some parameters like the resolution and the field of view of the camera. In addition we added a GUI to set the frequency of acquisition and if the camera is RGB or grayscale.
+
+\subsubsection pubVIS Publisher:
+- VisionSensor : Image generated by the simulated camera in V-Rep. 
+
+\subsubsection custdataVIS Custom Data:
+- camera_data_freq: The frequency at which the camera images must be published.
+- camera_data_rgb: Set to 0 if the camera is gray-scale; set to any other value for a RGB camera.
+
+\subsection Pose_subsec Pose Handler
+When we tag an object of the scene with the pose Handler a publisher is created with the name of the object. It will publish its pose.
+
+\subsubsection pubPOS Publisher:
+- /NameObj/Pose : Pose of the object 
+
+\subsubsection custdataPOS Custom Data:
+- pose_data_main: Adding a value we can set the frequency of the pose publisher.
+
+\subsection Twist_subsec Twist Handler
+When we tag an object of the scene with the twist Handler a publisher is created with the name of the object. It will publish its twist (angular and linear velocity).
+
+\subsubsection pubVEL Publisher:
+- /NameObj/Twist : Twist of the object (angular and linear velocity).
+
+
+
+
+
+
+<!-- ########################################################################################## -->
+\section inst_sec Installation
+
+Note: The Ubuntu version used is 13.04.
+-# <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
+-# <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
+-# <a href="#instplug" target="_parent"> Install Plugin</a>
+-# <a href="#extpack" target="_parent"> Install external packages:</a> 
+	-# Quadrotor plugin: <a href="#instTeleKyb_sec" target="_parent"> Install Telekyb</a> 
+
+\subsection instROS_sec Installation ROS Hydro
+
+Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
+
+- Point 1.2 : choose instruction for Ubuntu 13.04 (Raring)
+
+- Point 1.4 : Desktop-Full Install: (Recommended)
+
+- When you configure the ROS Environment, choose catkin.
+
+
+\subsection instvrep_sec Installation V-Rep
+
+- Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep. To run it go to the folder of V-rep via terminal and type
+\code
+./vrep.sh
+ \endcode
+</p>
+
+
+
+
+\subsection instplug Installation Plugin
+
+<!-- - Ask for join the repository lc-work-inter
+- Do the chekout: svn checkout svn+ssh://gclaudio@scm.gforge.inria.fr/svnroot/lc-work-inter/trunk
+- You will find the plugin in lc-work-internal/software/vrep/ros_vrep_bridge -->
+- Download from GIT in your catkin workspace
+- Add the file CATKIN_IGNORE in the sub-plugin that we don't need
+\code
+touch CATKIN_IGNORE
+ \endcode
+- Build it with 
+\code
+catkin_make --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo
+ \endcode
+- In the folder vrep_ros_bridge/devel/lib/ we will find the library: libv_repExtRosBridge.so. 
+- The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
+\code
+ln -s /YOUR_PATH_/vrep_ros_bridge/devel/lib/libv_repExtRosBridge.so 
+ \endcode  
+- Type roscore in a terminal
+- Now run V-Rep via terminal and check if the plugin is loaded correctly.
+- If an exernal console will appear with the avaible plugins, so it is ok.
+
+\subsection extpack Install external packages
+
+\subsubsection instTeleKyb_sec Installation Telekyb
+
+- Under construction
+
+<!-- ########################################################################################## -->
+
+
+
+<!-- ########################################################################################## -->
+\section note_sec Note for the simulation
+
+<p>NOTE: Use ODE as physics engine. Bullet stops after some time or if you create a new subscriber.
+
+To simulate multiple quadrotor in real time at a frequency of 500Hz 
+-# Go to Simulation -> Simulation settings
+-# In Main settings select "dt=XX ms (custom)"
+-# Set "Time step" to 0.002 (500Hz)
+-# Get "Simulation passes per frame (ppf)" to 50 (10fps). Note: the rendering will actually go faster than this (~ 15fps)
+-# In Main settings select any other item
+-# In Main settings select "dt=2.0 ms (custom)" again. </p>
+
+<p>Note: 5) and 6) are necessary to actually save the setting but they might fix this in future vrep releases.
+
+- To have a faster scene rendering try enabling "Threaded rendering" in "User Settings".</p>
+
+
+
+
+<!-- ########################################################################################## -->
+
+\section hownewclass_sec How to create a new handler
+
+</p>To create a new handler:
+
+-# Create in the file include/access.h a new define for the object header number in order to connect our object (in the simulation) with the handler in our program. (See point 5) to set the number in the custom data of the object directly in the simulation)
+-# Now we have to create the class that will manage our object. We can use one esisting handler as template and modify it. Copy and paste in the same folder the files *Handler.h and *Handler.cpp from /include and /src, and renominate them (let's say _Test_Handler.h and _Test_Handler.cpp).
+-# Open the file  _Test_Handler.h:
+	-#  Change the token of the #ifndef
+	-# Change the name of the class and the name of the constructor and destructor
+	-# In the class define member or function we need (Publisher and/or subscriber of ROS, frequency of the publisher ect.)
+-# Open the file  _Test_Handler.cpp:
+	-# Change the #include with the right name
+	-# Replace class and function names
+	-# Initialize properly the members of the class in the constructor and replace the old ones in the code
+	-# Replace old header with the new one (*_DATA_MAIN)
+	-# The handleSimulation() is called at each step of the simulation. Here you can publish and receive the command via ROS 
+-# Open " GenericObjectContainer.cpp ":
+	-# Add a new elseif with the right parameters (--> *_DATA_MAIN in the first line and --> new *Handler() when we create the object )
+	-# Add #include "_Test_Handler.h"
+-# Open src/CMakeLists.txt :
+	-# Add _Test_Handler.cpp in set(...)
+-# Add custom data to the object:
+	-# [Menu bar --> Tools --> Scene object properties]. You can also open the dialog with a double-click on an object icon in the scene hierarchy.
+	-# Click on "Common" and "View/Edit custom data"
+	-# In the command line you can write your data. Add: allows adding simple custom data to an object. The data to be added should be written in the command line in following format: header number, data1ID, data1Length, data1. Numbers written without '.' are assumed to be integers, otherwise they are assumed to be floating-point numbers. Numbers are added to the custom data buffer for the given header number in a little-endian fashion. The header number of lagadic is 769710397, for the header number ID you have to put the same one that you used at pount 1). An example: 769710397,500,4,0.
+
+
+\section hownewclass_sec_ex How to create a new handler (Example)
+
+</p>This section will show how to to create a new handler "SetObjTwist" starting from one already existed (TwistObjHandler).
+
+-# Create in the file include/access.h a new define for the object header number in order to connect our object (in the simulation) with the handler in our program. (See point 5) to set the number in the custom data of the object directly in the simulation).
+\code
+    /The main identifier of a Set Twist object.
+    const static unsigned int SET_OBJ_TWIST_DATA_MAIN=550;
+\endcode
+-# Open the file src/include.cpp. Now we link a new Custom Lua Variable with the identifier we created in the previous step:
+\code
+ // Set Object twist defines
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_set_obj_twist_data_main", (boost::lexical_cast<std::string>(int(SET_OBJ_TWIST_DATA_MAIN))).c_str());
+\endcode
+-# Now we have to create the class that will receive the velocity from ROS and will set it to the object. Copy and paste in the same folder the files TwistObjHandler.h and TwistObjHandler.cpp from /include/ObjectHandlers and /src/ObjectHandlers, and renominate them (let's say SetTwistObjHandler.h and SetTwistObjHandler.cpp).
+-# Open the file  SetTwistObjHandler.h:
+	-# Change the token of the # ifndef 
+	-# Change the name of the class and the name of the constructor and destructor
+	-# In the class define member or function we need (Publisher and/or subscriber of ROS, frequency of the publisher ect.)
+-# Open the file  _Test_Handler.cpp:
+	-# Change the #include with the right name #include "ObjectHandlers/SetTwistObjHandler.h"
+	-# Replace class and function names
+	-# Initialize properly the members of the class in the constructor and replace the old ones in the code
+	-# Replace old header (OBJ_TWIST_DATA_MAIN) with the new one (SET_OBJ_TWIST_DATA_MAIN)
+	-# The handleSimulation() is called at each step of the simulation. Here you can publish and receive the command via ROS 
+-# Open " GenericObjectContainer.cpp ":
+	-# Add a new elseif with the right parameters (--> *_DATA_MAIN in the first line and --> new *Handler() when we create the object )
+\code
+ else if ((objectFound = CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::SET_OBJ_TWIST_DATA_MAIN, tempMainData)) == true) {
+// Yes, the tag is there. We have to add a new GenericObjectHandler object associated with this scene object:
+objectHandler = new SetObjTwistHandler();
+ss << "Found 'Set Object twist'. " << std::endl;
+ \endcode
+	-# Add at the beginning:
+\code
+#include "ObjectHandlers/SetTwistObjHandler.h"
+ \endcode
+-# Open src/CMakeLists.txt :
+	-# Add "ObjectHandlers/SetTwistObjHandler.cpp" in set(...)
+-# Add custom data to the object (Read <a href="http://www.coppeliarobotics.com/helpFiles/en/childScripts.htm" target="_parent">here</a>):
+- Using the LUA functions (recommended):
+	-# Right Click on the object you want to add the custom data (on the 'Scene hierarchy' (on the right) or directly on the scene)
+	-# Click on 'Add --> Associated child script --> Non threated'
+	-# Now we have to add the instructions
+\code
+handle_vel = simGetObjectAssociatedWithScript(sim_handle_self)
+simExtSetFloatCustomDataFromHeader(handle_vel, sim_ext_ros_bridge_set_obj_twist_data_main, 0.0)
+ \endcode
+within the first if:
+\code
+if (simGetScriptExecutionCount()==0) then
+
+-- Insert Here --
+
+end
+ \endcode
+The function 'simExtSetFloatCustomDataFromHeader' add a custom data to the object related to 'sim_ext_ros_bridge_set_obj_twist_data_main'. As we can see, the function requires a third input. If we need it, we can add a value to our custom data, setting the third input of the function. In this case it is not used so we can set it to zero (it will be ignored). We can add float and int values, if you want to add an int value you have to use the function 'simExtSetIntCustomDataFromHeader'. You can find the list of the Custom Lua Variable in access.cpp.
+
+
+- Manual way:
+	-# [Menu bar --> Tools --> Scene object properties]. You can also open the dialog with a double-click on an object icon in the scene hierarchy.
+	-# Click on "Common" and "View/Edit custom data"
+	-# In the command line you can write your data. Add: allows adding simple custom data to an object. The data to be added should be written in the command line in following format: header number, data1ID, data1Length, data1. Numbers written without '.' are assumed to be integers, otherwise they are assumed to be floating-point numbers. Numbers are added to the custom data buffer for the given header number in a little-endian fashion. The header number of Lagadic is 769710397, for the header number ID you have to put the same one that you used at point 1). An example: 769710397,500,4,0.
+
+
+
+
+
+*/

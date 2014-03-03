@@ -1,0 +1,7 @@
+<library path="lib/libcamera_handler">
+  <class type="CameraHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling a vision sensor
+  </description>
+  </class>
+</library>

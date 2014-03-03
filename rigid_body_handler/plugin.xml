@@ -1,0 +1,17 @@
+<library path="lib/librigid_body_handler">
+  <class type="GetTwistHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for measuring object twist.
+  </description>
+  </class>
+  <class type="SetTwistHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for setting object twist.
+  </description>
+  </class>
+  <class type="GetPoseHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for getting object pose.
+  </description>
+  </class>
+</library>
