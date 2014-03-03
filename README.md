@@ -8,7 +8,7 @@
 
 <p>V-Rep is a General purpose 3D robot simulator with integrated development environment developed by <a href="http://www.coppeliarobotics.com/" target="_parent">Coppelia Robotics</a>. Sensors, mechanisms, robots and whole systems can be modelled and simulated in various ways</p>
 
-## Installation
+## Installation ##
 
 Note: The Ubuntu version used is 13.04.
 1. <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
