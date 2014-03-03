@@ -15,7 +15,7 @@ Note: The Ubuntu version used is 13.04.
 * <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
 * <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
 * <a href="#instplug" target="_parent"> Install Plugin</a>
-* <a href="#extpack" target="_parent"> Install external packages:</a> 
+
 
 
 ###Installation ROS Hydro 
