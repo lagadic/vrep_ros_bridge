@@ -12,10 +12,10 @@ V-Rep is a General purpose 3D robot simulator with integrated development enviro
 
 
 Note: The Ubuntu version used is 13.04.
-1. <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
-2. <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
-3. <a href="#instplug" target="_parent"> Install Plugin</a>
-4. <a href="#extpack" target="_parent"> Install external packages:</a> 
+* <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
+* <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
+* <a href="#instplug" target="_parent"> Install Plugin</a>
+* <a href="#extpack" target="_parent"> Install external packages:</a> 
 	* <a href="#instTeleKyb_sec" target="_parent"> Install Telekyb</a> 
 
 ###Installation ROS Hydro 
