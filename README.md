@@ -16,7 +16,7 @@ Note: The Ubuntu version used is 13.04.
 * <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
 * <a href="#instplug" target="_parent"> Install Plugin</a>
 * <a href="#extpack" target="_parent"> Install external packages:</a> 
-	* <a href="#instTeleKyb_sec" target="_parent"> Install Telekyb</a> 
+
 
 ###Installation ROS Hydro 
 
