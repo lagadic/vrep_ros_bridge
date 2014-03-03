@@ -1,4 +1,4 @@
-# vrep_ros_bridge
+# vrep_ros_bridge #
 
 
 <p>ROS V-Rep Bridge is a plugin for V-Rep developed by the Inria
@@ -8,7 +8,9 @@
 
 <p>V-Rep is a General purpose 3D robot simulator with integrated development environment developed by <a href="http://www.coppeliarobotics.com/" target="_parent">Coppelia Robotics</a>. Sensors, mechanisms, robots and whole systems can be modelled and simulated in various ways</p>
 
+
 ## Installation ##
+
 
 Note: The Ubuntu version used is 13.04.
 1. <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
@@ -17,7 +19,7 @@ Note: The Ubuntu version used is 13.04.
 4. <a href="#extpack" target="_parent"> Install external packages:</a> 
 	-# Quadrotor plugin: <a href="#instTeleKyb_sec" target="_parent"> Install Telekyb</a> 
 
-### Installation ROS Hydro
+### Installation ROS Hydro ###
 
 
 Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
@@ -29,7 +31,7 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 * When you configure the ROS Environment, choose catkin.
 
 
-###Installation V-Rep
+### Installation V-Rep ###
 
 
 * Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep. To run it go to the folder of V-rep via terminal and type
@@ -38,7 +40,7 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 </p>
 
 
-### Installation Plugin
+### Installation Plugin ###
 
 
 * Go in the src folder of your catkin workspace in catkin_ws/src via terminal
