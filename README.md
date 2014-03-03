@@ -5,3 +5,61 @@ vrep_ros_bridge
 <a href="http://www.irisa.fr/lagadic" target="_parent">Lagadic</a> team located at <a href="http://www.inria.fr/rennes" target="_parent">Inria Rennes</a>.</p>
 
 <p> The main application of the plugin is to provide a communication interface between V-Rep and (ROS). The aim is to control the V-Rep simulation externally using ROS messages and ROS services.</p>
+
+<p>V-Rep is a General purpose 3D robot simulator with integrated development environment developed by <a href="http://www.coppeliarobotics.com/" target="_parent">Coppelia Robotics</a>. Sensors, mechanisms, robots and whole systems can be modelled and simulated in various ways</p>
+
+\section inst_sec Installation
+
+Note: The Ubuntu version used is 13.04.
+-# <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
+-# <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
+-# <a href="#instplug" target="_parent"> Install Plugin</a>
+-# <a href="#extpack" target="_parent"> Install external packages:</a> 
+	-# Quadrotor plugin: <a href="#instTeleKyb_sec" target="_parent"> Install Telekyb</a> 
+
+\subsection instROS_sec Installation ROS Hydro
+
+Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
+
+- Point 1.2 : choose instruction for Ubuntu 13.04 (Raring)
+
+- Point 1.4 : Desktop-Full Install: (Recommended)
+
+- When you configure the ROS Environment, choose catkin.
+
+
+\subsection instvrep_sec Installation V-Rep
+
+- Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep. To run it go to the folder of V-rep via terminal and type
+\code
+./vrep.sh
+ \endcode
+</p>
+
+
+
+
+\subsection instplug Installation Plugin
+
+- Go in the src folder of your catkin workspace in catkin_ws/src via terminal
+- Download the plugin from GIT typing:
+\code
+git clone https://github.com/jokla/vrep_ros_bridge.git
+ \endcode
+- Add the file CATKIN_IGNORE in the sub-plugin folder that we don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_handler)
+\code
+touch CATKIN_IGNORE
+ \endcode
+- Build it with 
+\code
+catkin_make --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo
+ \endcode
+- In the folder vrep_ros_bridge/devel/lib/ we will find the library: libv_repExtRosBridge.so. 
+- The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
+\code
+ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so 
+ \endcode  
+- Type roscore in a terminal
+- Now run V-Rep via terminal and check if the plugin is loaded correctly.
+- If an exernal console will appear with the avaible plugins, so it is ok.
+
