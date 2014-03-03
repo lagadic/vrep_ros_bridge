@@ -42,9 +42,13 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 
 * Go in the src folder of your catkin workspace in catkin_ws/src via terminal
 * Download the plugin from GIT typing:
+
 `git clone https://github.com/jokla/vrep_ros_bridge.git`
+
 * Add the file CATKIN_IGNORE in the sub-plugin folder that we don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_handler)
+
 `touch CATKIN_IGNORE`
+
 * Build it with 
 `catkin_make --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
 * In the folder vrep_ros_bridge/devel/lib/ we will find the library: libv_repExtRosBridge.so. 
