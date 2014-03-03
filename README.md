@@ -1,6 +1,6 @@
 # vrep_ros_bridge
 
-ROS V-Rep Bridge is a plugin for V-Rep developed by the Inria
+V-Rep ROS Bridge is a plugin for V-Rep developed by the Inria
 <a href="http://www.irisa.fr/lagadic" target="_parent">Lagadic</a> team located at <a href="http://www.inria.fr/rennes" target="_parent">Inria Rennes</a>.
 
 The main application of the plugin is to provide a communication interface between V-Rep and (ROS). The aim is to control the V-Rep simulation externally using ROS messages and ROS services.
@@ -56,7 +56,7 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 * In the folder vrep_ros_bridge/devel/lib/ we will find the library: libv_repExtRosBridge.so. 
 * The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
 
-`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
+	`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
 
 * Type roscore in a terminal
 * Now run V-Rep via terminal and check if the plugin is loaded correctly.
