@@ -1,0 +1,7 @@
+<library path="lib/libquadrotor_tk_handler">
+  <class type="Quadrotor_tk_Handler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling a quadrotor with telekyb
+  </description>
+  </class>
+</library>
