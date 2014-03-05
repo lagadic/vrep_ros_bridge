@@ -115,16 +115,17 @@ void QuadrotorHandler::handleSimulation(){
      }
 
 
-    simFloat ForceCommand[3] = {0.0 , 0.0 , _lastReceivedCmd.effort[3] };
+    // Command w.r.t. the quadrotor frame
+    Eigen::Matrix< simFloat, 3, 1> ForceCommand(0.0 , 0.0 , _lastReceivedCmd.effort[3]);
+    Eigen::Matrix< simFloat, 3, 1> TorqueCommand (_lastReceivedCmd.effort[0] , _lastReceivedCmd.effort[1] , _lastReceivedCmd.effort[2]);
 
-    simFloat TorqueCommand[3] = {_lastReceivedCmd.effort[0] , _lastReceivedCmd.effort[1] , _lastReceivedCmd.effort[2] };
+    // Command w.r.t. the world frame
+    Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*ForceCommand;
+    Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = nwuToNed*orientation*TorqueCommand;
 
 
-
-    //std::cout <<"Applying FORCE:" << ForceCommand[2] << std::endl;
-
-
-     if(simAddForceAndTorque(_associatedObjectID,ForceCommand ,TorqueCommand )==-1){
+    // Apply force and torque to the quadrotor
+     if(simAddForceAndTorque(_associatedObjectID,worldForce.data() ,worldTorqueCommand.data() )==-1){
             simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
         }
 
