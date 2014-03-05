@@ -1,17 +1,3 @@
-// Copyright 2006-2013 Dr. Marc Andreas Freese. All rights reserved. 
-// marc@coppeliarobotics.com
-// www.coppeliarobotics.com
-// 
-// -------------------------------------------------------------------
-// This file is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// 
-// You are free to use/modify/distribute this file for whatever purpose!
-// -------------------------------------------------------------------
-//
-// This file was automatically created for V-REP release V3.0.5 on October 26th 2013
-
 #ifndef QUADROTOR_HANDLER_H
 #define QUADROTOR_HANDLER_H
 
@@ -19,13 +5,10 @@
 
 #include "vrep_ros_plugin/access.h"
 #include <ros/time.h>
-#include <telekyb_msgs/TKMotorCommands.h>
-#include <telekyb_msgs/TKCommands.h>
+#include <sensor_msgs/JointState.h>
 
 /**
- * Handler of a Quadrotor object for use with Telekyb2.
- * It automatically subscribes to telekyb_msgs::TKMotorCommands messages for receiveng thrust commands to apply to the four propellers.
- * It also publishes the status of the quadrotor using telekyb_msgs::TKState messages.
+ * Handler of a Quadrotor object.
  */
 class QuadrotorHandler : public GenericObjectHandler
 {
@@ -92,46 +75,18 @@ protected:
     ros::Time _lastPrintedMsg;
 
 	/**
-	 * Last received TKMotorCommands commands.
-	 */
-	std::vector<double> _tkMotorCommands;
-
-	/**
      * Last received TKCommands message.
      */
-	telekyb_msgs::TKCommands _tkCommands;
+	sensor_msgs::JointState _lastReceivedCmd;
+
 
 	/**
-	* Internal roll/pitch control cutoff frequency.
-	*/
-	simFloat _att_cutoff;
-
-	/**
-	* Internal roll/pitch control damping factor.
-	*/
-    simFloat _att_damping;
-
-    /**
-    * Internal yaw rate control proportional gain.
-    */
-    simFloat _kp_yaw;
-
-    /**
-    * Quadrotor control mode. See \ref QuadrotorCtrlMode.
-    */
-	CustomDataHeaders::QuadrotorCtrlMode _ctrlMode;
-
-	/**
-	 * Callback for force command (TKMotorCommands) message reception.
+	 * Callback for command message reception.
 	 * @param msg Received force command message.
 	 */
-	void tkMotorCommandsCallback(const telekyb_msgs::TKMotorCommands::ConstPtr& msg);
+	void CommandsCallback(const sensor_msgs::JointStateConstPtr& msg);
 
-    /**
-     * Callback for thrust/roll/pitch/yaw command (TKCommands) message reception.
-     * @param msg Received thrust/roll/pitch/yaw command message.
-     */
-    void tkCommandsCallback(const telekyb_msgs::TKCommands::ConstPtr& msg);
+
 };
 
 

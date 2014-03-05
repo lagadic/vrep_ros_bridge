@@ -7,7 +7,6 @@ project(quadrotor_handler)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
-  telekyb_msgs
   vrep_ros_plugin
 )
 
@@ -70,7 +69,7 @@ find_package(Eigen REQUIRED)
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   sensor_msgs#   telekyb_msgs
+#   sensor_msgs#   
 # )
 
 ###################################
@@ -85,7 +84,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp sensor_msgs telekyb_msgs vrep_ros_plugin
+  CATKIN_DEPENDS roscpp sensor_msgs vrep_ros_plugin
   DEPENDS eigen
 )
 
