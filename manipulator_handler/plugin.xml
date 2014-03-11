@@ -1,0 +1,7 @@
+<library path="lib/libmanipulator_handler">
+  <class type="ManipulatorHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling a generic manipulator.
+  </description>
+  </class>
+</library>
