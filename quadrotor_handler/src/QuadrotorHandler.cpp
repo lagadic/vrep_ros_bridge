@@ -85,6 +85,7 @@ void QuadrotorHandler::handleSimulation(){
             simGetObjectQuaternion(_handleOfCoM, -1, orientation.coeffs().data())!=-1 &&
             simGetObjectVelocity(_handleOfCoM, linVelocity.data(), angVelocity.data())!=-1){
 
+
         position = nwuToNed*position;
         linVelocity = nwuToNed*linVelocity;
         angVelocity = orientation.conjugate()*angVelocity; // Express angular velocity in body frame
@@ -98,7 +99,7 @@ void QuadrotorHandler::handleSimulation(){
         const simFloat currentSimulationTime = simGetSimulationTime();
 
 
-        if ((currentSimulationTime-_lastPublishedStatusTime) >= 1.0/_ObjStatusFrequency){
+        //if ((currentSimulationTime-_lastPublishedStatusTime) >= 1.0/_ObjStatusFrequency){
 
 
 
@@ -127,7 +128,7 @@ void QuadrotorHandler::handleSimulation(){
 
 			_lastPublishedStatusTime = currentSimulationTime;
 
-        }
+        //}
 
     }
 
@@ -135,9 +136,9 @@ void QuadrotorHandler::handleSimulation(){
      //Do the control
      if ((now-_lastReceivedCmdTime).toSec() > 0.1){
 
-    	 simResetDynamicObject(_associatedObjectID);
-         simSetObjectIntParameter( _associatedObjectID,3003, 1);
-         simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+    	 //simResetDynamicObject(_associatedObjectID);
+         //simSetObjectIntParameter( _associatedObjectID,3003, 1);
+         //simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
 
          if ((now-_lastPrintedMsg).toSec() >= 1){
 
@@ -154,8 +155,8 @@ void QuadrotorHandler::handleSimulation(){
 
      {
          std::stringstream ss;
-         simResetDynamicObject(_associatedObjectID);
-    	 simSetObjectIntParameter( _associatedObjectID,3003, 0);
+         //simResetDynamicObject(_associatedObjectID);
+    	// simSetObjectIntParameter( _associatedObjectID,3003, 0);
     	 ss << " Receiving and applying commands from ROS." << std::endl;
          ConsoleHandler::printInConsole(ss);
 
@@ -167,12 +168,25 @@ void QuadrotorHandler::handleSimulation(){
     Eigen::Matrix< simFloat, 3, 1> TorqueCommand ((simFloat)_Commands[0] , (simFloat)_Commands[1] , (simFloat)_Commands[2]);
 
     // Command w.r.t. the world frame
-    //Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*ForceCommand;
-  //  Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = nwuToNed*orientation*TorqueCommand;
+    //Eigen::Matrix< simFloat, 3, 1> worldForce = orientation*ForceCommand;
+    //Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = orientation*TorqueCommand;
 
-    Eigen::Matrix< simFloat, 3, 1> worldForce = ForceCommand;
-    Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = TorqueCommand;
 
+    //std::cout << "FORCE BOSY:"<< std::endl;
+   // std::cout <<"x: "<< ForceCommand[0] <<" y: " << ForceCommand[1] <<"z: "<< ForceCommand[2]  << std::endl;
+
+    std::cout << "TORQUE BODY:"<< std::endl;
+    std::cout <<"x: "<< TorqueCommand[0] <<" y: " << TorqueCommand[1] <<"z: "<< TorqueCommand[2]  << std::endl;
+
+    const Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = nwuToNed*orientation*TorqueCommand; //rotate torque to world frame
+    const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*ForceCommand;
+
+
+
+
+
+std::cout << "WORLD FORCE APPLIED:"<< std::endl;
+std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z: "<< worldTorqueCommand[2]  << std::endl;
 
 
 
