@@ -52,7 +52,12 @@ protected:
 	/**
 	 * Publisher for the robot status.
 	 */
-	ros::Publisher _pub;
+	ros::Publisher _pubPose;
+	/**
+	 * Publisher for the robot status.
+	 */
+	ros::Publisher _pubTwist;
+
 
 	/**
 	 * Publisher for the robot status.
@@ -79,6 +84,21 @@ protected:
      */
 	sensor_msgs::JointState _lastReceivedCmd;
 
+	/**
+	 * Last received TKMotorCommands commands.
+	 */
+	std::vector<double> _Commands;
+
+	/**
+	 * Time of the last Obj twist.
+	 */
+	simFloat _lastPublishedStatusTime;
+
+	/**
+	 * Obj twist frequency
+	 */
+
+	double _ObjStatusFrequency;
 
 	/**
 	 * Callback for command message reception.

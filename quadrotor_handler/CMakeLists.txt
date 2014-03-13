@@ -7,6 +7,7 @@ project(quadrotor_handler)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  geometry_msgs
   vrep_ros_plugin
 )
 
@@ -84,7 +85,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp sensor_msgs vrep_ros_plugin
+  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs vrep_ros_plugin
   DEPENDS eigen
 )
 
