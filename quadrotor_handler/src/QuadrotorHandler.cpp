@@ -136,9 +136,9 @@ void QuadrotorHandler::handleSimulation(){
      //Do the control
      if ((now-_lastReceivedCmdTime).toSec() > 0.1){
 
-    	 //simResetDynamicObject(_associatedObjectID);
-         //simSetObjectIntParameter( _associatedObjectID,3003, 1);
-         //simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+    	 simResetDynamicObject(_associatedObjectID);
+         simSetObjectIntParameter( _associatedObjectID,3003, 1);
+         simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
 
          if ((now-_lastPrintedMsg).toSec() >= 1){
 
@@ -156,7 +156,7 @@ void QuadrotorHandler::handleSimulation(){
      {
          std::stringstream ss;
          //simResetDynamicObject(_associatedObjectID);
-    	// simSetObjectIntParameter( _associatedObjectID,3003, 0);
+    	 simSetObjectIntParameter( _associatedObjectID,3003, 0);
     	 ss << " Receiving and applying commands from ROS." << std::endl;
          ConsoleHandler::printInConsole(ss);
 
