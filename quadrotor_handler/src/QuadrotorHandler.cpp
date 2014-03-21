@@ -81,6 +81,14 @@ void QuadrotorHandler::handleSimulation(){
     Eigen::Matrix <simFloat, 3, 1> angVelocity;
     const static Eigen::Quaternion< simFloat > nwuToNed(0,1,0,0);
 
+
+    for (int motorIdx = 0; motorIdx < 4; ++motorIdx){
+         if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 17.0)==-1){
+            simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
+          }
+       }
+
+
     if(simGetObjectPosition(_handleOfCoM, -1, position.data())!=-1 &&
             simGetObjectQuaternion(_handleOfCoM, -1, orientation.coeffs().data())!=-1 &&
             simGetObjectVelocity(_handleOfCoM, linVelocity.data(), angVelocity.data())!=-1){
@@ -133,6 +141,9 @@ void QuadrotorHandler::handleSimulation(){
     }
 
 
+
+
+
      //Do the control
      if ((now-_lastReceivedCmdTime).toSec() > 0.1){
 
@@ -175,8 +186,8 @@ void QuadrotorHandler::handleSimulation(){
     //std::cout << "FORCE BOSY:"<< std::endl;
    // std::cout <<"x: "<< ForceCommand[0] <<" y: " << ForceCommand[1] <<"z: "<< ForceCommand[2]  << std::endl;
 
-    std::cout << "TORQUE BODY:"<< std::endl;
-    std::cout <<"x: "<< TorqueCommand[0] <<" y: " << TorqueCommand[1] <<"z: "<< TorqueCommand[2]  << std::endl;
+    //std::cout << "TORQUE BODY:"<< std::endl;
+    //std::cout <<"x: "<< TorqueCommand[0] <<" y: " << TorqueCommand[1] <<"z: "<< TorqueCommand[2]  << std::endl;
 
     const Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = nwuToNed*orientation*TorqueCommand; //rotate torque to world frame
     const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*ForceCommand;
@@ -185,8 +196,8 @@ void QuadrotorHandler::handleSimulation(){
 
 
 
-std::cout << "WORLD FORCE APPLIED:"<< std::endl;
-std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z: "<< worldTorqueCommand[2]  << std::endl;
+//std::cout << "WORLD FORCE APPLIED:"<< std::endl;
+//std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z: "<< worldTorqueCommand[2]  << std::endl;
 
 
 
@@ -195,14 +206,14 @@ std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z
    if(simAddForceAndTorque(_associatedObjectID,worldForce.data() ,worldTorqueCommand.data() )==-1){
           simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
       }
-   else
-   {
-       for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
-          if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 2.5*worldForce[2])==-1){
-             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
-           }
-        }
-     }
+ //  else
+//   {
+//       for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
+//          if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 2.5*_Commands[3])==-1){
+//             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
+//           }
+//        }
+//     }
 
 
 
