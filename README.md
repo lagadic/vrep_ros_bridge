@@ -29,10 +29,16 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 
 * When you configure the ROS Environment, choose catkin.
 
+* Complete the tutorial <a href="http://wiki.ros.org/ROS/Tutorials" target="_parent">page</a>. It is mandatory to follow the tutorial number 1 "Installing and Configuring Your ROS Environment".
+
+Now we have installed ROS and we have created our workspace.
+
 
 ###Installation V-Rep
 
-* Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep. To run it go to the folder of V-rep via terminal and type
+* Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep.
+* Extract it where you prefer
+* To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
 </p>
 
@@ -43,22 +49,35 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 * Go in the src folder of your catkin workspace in catkin_ws/src via terminal
 * Download the plugin from GIT typing:
 
-	`git clone https://github.com/jokla/vrep_ros_bridge.git`
+	`git clone https://github.com/lagadic/vrep_ros_bridge.git`
 
-* Add the file CATKIN_IGNORE in the sub-plugin folder that we don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_handler)
+* Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_tk_handler)
 
 	`touch CATKIN_IGNORE`
 
-* Build it with 
+* Go in your catkin_workspace and build it with 
 
-	`catkin_make --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
+	`catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
 
-* In the folder vrep_ros_bridge/devel/lib/ we will find the library: libv_repExtRosBridge.so. 
+* In the folder vrep_ros_bridge/devel/lib/ you will find the library: libv_repExtRosBridge.so. 
 * The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
 
 	`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
 
+Remember to modify `/YOUR_CATKIN_WS_PATH` with your actual path to reach your workspace.
+
 * Type roscore in a terminal
 * Now run V-Rep via terminal and check if the plugin is loaded correctly.
-* If an exernal console will appear with the avaible plugins, so it is ok.
+* If an external console will appear with the avaible plugins the plugin is working.
 
+
+# How to use the plugin
+
+You will find a guide to use the plugin in the relative documentation. To create the documentation go via terminal in the source code of the package:
+`cd src/vrep_ros_bridge/`
+and use rosdoc_lite to create the documentation:
+
+`rosdoc_lite vrep_ros_plugin`
+
+This will create a the documentation in the folder `src/vrep_ros_bridge/doc`. Open the file `/doc/html/index.html` in your browser to see it. The documentation is under construction.
+ 
