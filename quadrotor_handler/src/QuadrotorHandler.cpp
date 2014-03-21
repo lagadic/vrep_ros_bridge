@@ -183,6 +183,7 @@ void QuadrotorHandler::handleSimulation(){
     //Eigen::Matrix< simFloat, 3, 1> worldTorqueCommand = orientation*TorqueCommand;
 
 
+    // Print information
     //std::cout << "FORCE BOSY:"<< std::endl;
    // std::cout <<"x: "<< ForceCommand[0] <<" y: " << ForceCommand[1] <<"z: "<< ForceCommand[2]  << std::endl;
 
