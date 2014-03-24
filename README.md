@@ -40,7 +40,7 @@ Now we have installed ROS and we have created our workspace.
 * Extract it where you prefer
 * To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
-* Follow this <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm </a> tutorial.
+* Follow <a href="http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm" target="_parent"> this </a> tutorial.
 </p>
 
 
