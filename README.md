@@ -23,9 +23,9 @@ Note: The Ubuntu version used is 13.04.
 
 Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
 
-* Point 1.2 : choose instruction for Ubuntu 13.04 (Raring)
+* Point 1.2 : choose instruction for Ubuntu 13.04 (Raring).
 
-* Point 1.4 : Desktop-Full Install: (Recommended)
+* Point 1.4 : Desktop-Full Install: (Recommended).
 
 * When you configure the ROS Environment, choose catkin.
 
@@ -40,6 +40,7 @@ Now we have installed ROS and we have created our workspace.
 * Extract it where you prefer
 * To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
+* Follow this <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm </a> tutorial.
 </p>
 
 
