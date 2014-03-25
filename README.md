@@ -36,8 +36,8 @@ Now we have installed ROS and we have created our workspace.
 
 ###Installation V-Rep
 
-* Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>  and download V-Rep.
-* Extract it where you prefer
+* Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>.
+* Check the <a href="http://www.coppeliarobotics.com/helpFiles/en/licensing.htm> target="_parent"> licensing </a> page and download the suitable V-REP version.
 * To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
 * Follow <a href="http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm" target="_parent"> this </a> tutorial.
@@ -60,16 +60,14 @@ Now we have installed ROS and we have created our workspace.
 
 	`catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
 
-* In the folder vrep_ros_bridge/devel/lib/ you will find the library: libv_repExtRosBridge.so. 
+* In the folder vrep_ros_bridge/devel/lib/ you will find the main library (libv_repExtRosBridge.so) and the others libraries (libcamera_handler.so, libmanipulator_handler.so, libquadrotor_handler.so, librigid_body_handler.so ). 
 * The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
 
 	`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
 
-Remember to modify `/YOUR_CATKIN_WS_PATH` with your actual path to reach your workspace.
+where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 
-* Type roscore in a terminal
-* Now run V-Rep via terminal and check if the plugin is loaded correctly.
-* If an external console will appear with the avaible plugins the plugin is working.
+* In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
 
 # How to use the plugin
