@@ -37,7 +37,7 @@ Now we have installed ROS and we have created our workspace.
 ###Installation V-Rep
 
 * Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>.
-* Check the <a href="http://www.coppeliarobotics.com/helpFiles/en/licensing.htm> target="_parent"> licensing </a> page and download the suitable V-REP version.
+* Check the <a href="http://www.coppeliarobotics.com/helpFiles/en/licensing.htm" target="_parent">licensing</a> page and download the suitable V-REP version.
 * To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
 * Follow <a href="http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm" target="_parent"> this </a> tutorial.
