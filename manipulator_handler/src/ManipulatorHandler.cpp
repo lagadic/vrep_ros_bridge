@@ -73,9 +73,9 @@ void ManipulatorHandler::handleSimulation(){
         }
         if ((now-_lastPrintedMsg).toSec() >= 1){
             std::stringstream ss;
-            ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
+            ss << "- [" << _associatedObjectName << "] No command received since more than " << (now -_lastReceivedCmdTime).toSec() << "s!" << std::endl;
             simAddStatusbarMessage(ss.str().c_str());
-            ConsoleHandler::printInConsole(ss);
+            //ConsoleHandler::printInConsole(ss);
             _lastPrintedMsg = now;
         }
         return;
@@ -105,6 +105,16 @@ void ManipulatorHandler::handleSimulation(){
             if(simSetJointTargetVelocity(_handleOfJoints[jointIdx], _lastReceivedCmd.velocity[jointIdx])==-1){
                 std::stringstream ss;
                 ss << "- [" << _associatedObjectName << "] Error setting velocity for joint "<<
+                        jointIdx <<" (" << _jointNames[jointIdx] <<")." <<std::endl;
+                ConsoleHandler::printInConsole(ss);
+            }
+
+        } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::TF_EFFORT ){
+
+        	std::cout << "Apply new torque/force to  joint" << _jointNames[jointIdx] <<": " << _lastReceivedCmd.effort[jointIdx] << std::endl;
+            if(simSetJointForce(_handleOfJoints[jointIdx], _lastReceivedCmd.effort[jointIdx])==-1){
+                std::stringstream ss;
+                ss << "- [" << _associatedObjectName << "] Error setting torque or force for joint "<<
                         jointIdx <<" (" << _jointNames[jointIdx] <<")." <<std::endl;
                 ConsoleHandler::printInConsole(ss);
             }

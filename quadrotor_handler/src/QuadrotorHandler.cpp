@@ -155,9 +155,9 @@ void QuadrotorHandler::handleSimulation(){
 
              std::stringstream ss;
              //ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
-             ss << " No commands: Static mode activated." << std::endl;
+             ss <<"- [" << _associatedObjectName << "]  No commands: Static mode activated." << std::endl;
              simAddStatusbarMessage(ss.str().c_str());
-             ConsoleHandler::printInConsole(ss);
+             //ConsoleHandler::printInConsole(ss);
              _lastPrintedMsg = now;
 
          }
