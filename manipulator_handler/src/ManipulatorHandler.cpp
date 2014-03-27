@@ -122,7 +122,7 @@ void ManipulatorHandler::handleSimulation(){
         } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::PASSIVE_MODE){
 
 
-        	//std::cout << "Apply new position to  joint" << _jointNames[jointIdx] <<": " <<_lastReceivedCmd.position[jointIdx] << std::endl;
+        	std::cout << "Apply new position to  joint" << _jointNames[jointIdx] <<": " <<_lastReceivedCmd.position[jointIdx] << std::endl;
         	//_tempjoint = _tempjoint+0.001;
             if(simSetJointPosition(_handleOfJoints[jointIdx], _lastReceivedCmd.position[jointIdx])==-1)
 
@@ -245,8 +245,11 @@ void ManipulatorHandler::_initialize(){
 
 
             //if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::MANIPULATOR_DATA_JOINT,tempMainData))
+            int ctrlMode = -1;
+            if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::MANIPULATOR_DATA_CTRL_MODE,tempMainData))
+            	ctrlMode = CAccess::pop_int(tempMainData);
 
-            if (simGetJointType(objHandle) == sim_joint_revolute_subtype)
+            if (simGetJointType(objHandle) == sim_joint_revolute_subtype && ctrlMode != (int)(CustomDataHeaders::IGNORE_MODE))
             {
             	std::cout << "Found " << simGetObjectName(objHandle) << std::endl;
 
@@ -284,9 +287,8 @@ void ManipulatorHandler::_initialize(){
                     } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
                     	_jointCtrlMode[jointID] = CustomDataHeaders::PASSIVE_MODE;
                     	ss << " Using control in Passive Mode." << std::endl;
+
                     }
-
-
 
                     else {
                         _jointCtrlMode[jointID] = _defaultModeCtrl;
@@ -328,7 +330,10 @@ void ManipulatorHandler::_initialize(){
                 	simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
                 }
 
-                }
+                } else
+					{
+                	std::cout << "Object " << simGetObjectName(objHandle) << "will be ignored as requested;" << std::endl;
+					}
 
         }
     }

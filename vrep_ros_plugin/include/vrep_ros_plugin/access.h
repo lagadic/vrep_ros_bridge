@@ -26,7 +26,8 @@ public:
         TF_VELOCITY = 1, ///< Set joint velocity.
         TF_EFFORT = 2,
         MOT_VELOCITY = 3,
-        PASSIVE_MODE = 4
+        PASSIVE_MODE = 4,
+        IGNORE_MODE = 20
 
     } ManipulatorCtrlMode;
 
