@@ -7,6 +7,8 @@ The main application of the plugin is to provide a communication interface betwe
 
 V-Rep is a General purpose 3D robot simulator with integrated development environment developed by <a href="http://www.coppeliarobotics.com/" target="_parent">Coppelia Robotics</a>. Sensors, mechanisms, robots and whole systems can be modelled and simulated in various ways.
 
+You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?distro=hydro" target="_parent">here</a>.
+
 
 ##Installation 
 
