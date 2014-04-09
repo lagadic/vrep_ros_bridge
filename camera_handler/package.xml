@@ -5,10 +5,10 @@
   <description>The camera_handler package</description>
 
   <maintainer email="giovanni.claudio@inria.fr">Giovanni Claudio</maintainer>
-  <maintainer email="riccardo.spica@inria.fr">Riccardo Spica</maintainer>
 
 
-  <license>GPLv2</license>
+
+  <license>BSD</license>
 
 
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->

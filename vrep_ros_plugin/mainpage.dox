@@ -53,6 +53,24 @@ start-up. It searches objects in the scene that it knows how to manage. It creat
 
  </p>
 
+
+Robots:
+Manipulator
+Quadrotor
+Sensors:
+Vision sensor
+IMU sensor
+and this is the list of the handler to control and describe the simulation:
+
+Rigid body handler:
+Pose:
+Set pose
+Get pose
+Twist:
+Set Twist
+
+
+
 <p>
 
  Ros V-Rep Plugin used the pluginlib package <a href="http://www.http://wiki.ros.org/pluginlib" target="_parent">pluginlib package </a>. Pluginlib is a C++ library for loading and unloading plugins from within a ROS package. Plugins are dynamically loadable classes that are loaded from a runtime library (i.e. shared object, dynamically linked library). In this way ours handler are actually plugins with some dependencies. Ifwe don't need an handler or we don't have installed its dependencies we are still able to build our plugin ( this plugin will not be avaible). For example, the Quadrotor_Tel handler needs Telekyb, if we don't want to install Telekyb we can just add a file called CATKIN_IGNORE in the handler folder and it will not be considered. In spite of this the others handler will be avaible.
