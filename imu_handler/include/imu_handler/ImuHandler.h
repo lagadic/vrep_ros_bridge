@@ -4,7 +4,7 @@
 #define IMU_HANDLER_H
 
 #include <vrep_ros_plugin/GenericObjectHandler.h>
-#include <telekyb_base/Filter/IIRFilter.hpp>
+//#include <telekyb_base/Filter/IIRFilter.hpp>
 
 class ImuHandler : public GenericObjectHandler
 {
@@ -68,7 +68,7 @@ protected:
 	 */
 	simFloat _lastPublishedImu;
 
-	telekyb::IIRFilter* _forceFilter[3];
+	//telekyb::IIRFilter* _forceFilter[3];
 	double _forceFilterCutoff;
 };
 

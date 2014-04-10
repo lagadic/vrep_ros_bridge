@@ -16,8 +16,8 @@ ImuHandler::ImuHandler() : GenericObjectHandler(),
     _mass(1.0),
     _handleOfForceSensor(-1),
     _lastPublishedImu(0.0),
-    _acquisitionFrequency(-1.0),
-    _forceFilterCutoff(-1.0)
+    _acquisitionFrequency(-1.0)
+   // _forceFilterCutoff(-1.0)
 {
 }
 
@@ -94,7 +94,7 @@ void ImuHandler::handleSimulation(){
 
 			angVelocity = orientation.conjugate()*angVelocity; // Express angular velocity in body frame
 
-			// Filter force
+/*			// Filter force
 			if (_forceFilterCutoff>0){
                 for (uint i = 0; i<3; ++i){
                     double output;
@@ -102,7 +102,7 @@ void ImuHandler::handleSimulation(){
                     force[i] = (simFloat)output;
                 }
 			}
-
+*/
 
 			// Fill the imu msg
 			sensor_msgs::Imu msg;
@@ -201,14 +201,14 @@ void ImuHandler::_initialize(){
     }
 
 
-    // initialize acceleration filter
+  /*  // initialize acceleration filter
     if(_forceFilterCutoff>0.0){
         const double filterSampleTime = _acquisitionFrequency > 0 ? 1.0/_acquisitionFrequency : (double)simGetSimulationTimeStep();
         for(uint i=0;i<3;++i){
             _forceFilter[i] = new telekyb::IIRFilter(telekyb::IIRLowPass(), 2.0*M_PI*_forceFilterCutoff, 1.0, filterSampleTime);
         }
     }
-
+*/
     ConsoleHandler::printInConsole(ss);
 
     _lastPublishedImu = -1.0;
@@ -217,11 +217,12 @@ void ImuHandler::_initialize(){
 }
 
 bool ImuHandler::endOfSimulation(){
-    if(_forceFilterCutoff>0.0){
+ /*   if(_forceFilterCutoff>0.0){
         for(uint i=0;i<3;++i){
             delete _forceFilter[i];
         }
     }
+    */
     _initialized=false;
     return(false); // We don't want this object automatically destroyed at the end of simulation
 }
