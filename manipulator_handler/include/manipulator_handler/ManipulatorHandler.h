@@ -6,6 +6,7 @@
 #include <vrep_ros_plugin/GenericObjectHandler.h>
 #include <vrep_ros_plugin/access.h>
 #include <sensor_msgs/JointState.h>
+#include <geometry_msgs/Twist.h>
 
 class ManipulatorHandler : public GenericObjectHandler
 {
@@ -47,6 +48,9 @@ protected:
 	/// Subscriber for the joint commands.
     ros::Subscriber _sub;
 
+	/// Subscriber for the Mobile robots velocity commands .
+    ros::Subscriber _subVelMob;
+
 	/// Joint status publication frequency.
 	double _acquisitionFrequency;
 
@@ -68,10 +72,19 @@ protected:
 	/// Callback for joint commands.
 	void jointCommandCallback(const sensor_msgs::JointStateConstPtr& msg);
 
+	/// Callback for joint commands.
+	void VelMobCommandCallback(const geometry_msgs::TwistConstPtr& msg);
+
 	/// Number of found joint
 	unsigned int _numJoints;
 	/// Number of found joint
 	//float _tempjoint;
+
+	/// Lenght mobile robot
+	double _axle_lenght;
+
+	// Wheel radius
+	double _mb_radius;
 
 	/// Default mode controller
 	CustomDataHeaders::ManipulatorCtrlMode _defaultModeCtrl;

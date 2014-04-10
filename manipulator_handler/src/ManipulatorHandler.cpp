@@ -13,7 +13,9 @@ ManipulatorHandler::ManipulatorHandler() : GenericObjectHandler(),
     _acquisitionFrequency(-1.0),
     _handleOfJoints(0),
     _numJoints(0),
-    _defaultModeCtrl(CustomDataHeaders::TF_POSITION)
+    _defaultModeCtrl(CustomDataHeaders::TF_POSITION),
+    _axle_lenght (0.331),
+    _mb_radius(0.0970)
 {
 }
 
@@ -31,6 +33,7 @@ void ManipulatorHandler::synchronize(){
     std::string objectName(_associatedObjectName);
     std::replace( objectName.begin(), objectName.end(), '#', '_');
     _pub = _nh.advertise<sensor_msgs::JointState>(objectName+"/jointStatus", 1000);
+
 
 }
 
@@ -342,6 +345,9 @@ void ManipulatorHandler::_initialize(){
     std::replace( objectName.begin(), objectName.end(), '#', '_');
     _sub = _nh.subscribe(objectName+"/jointCommand", 1, &ManipulatorHandler::jointCommandCallback, this);
 
+    // Subscriber for mobile robots
+    _subVelMob = _nh.subscribe("/cmd_vel", 1, &ManipulatorHandler::VelMobCommandCallback, this);
+
     ss << "- [" << _associatedObjectName << "] Initialization done." << std::endl;
     ConsoleHandler::printInConsole(ss);
 
@@ -368,6 +374,24 @@ void ManipulatorHandler::jointCommandCallback(const sensor_msgs::JointStateConst
 
     }
 }
+
+
+/// Callback for joint commands.
+void ManipulatorHandler::VelMobCommandCallback(const geometry_msgs::TwistConstPtr& msg){
+
+
+	geometry_msgs::Twist temp = *msg;
+	std::cout << "Command received: Vx: "<< temp.linear.x << " wx = "<< temp.angular.z << std::endl;
+
+	_lastReceivedCmd.velocity.resize(2);
+    _lastReceivedCmd.velocity[0]= (1/_mb_radius)*(temp.linear.x - _axle_lenght/2*temp.angular.z); // left
+    _lastReceivedCmd.velocity[1]= (1/_mb_radius)*(temp.linear.x + _axle_lenght/2*temp.angular.z);  // rigth
+    std::cout << "New vel cmd: VR: "<<     _lastReceivedCmd.velocity[0] << " VL = "<< _lastReceivedCmd.velocity[1] << std::endl;
+
+    _lastReceivedCmdTime = ros::Time::now();
+
+}
+
 
 
 PLUGINLIB_EXPORT_CLASS(ManipulatorHandler, GenericObjectHandler)
