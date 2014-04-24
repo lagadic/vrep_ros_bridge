@@ -106,6 +106,7 @@ void ImuHandler::handleSimulation(){
 
 			// Fill the imu msg
 			sensor_msgs::Imu msg;
+
 			msg.header.stamp = ros::Time::now();
 			msg.angular_velocity.x = angVelocity[0];
 			msg.angular_velocity.y = angVelocity[1];

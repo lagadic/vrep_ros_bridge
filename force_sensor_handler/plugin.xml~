@@ -1,0 +1,7 @@
+<library path="lib/libimu_handler">
+  <class type="ImuHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling an imu.
+  </description>
+  </class>
+</library>

@@ -60,7 +60,7 @@ public:
     ///@name Imu defines
     ///@{
 	/// The main identifier of a IMU object.
-    const static unsigned int IMU_DATA_MAIN= 200;
+    const static unsigned int IMU_DATA_MAIN=200;
 	/// The identifier of the IMU mass.
     const static unsigned int IMU_DATA_MASS=201;
 	/// The identifier of the IMU force sensor.
@@ -69,6 +69,12 @@ public:
     const static unsigned int IMU_DATA_FREQ= 203;
 	/// The cut-off frequency of the acceleration low-pass filters.
     const static unsigned int IMU_DATA_CUTOFF=204;
+    ///@}
+
+    ///@name Force sensor defines
+    ///@{
+	/// The main identifier of a FORCE_SENSOR object.
+    const static unsigned int FORCE_SENSOR_DATA_MAIN= 250;
     ///@}
 
     ///@name Camera defines
@@ -111,7 +117,6 @@ public:
     /// The manipulator control mode.
     const static unsigned int MANIPULATOR_DATA_CTRL_MODE = 603;
     ///@}
-
 
 
 

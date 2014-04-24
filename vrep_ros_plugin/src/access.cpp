@@ -169,6 +169,9 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_imu_data_freq", (boost::lexical_cast<std::string>(int(IMU_DATA_FREQ))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_imu_data_cutoff", (boost::lexical_cast<std::string>(int(IMU_DATA_CUTOFF))).c_str());
 
+    // Force sensor defines
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_force_sensor_data_main", (boost::lexical_cast<std::string>(int(FORCE_SENSOR_DATA_MAIN))).c_str());
+
     // Camera defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_main", (boost::lexical_cast<std::string>(int(CAMERA_DATA_MAIN))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_freq", (boost::lexical_cast<std::string>(int(CAMERA_DATA_FREQ))).c_str());

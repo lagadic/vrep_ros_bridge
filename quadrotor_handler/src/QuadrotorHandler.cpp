@@ -59,7 +59,7 @@ void QuadrotorHandler::synchronize(){
 	_pubTwist = _nh.advertise<geometry_msgs::TwistStamped>("twist/"+objectName, 1);
 
     // Publisher of the IMU
-    _pubIMU = _nh.advertise<sensor_msgs::Imu>("IMU/"+objectName, 1);
+    //_pubIMU = _nh.advertise<sensor_msgs::Imu>("IMU/"+objectName, 1);
 
 
 }

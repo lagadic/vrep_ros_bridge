@@ -1,0 +1,7 @@
+<library path="lib/libforce_sensor_handler">
+  <class type="Force_sensorHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling an force sensor.
+  </description>
+  </class>
+</library>
