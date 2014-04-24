@@ -60,7 +60,6 @@ void GetTwistHandler::synchronize(){
     }
 
 
-
 }
 
 void GetTwistHandler::handleSimulation(){

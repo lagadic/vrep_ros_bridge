@@ -32,7 +32,7 @@
   <run_depend>imu_handler</run_depend>
   <run_depend>manipulator_handler</run_depend>
   <run_depend>rigid_body_handler</run_depend>
-
+  <run_depend>force_sensor_handler</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
