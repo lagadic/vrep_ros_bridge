@@ -57,9 +57,23 @@ void SetTwistHandler::handleSimulation(){
         _initialize();
     }
 
+    Eigen::Quaternion < simFloat > orientation; //(x,y,z,w)
+    Eigen::Matrix< simFloat, 3, 1> Velocity((simFloat)_twistCommands.twist.linear.x ,(simFloat)_twistCommands.twist.linear.y, (simFloat)_twistCommands.twist.linear.z);
+
+   if( simGetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data())!=-1)
+
+   {
+
+
+	   Velocity = orientation * Velocity ;
+
+   }
+
+
+
     simResetDynamicObject(_associatedObjectID);
 
-    // Apply the linear velocity to the object
+/*    // Apply the linear velocity to the object
     if(simSetObjectFloatParameter( _associatedObjectID,3000, _twistCommands.twist.linear.x)
     	&& simSetObjectFloatParameter( _associatedObjectID,3001, _twistCommands.twist.linear.y)
     	&& simSetObjectFloatParameter( _associatedObjectID,3002, _twistCommands.twist.linear.z)==-1) {
@@ -74,7 +88,32 @@ void SetTwistHandler::handleSimulation(){
                    std::stringstream ss;
                    ss << "- [" << _associatedObjectName << "] Error setting angular velocity. ";
                    ConsoleHandler::printInConsole(ss);
+               }*/
+
+
+
+
+    // Apply the linear velocity to the object
+    if(simSetObjectFloatParameter( _associatedObjectID,3000, Velocity[0])
+    	&& simSetObjectFloatParameter( _associatedObjectID,3001, Velocity[1])
+    	&& simSetObjectFloatParameter( _associatedObjectID,3002, Velocity[2])==-1) {
+                   std::stringstream ss;
+                   ss << "- [" << _associatedObjectName << "] Error setting linear velocity. ";
+                   ConsoleHandler::printInConsole(ss);
                }
+    // Apply the angular velocity to the object
+    if(simSetObjectFloatParameter( _associatedObjectID,3020, _twistCommands.twist.angular.x)
+    	&& simSetObjectFloatParameter( _associatedObjectID,3021, _twistCommands.twist.angular.y)
+    	&& simSetObjectFloatParameter( _associatedObjectID,3022, _twistCommands.twist.angular.z)==-1) {
+                   std::stringstream ss;
+                   ss << "- [" << _associatedObjectName << "] Error setting angular velocity. ";
+                   ConsoleHandler::printInConsole(ss);
+               }
+
+
+
+
+
 
 
 }
