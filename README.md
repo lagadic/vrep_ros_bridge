@@ -58,6 +58,13 @@ Now we have installed ROS and we have created our workspace.
 
 	`touch CATKIN_IGNORE`
 
+* Open the file bashrc:
+	` gedit ~/.bashrc`
+and in the end of the file add:
+`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/V-REP `
+`export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${VREP_ROOT_DIR}/programming/ros_stacks`
+ 
+
 * Go in your catkin_workspace and build it with 
 
 	`catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
