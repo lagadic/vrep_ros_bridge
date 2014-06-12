@@ -17,9 +17,11 @@ endif()
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   pluginlib
+  cmake_modules
 )
 
 ## System dependencies are found with CMake's conventions
+find_package(cmake_modules REQUIRED)
 find_package(Eigen REQUIRED)
 
 
