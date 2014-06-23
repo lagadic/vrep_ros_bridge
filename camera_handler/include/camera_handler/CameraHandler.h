@@ -79,8 +79,8 @@ protected:
     /**
      * Service handler for setting camera parameters from ros.
      * @param req The desired camera parameters.
-     * @param res Return 0 if the parameters have been set properly, 1 otherwise (some more information may be contained in the attached string)
-     * @return
+     * @param res res.success is true if the parameters have been set properly, false otherwise. Some more information may be contained in res.status_message.
+     * @return Same as res.success
      */
     bool setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res);
 };
