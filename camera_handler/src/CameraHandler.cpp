@@ -186,8 +186,8 @@ void CameraHandler::computeCameraInfo(){
 bool CameraHandler::setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res) {
 //    ROS_INFO("Setting camera parameters for %s.", _associatedObjectName.c_str());
 
-    const int width = req.camera_info.K[2]*2.0;
-    const int height = req.camera_info.K[5]*2.0;
+    const int width = req.camera_info.width;
+    const int height = req.camera_info.height;
     const simFloat view_angle = 2.0*atan(req.camera_info.K[2]/_camera_info.K[0]);
 
     const unsigned int resolution_x_id = 1002;
