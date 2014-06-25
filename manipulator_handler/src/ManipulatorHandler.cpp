@@ -60,7 +60,7 @@ void ManipulatorHandler::handleSimulation(){
             simFloat temp;
             simGetJointPosition(_handleOfJoints[jointIdx],&temp);
             msg.position[jointIdx] = temp;
-            simGetJointTargetVelocity(_handleOfJoints[jointIdx],&temp);
+            simGetObjectFloatParameter(_handleOfJoints[jointIdx], 2012, &temp);
             msg.velocity[jointIdx] = temp;
         }
 
