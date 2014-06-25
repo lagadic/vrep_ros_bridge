@@ -8,15 +8,15 @@
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
 
+#include <rosconsole/macros_generated.h>
 
 ManipulatorHandler::ManipulatorHandler() : GenericObjectHandler(),
-    _acquisitionFrequency(-1.0),
-    _handleOfJoints(0),
-    _numJoints(0),
-    _defaultModeCtrl(CustomDataHeaders::TF_POSITION),
-    _axle_lenght (0.331),
-    _mb_radius(0.0970)
-{
+_acquisitionFrequency(-1.0),
+_handleOfJoints(0),
+_numJoints(0),
+_defaultModeCtrl(CustomDataHeaders::TF_POSITION),
+_axle_lenght (0.331),
+_mb_radius(0.0970){
 }
 
 ManipulatorHandler::~ManipulatorHandler(){
@@ -65,7 +65,7 @@ void ManipulatorHandler::handleSimulation(){
         }
 
         _pub.publish(msg); // Publish the Joint status message in ROS
-		_lastPublishedStatus = currentSimulationTime;
+        _lastPublishedStatus = currentSimulationTime;
 
     }
 
@@ -88,11 +88,10 @@ void ManipulatorHandler::handleSimulation(){
     for(uint jointIdx = 0; jointIdx < _handleOfJoints.size(); ++jointIdx){
         if (_jointCtrlMode[jointIdx] == CustomDataHeaders::TF_POSITION){
 
-
-        	std::cout << "Apply new position to  joint" << _jointNames[jointIdx] <<": " <<_lastReceivedCmd.position[jointIdx] << std::endl;
-        	//_tempjoint = _tempjoint+0.001;
+            ROS_INFO("Apply new position to joint %s: %f.", _jointNames[jointIdx].c_str(), _lastReceivedCmd.position[jointIdx]);
+            //_tempjoint = _tempjoint+0.001;
             if(simSetJointTargetPosition(_handleOfJoints[jointIdx], _lastReceivedCmd.position[jointIdx])==-1)
-           // if(simSetJointTargetPosition(_handleOfJoints[jointIdx], _tempjoint)==-1)
+                // if(simSetJointTargetPosition(_handleOfJoints[jointIdx], _tempjoint)==-1)
             {
                 std::stringstream ss;
                 ss << "- [" << _associatedObjectName << "] Error setting position for joint "<<
@@ -104,7 +103,7 @@ void ManipulatorHandler::handleSimulation(){
 
         } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::TF_VELOCITY ||_jointCtrlMode[jointIdx] == CustomDataHeaders::MOT_VELOCITY ){
 
-        	//std::cout << "Apply new velocity to  joint" << _jointNames[jointIdx] <<": " << _lastReceivedCmd.velocity[jointIdx] << std::endl;
+            ROS_DEBUG("Apply new velocity to  joint %s: %f.", _jointNames[jointIdx].c_str(), _lastReceivedCmd.velocity[jointIdx]);
             if(simSetJointTargetVelocity(_handleOfJoints[jointIdx], _lastReceivedCmd.velocity[jointIdx])==-1){
                 std::stringstream ss;
                 ss << "- [" << _associatedObjectName << "] Error setting velocity for joint "<<
@@ -114,7 +113,7 @@ void ManipulatorHandler::handleSimulation(){
 
         } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::TF_EFFORT ){
 
-        	std::cout << "Apply new torque/force to  joint" << _jointNames[jointIdx] <<": " << _lastReceivedCmd.effort[jointIdx] << std::endl;
+            ROS_DEBUG("Apply new torque/force to joint %s: %f.", _jointNames[jointIdx].c_str(), _lastReceivedCmd.effort[jointIdx]);
             if(simSetJointForce(_handleOfJoints[jointIdx], _lastReceivedCmd.effort[jointIdx])==-1){
                 std::stringstream ss;
                 ss << "- [" << _associatedObjectName << "] Error setting torque or force for joint "<<
@@ -124,12 +123,9 @@ void ManipulatorHandler::handleSimulation(){
 
         } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::PASSIVE_MODE){
 
-
-        	std::cout << "Apply new position to  joint" << _jointNames[jointIdx] <<": " <<_lastReceivedCmd.position[jointIdx] << std::endl;
-        	//_tempjoint = _tempjoint+0.001;
-            if(simSetJointPosition(_handleOfJoints[jointIdx], _lastReceivedCmd.position[jointIdx])==-1)
-
-            {
+            ROS_DEBUG("Apply new position to joint %s: %f.", _jointNames[jointIdx].c_str(), _lastReceivedCmd.position[jointIdx]);
+            //_tempjoint = _tempjoint+0.001;
+            if(simSetJointPosition(_handleOfJoints[jointIdx], _lastReceivedCmd.position[jointIdx])==-1){
                 std::stringstream ss;
                 ss << "- [" << _associatedObjectName << "] Error setting position for joint "<<
                         jointIdx <<" (" << _jointNames[jointIdx] <<")." <<std::endl;
@@ -138,7 +134,7 @@ void ManipulatorHandler::handleSimulation(){
 
         }
 
-        }
+    }
 
 }
 
@@ -175,44 +171,43 @@ void ManipulatorHandler::_initialize(){
         ss << "- [" << _associatedObjectName << "] A Default Control Mode is defined: ";
 
         if (ctrlMode == (int)(CustomDataHeaders::TF_POSITION)){
-				_defaultModeCtrl = CustomDataHeaders::TF_POSITION;
-				ss << "Torque/Force control in POSITION (PID controller)." << std::endl;
-				namectrlmode ="Torque/Force control in POSITION (PID controller)." ;
+            _defaultModeCtrl = CustomDataHeaders::TF_POSITION;
+            ss << "Torque/Force control in POSITION (PID controller)." << std::endl;
+            namectrlmode ="Torque/Force control in POSITION (PID controller)." ;
 
-			} else if (ctrlMode == (int)(CustomDataHeaders::TF_VELOCITY)){
-				_defaultModeCtrl = CustomDataHeaders::TF_VELOCITY;
-				ss << "Torque/Force control in VELOCITY." << std::endl;
-				namectrlmode ="Torque/Force control in VELOCITY." ;
+        } else if (ctrlMode == (int)(CustomDataHeaders::TF_VELOCITY)){
+            _defaultModeCtrl = CustomDataHeaders::TF_VELOCITY;
+            ss << "Torque/Force control in VELOCITY." << std::endl;
+            namectrlmode ="Torque/Force control in VELOCITY." ;
 
-			} else if (ctrlMode == (int)(CustomDataHeaders::TF_EFFORT)){
-				_defaultModeCtrl = CustomDataHeaders::TF_EFFORT;
-				ss << "Torque/Force control." << std::endl;
-				namectrlmode ="Torque/Force control." ;
+        } else if (ctrlMode == (int)(CustomDataHeaders::TF_EFFORT)){
+            _defaultModeCtrl = CustomDataHeaders::TF_EFFORT;
+            ss << "Torque/Force control." << std::endl;
+            namectrlmode ="Torque/Force control." ;
 
-			} else if (ctrlMode == (int)(CustomDataHeaders::MOT_VELOCITY)){
-				_defaultModeCtrl = CustomDataHeaders::MOT_VELOCITY;
-				ss << "Motion control in VELOCITY." << std::endl;
-				namectrlmode = "Motion control in VELOCITY." ;
+        } else if (ctrlMode == (int)(CustomDataHeaders::MOT_VELOCITY)){
+            _defaultModeCtrl = CustomDataHeaders::MOT_VELOCITY;
+            ss << "Motion control in VELOCITY." << std::endl;
+            namectrlmode = "Motion control in VELOCITY." ;
 
-			}else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
-				_defaultModeCtrl = CustomDataHeaders::PASSIVE_MODE;
-			     ss << " Using control in Passive Mode." << std::endl;
-			     namectrlmode = "Control in Passive Mode." ;
-			                    }
-
-			else {
-				_defaultModeCtrl = CustomDataHeaders::TF_POSITION;
-				ss << " Invalid control mode specified. Using POSITION as default." << std::endl;
-				namectrlmode = "Torque/Force control in POSITION (PID controller)." ;
-			}
-
-
+        } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
+            _defaultModeCtrl = CustomDataHeaders::PASSIVE_MODE;
+            ss << " Using control in Passive Mode." << std::endl;
+            namectrlmode = "Control in Passive Mode." ;
 
         } else {
-        	_defaultModeCtrl = CustomDataHeaders::TF_POSITION;
-        	ss << " Any control is mode specified. Using Torque/Force control in POSITION (PID controller) as default." << std::endl;
-        	namectrlmode = "Torque/Force control in POSITION (PID controller)."  ;
+            _defaultModeCtrl = CustomDataHeaders::TF_POSITION;
+            ss << " Invalid control mode specified. Using POSITION as default." << std::endl;
+            namectrlmode = "Torque/Force control in POSITION (PID controller)." ;
         }
+
+
+
+    } else {
+        _defaultModeCtrl = CustomDataHeaders::TF_POSITION;
+        ss << " Any control is mode specified. Using Torque/Force control in POSITION (PID controller) as default." << std::endl;
+        namectrlmode = "Torque/Force control in POSITION (PID controller)."  ;
+    }
 
 
 
@@ -228,13 +223,13 @@ void ManipulatorHandler::_initialize(){
         // 1. Add this object's children to the list to explore:
         int index=0;
         int childHandle=simGetObjectChild(objHandle,index++);
-        std::cout << "__START___" << std::endl;
+        ROS_DEBUG("__START___");
         while (childHandle!=-1) {
             toExplore.push_back(childHandle);
-            std::cout << "Adding " << simGetObjectName(childHandle) << " to exploration list." << std::endl;
+            ROS_DEBUG("Adding %s to exploration list.", simGetObjectName(childHandle));
             childHandle=simGetObjectChild(objHandle,index++);
         }
-        std::cout << "__END___" << std::endl;
+        ROS_DEBUG("__END___");
         // 2. Now check if this object has one of the tags we are looking for:
         // a. Get all the developer data attached to this scene object (this is custom data added by the developer):
         int buffSize=simGetObjectCustomDataLength(objHandle, CustomDataHeaders::DEVELOPER_DATA_HEADER);
@@ -250,15 +245,15 @@ void ManipulatorHandler::_initialize(){
             //if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::MANIPULATOR_DATA_JOINT,tempMainData))
             int ctrlMode = -1;
             if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::MANIPULATOR_DATA_CTRL_MODE,tempMainData))
-            	ctrlMode = CAccess::pop_int(tempMainData);
+                ctrlMode = CAccess::pop_int(tempMainData);
 
-            if (simGetJointType(objHandle) == sim_joint_revolute_subtype && ctrlMode != (int)(CustomDataHeaders::IGNORE_MODE))
-            {
-            	std::cout << "Found " << simGetObjectName(objHandle) << std::endl;
+            // TODO: add support for spherical joints (they are always passive)
+            if ((simGetJointType(objHandle) == sim_joint_revolute_subtype || simGetJointType(objHandle) == sim_joint_prismatic_subtype)
+                    && ctrlMode != (int)(CustomDataHeaders::IGNORE_MODE)){
 
-              	unsigned int  jointID = _numJoints;
-            	_numJoints++;
-                std::cout << "Id " << jointID << std::endl;
+                unsigned int  jointID = _numJoints;
+                _numJoints++;
+                ROS_DEBUG("Found %s. Id: %d", simGetObjectName(objHandle), jointID);
                 if (_handleOfJoints.size() < jointID+1){
                     _handleOfJoints.resize(jointID+1);
                     _jointNames.resize(jointID+1);
@@ -279,64 +274,62 @@ void ManipulatorHandler::_initialize(){
                         _jointCtrlMode[jointID] = CustomDataHeaders::TF_VELOCITY;
                         ss << " Using Torque/Force control in VELOCITY." << std::endl;
 
-        			} else if (ctrlMode == (int)(CustomDataHeaders::TF_EFFORT)){
-        				_jointCtrlMode[jointID] = CustomDataHeaders::TF_EFFORT;
-        				ss << "Torque/Force control." << std::endl;
+                    } else if (ctrlMode == (int)(CustomDataHeaders::TF_EFFORT)){
+                        _jointCtrlMode[jointID] = CustomDataHeaders::TF_EFFORT;
+                        ss << "Torque/Force control." << std::endl;
 
                     } else if (ctrlMode == (int)(CustomDataHeaders::MOT_VELOCITY)){
-                    	_jointCtrlMode[jointID] = CustomDataHeaders::MOT_VELOCITY;
-                    	ss << " Using Motion control in VELOCITY." << std::endl;
+                        _jointCtrlMode[jointID] = CustomDataHeaders::MOT_VELOCITY;
+                        ss << " Using Motion control in VELOCITY." << std::endl;
 
                     } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
-                    	_jointCtrlMode[jointID] = CustomDataHeaders::PASSIVE_MODE;
-                    	ss << " Using control in Passive Mode." << std::endl;
+                        _jointCtrlMode[jointID] = CustomDataHeaders::PASSIVE_MODE;
+                        ss << " Using control in Passive Mode." << std::endl;
 
-                    }
-
-                    else {
+                    } else {
                         _jointCtrlMode[jointID] = _defaultModeCtrl;
                         ss << "  Using default control mode: " << namectrlmode << std::endl;
                     }
+
                 } else {
                     _jointCtrlMode[jointID] = _defaultModeCtrl;
                     ss << " Using default control mode: "  << namectrlmode << std::endl;
 
-                  //  _jointCtrlMode[jointID] = CustomDataHeaders::VELOCITY;
-                  // ss << " Control mode not specified. Using VELOCITY as default."  << std::endl;
+                    //  _jointCtrlMode[jointID] = CustomDataHeaders::VELOCITY;
+                    // ss << " Control mode not specified. Using VELOCITY as default."  << std::endl;
 
                 }
 
                 if (_jointCtrlMode[jointID] == CustomDataHeaders::TF_POSITION){
-                	simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
-                	simSetObjectIntParameter(_handleOfJoints[jointID],2001,1);
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
+                    simSetObjectIntParameter(_handleOfJoints[jointID],2001,1);
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::TF_VELOCITY){
-                	simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
-                   	simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
+                    simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::TF_EFFORT){
-                	simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
-                	simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_force, 0);
+                    simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::MOT_VELOCITY){
-                	simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion, 0);
-                	simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled,1);
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion, 0);
+                    simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled,1);
 
-                	int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
-                	simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
-                	simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+                    int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
+                    simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
+                    simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::PASSIVE_MODE){
-                	simSetJointMode(_handleOfJoints[jointID], sim_jointmode_passive, 0);
-                	int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
-                	simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
-                	simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_passive, 0);
+                    int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
+                    simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
+                    simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
                 }
 
-                } else
-					{
-                	std::cout << "Object " << simGetObjectName(objHandle) << "will be ignored as requested;" << std::endl;
-					}
+            } else 	{
+                ROS_DEBUG("Object %s will be ignored as requested.", simGetObjectName(objHandle));
+            }
 
         }
     }
@@ -365,13 +358,12 @@ void ManipulatorHandler::jointCommandCallback(const sensor_msgs::JointStateConst
     const unsigned int nDofs = _handleOfJoints.size();
     if (msg->position.size()!=nDofs || msg->velocity.size()!=nDofs || msg->effort.size()!=nDofs){
         simSetLastError( _associatedObjectName.c_str(), "Received wrong command size.");
-        std::cout <<msg->position.size() << msg->velocity.size() << msg->effort.size() << " nDofs " << nDofs << std::endl;
+        ROS_ERROR("Received wrong command size (%ld, %ld, %ld) for manipulator which has %d dofs.",
+                msg->position.size(), msg->velocity.size(), msg->effort.size(), nDofs);
 
     } else {
         _lastReceivedCmd = *msg;
         _lastReceivedCmdTime = ros::Time::now();
-        //std::cout << "Command received!!!! "<< std::endl;
-
     }
 }
 
@@ -379,14 +371,11 @@ void ManipulatorHandler::jointCommandCallback(const sensor_msgs::JointStateConst
 /// Callback for joint commands.
 void ManipulatorHandler::VelMobCommandCallback(const geometry_msgs::TwistConstPtr& msg){
 
+    geometry_msgs::Twist temp = *msg;
 
-	geometry_msgs::Twist temp = *msg;
-	std::cout << "Command received: Vx: "<< temp.linear.x << " wx = "<< temp.angular.z << std::endl;
-
-	_lastReceivedCmd.velocity.resize(2);
+    _lastReceivedCmd.velocity.resize(2);
     _lastReceivedCmd.velocity[0]= (1/_mb_radius)*(temp.linear.x - _axle_lenght/2*temp.angular.z); // left
     _lastReceivedCmd.velocity[1]= (1/_mb_radius)*(temp.linear.x + _axle_lenght/2*temp.angular.z);  // rigth
-    std::cout << "New vel cmd: VR: "<<     _lastReceivedCmd.velocity[0] << " VL = "<< _lastReceivedCmd.velocity[1] << std::endl;
 
     _lastReceivedCmdTime = ros::Time::now();
 
