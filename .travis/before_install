@@ -37,6 +37,7 @@ rosinstall `pwd` `pwd` /opt/ros/$ROS_VERSION/
 . setup.sh
 sudo rosdep init
 rosdep update
+
 #rosdep install vrep_ros_bridge 
 
 rosdep install --from-paths `pwd` --ignore-src --rosdistro hydro -y
