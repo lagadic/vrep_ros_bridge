@@ -23,12 +23,12 @@ export VREP_ROOT_DIR=/opt/vrep
 
 #export ROS_PACKAGE_PATH="$root_dir:$ROS_PACKAGE_PATH"
 
-ls ${VREP_ROOT_DIR}
+ls ${VREP_ROOT_DIR}/programming/include
 
 cd "$root_dir"
 catkin_init_workspace
 cd "$build_dir"
-cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir"
+cmake "$root_dir" -DCMAKE_INSTALL_PREFIX="$install_dir" -DCMAKE_VERBOSE_MAKEFILE=ON
 make
 make install
 make test
