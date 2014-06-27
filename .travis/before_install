@@ -3,6 +3,8 @@ set -ev
 
 export UBUNTU_CODENAME=`lsb_release -s -c`
 export ROS_VERSION=hydro
+export VREP_VERSION=3_0_4
+export VREP_ROOT_DIR=/opt/vrep
 
 echo "Ubuntu codename: $UBUNTU_CODENAME"
 echo "ROS version: $ROS_VERSION"
@@ -41,3 +43,8 @@ rosdep update
 #rosdep install vrep_ros_bridge 
 
 rosdep install --from-paths `pwd` --ignore-src --rosdistro hydro -y
+
+wget http://coppeliarobotics.com/V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
+tar -xzf V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
+sudo mv ./V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux $VREP_ROOT_DIR
+
