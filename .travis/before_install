@@ -3,7 +3,7 @@ set -ev
 
 export UBUNTU_CODENAME=`lsb_release -s -c`
 export ROS_VERSION=hydro
-export VREP_VERSION=3_0_4
+export VREP_VERSION=3_1_2
 export VREP_ROOT_DIR=/opt/vrep
 
 echo "Ubuntu codename: $UBUNTU_CODENAME"
