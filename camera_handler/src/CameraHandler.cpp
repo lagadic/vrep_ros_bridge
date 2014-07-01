@@ -188,7 +188,19 @@ bool CameraHandler::setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sens
 
     const int width = req.camera_info.width;
     const int height = req.camera_info.height;
-    const simFloat view_angle = 2.0*atan(req.camera_info.K[2]/_camera_info.K[0]);
+
+    // check input compatibility
+    // TODO: do it better
+    if (fabs(req.camera_info.K[0] - req.camera_info.K[4]) > 1e-5 ||
+            fabs(req.camera_info.K[2] - width/2.0) > 1e-5 ||
+            fabs(req.camera_info.K[5] - height/2.0) > 1e-5) {
+        res.success = false;
+        res.status_message = std::string("Specified input parameters are not compatible with v-rep.");
+        return res.success;
+    }
+
+
+    const simFloat view_angle = 2.0*atan(width/(2.*req.camera_info.K[0]));
 
     const unsigned int resolution_x_id = 1002;
     const unsigned int resolution_y_id = 1003;
