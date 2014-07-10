@@ -75,7 +75,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 	` gedit ~/.bashrc`
 and in the end of the file add:
 
-`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/V-REP `
+`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
 
 `export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${VREP_ROOT_DIR}/programming/ros_stacks`
  
