@@ -108,6 +108,7 @@ catkin_package(
 if(NOT VREP_ROOT_DIR)
 	set(VREP_ROOT_DIR $ENV{VREP_ROOT_DIR} CACHE PATH "Installation prefix for V-Rep." FORCE)
 endif()
+message(STATUS "including ${VREP_ROOT_DIR}/programming/include/")
 
 #set(CMAKE_INSTALL_PREFIX ${VREP_ROOT_DIR} CACHE PATH "Installation prefix for the plugin." FORCE)
 

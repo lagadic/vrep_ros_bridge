@@ -33,7 +33,7 @@ void CameraHandler::synchronize(){
     std::string objectName(_associatedObjectName);
     std::replace( objectName.begin(), objectName.end(), '#', '_');
     _pubIT = _it.advertiseCamera(objectName, 1);
-
+    _service = _nh.advertiseService(objectName + "/set_camera_info", &CameraHandler::setCameraInfo, this);
 }
 
 void CameraHandler::handleSimulation(){
@@ -167,8 +167,8 @@ void CameraHandler::computeCameraInfo(){
         _camera_info.D[3] = 0;
         _camera_info.D[4] = 0;
 
-        _camera_info.K[0] = f_x; _camera_info.K[1] =   0; _camera_info.K[2] = _camera_info.width/2;
-        _camera_info.K[3] =   0; _camera_info.K[4] = f_y; _camera_info.K[5] = _camera_info.height/2;
+        _camera_info.K[0] = f_x; _camera_info.K[1] =   0; _camera_info.K[2] = _camera_info.width/2.0;
+        _camera_info.K[3] =   0; _camera_info.K[4] = f_y; _camera_info.K[5] = _camera_info.height/2.0;
         _camera_info.K[6] =   0; _camera_info.K[7] =   0; _camera_info.K[8] = 1;
 
         _camera_info.R[0] = 1; _camera_info.R[1] = 0; _camera_info.R[2] = 0;
@@ -180,6 +180,45 @@ void CameraHandler::computeCameraInfo(){
         _camera_info.P[8] = 0;         _camera_info.P[9] = 0;         _camera_info.P[10] = 1;        _camera_info.P[11] = 0;
 
     }
+}
+
+
+bool CameraHandler::setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res) {
+//    ROS_INFO("Setting camera parameters for %s.", _associatedObjectName.c_str());
+
+    const int width = req.camera_info.width;
+    const int height = req.camera_info.height;
+
+    // check input compatibility
+    // TODO: do it better
+    if (fabs(req.camera_info.K[0] - req.camera_info.K[4]) > 1e-5 ||
+            fabs(req.camera_info.K[2] - width/2.0) > 1e-5 ||
+            fabs(req.camera_info.K[5] - height/2.0) > 1e-5) {
+        res.success = false;
+        res.status_message = std::string("Specified input parameters are not compatible with v-rep.");
+        return res.success;
+    }
+
+
+    const simFloat view_angle = 2.0*atan(width/(2.*req.camera_info.K[0]));
+
+    const unsigned int resolution_x_id = 1002;
+    const unsigned int resolution_y_id = 1003;
+    const unsigned int viewing_angle_id = 1004;
+
+    if (simSetObjectIntParameter(_associatedObjectID, resolution_x_id, width) == 1 &&
+            simSetObjectIntParameter(_associatedObjectID, resolution_y_id, height) == 1 &&
+            simSetObjectFloatParameter(_associatedObjectID, viewing_angle_id, view_angle) == 1){
+
+        res.success = true;
+        res.status_message = std::string("Correctly set camera parameters.");
+    } else {
+        res.success = false;
+        res.status_message = std::string("Error setting camera parameters.");
+    }
+    computeCameraInfo();
+    return res.success;
+
 }
 
 
