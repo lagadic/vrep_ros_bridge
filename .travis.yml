@@ -1,8 +1,6 @@
 branches:
   only:
   - hydro-devel
-  - indigo-devel
-  - master
 matrix:
   allow_failures:
   - compiler: clang
