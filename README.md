@@ -13,7 +13,7 @@ You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?dis
 ##Installation 
 
 
-Note: The Ubuntu version used is 13.04.
+Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
 * <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
 * <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
 * <a href="#instplug" target="_parent"> Install Plugin</a>
@@ -35,6 +35,11 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 
 Now we have installed ROS and we have created our workspace.
 
+###Installation ROS Indigo
+
+
+As for Hydro, follow the instruction this <a href="http://wiki.ros.org/indigo/Installation/Ubuntu" target="_parent">page</a>. 
+
 
 ###Installation V-Rep
 
@@ -54,6 +59,14 @@ Now we have installed ROS and we have created our workspace.
 
 	`git clone https://github.com/lagadic/vrep_ros_bridge.git`
 
+* Checkout the right branch depening on your ROS version (Hydro or Indigo)
+
+        `git checkout origin/hydro-devel`
+ or
+
+        `git checkout origin/indigo-devel` 
+
+
 * Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_tk_handler)
 
 	`touch CATKIN_IGNORE`
@@ -61,7 +74,9 @@ Now we have installed ROS and we have created our workspace.
 * Open the file bashrc:
 	` gedit ~/.bashrc`
 and in the end of the file add:
+
 `export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/V-REP `
+
 `export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${VREP_ROOT_DIR}/programming/ros_stacks`
  
 
@@ -69,7 +84,7 @@ and in the end of the file add:
 
 	`catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
 
-* In the folder vrep_ros_bridge/devel/lib/ you will find the main library (libv_repExtRosBridge.so) and the others libraries (libcamera_handler.so, libmanipulator_handler.so, libquadrotor_handler.so, librigid_body_handler.so ). 
+* In the folder catkin_ws/devel/lib/ you will find the main library (libv_repExtRosBridge.so) and the others libraries (libcamera_handler.so, libmanipulator_handler.so, libquadrotor_handler.so, librigid_body_handler.so ). 
 * The file libv_repExtRosBridge.so has to be in the V-Rep installation folder in order to be loaded. What we will do is to create a symbolic link to it. Go via terminal to the installation folder of V-Rep and type:
 
 	`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
