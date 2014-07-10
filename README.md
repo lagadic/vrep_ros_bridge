@@ -61,7 +61,10 @@ Now we have installed ROS and we have created our workspace.
 * Open the file bashrc:
 	` gedit ~/.bashrc`
 and in the end of the file add:
-`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/V-REP `
+
+`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
+
+
 `export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${VREP_ROOT_DIR}/programming/ros_stacks`
  
 
