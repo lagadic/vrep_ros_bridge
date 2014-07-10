@@ -14,13 +14,13 @@ You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?dis
 
 
 Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
-* <a href="#instROS_sec" target="_parent"> Install ROS </a> 
-* <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
-* <a href="#instplug" target="_parent"> Install Plugin</a>
+* <a href="#ros" target="_parent"> Install ROS </a> 
+* <a href="#installation-v-rep" target="_parent"> Install V-Rep</a>
+* <a href="#Installation-plugin" target="_parent"> Install Plugin</a>
 
+###ROS 
 
-
-###Installation ROS Hydro 
+####Installation ROS Hydro 
 
 
 Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
@@ -35,7 +35,7 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 
 Now we have installed ROS and we have created our workspace.
 
-###Installation ROS Indigo
+####Installation ROS Indigo
 
 
 As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indigo/Installation/Ubuntu" target="_parent">page</a>. 
@@ -67,7 +67,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
     `git checkout indigo-devel` 
 
 
-* Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_tk_handler)
+* Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (as it is done in quadrotor_tk_handler). To do it go via terminal in the sub-plugin folder and execute: 
 
 	`touch CATKIN_IGNORE`
 
