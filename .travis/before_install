@@ -1,0 +1,50 @@
+#!/bin/bash
+set -ev
+
+export UBUNTU_CODENAME=`lsb_release -s -c`
+export ROS_VERSION=indigo
+export VREP_VERSION=3_1_2
+export VREP_ROOT_DIR=/opt/vrep
+
+echo "Ubuntu codename: $UBUNTU_CODENAME"
+echo "ROS version: $ROS_VERSION"
+
+if `test x$UBUNTU_CODENAME = x`; then
+    echo "failed to determine Ubuntu codename"
+    return 1
+fi
+if `test x$UBUNTU_CODENAME = x`; then
+    echo "failed to determine ROS version"
+    return 1
+fi
+
+
+
+git submodule update --init --recursive
+
+sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu $UBUNTU_CODENAME main\" > /etc/apt/sources.list.d/ros-latest.list"
+wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+
+sudo apt-get update -qq
+#sudo apt-get install -qq doxygen doxygen-latex libboost-all-dev libeigen3-dev liblapack-dev libblas-dev gfortran python-dev python-sphinx python-numpy libbullet-dev libdmtx-dev libzbar-dev
+
+#sudo apt-get install -qq libeigen3-dev
+
+sudo apt-get install ros-$ROS_VERSION-ros-base python-rosinstall python-rosdep
+
+#ros-$ROS_VERSION-opencv2 ros-$ROS_VERSION-image-common ros-$ROS_VERSION-image-pipeline ros-$ROS_VERSION-dynamic-reconfigure ros-$ROS_VERSION-nodelet ros-$ROS_VERSION-tf ros-$ROS_VERSION-resource-retriever ros-$ROS_VERSION-angles ros-$ROS_VERSION-rosbag ros-$ROS_VERSION-message-filters ros-$ROS_VERSION-common-msgs ros-$ROS_VERSION-rosdoc-lite ros-$ROS_VERSION-visp \
+#    
+
+rosinstall `pwd` `pwd` /opt/ros/$ROS_VERSION/
+. setup.sh
+sudo rosdep init
+rosdep update
+
+#rosdep install vrep_ros_bridge 
+
+rosdep install --from-paths `pwd` --ignore-src --rosdistro hydro -y
+
+wget http://coppeliarobotics.com/V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
+tar -xzf V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
+sudo mv ./V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux $VREP_ROOT_DIR
+

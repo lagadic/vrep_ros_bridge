@@ -5,7 +5,7 @@
 
 #include "vrep_ros_plugin/GenericObjectHandler.h"
 #include <image_transport/image_transport.h>
-
+#include <sensor_msgs/SetCameraInfo.h>
 
 
 class CameraHandler : public GenericObjectHandler
@@ -28,6 +28,7 @@ public:
      * @copydoc GenericObjectHandler::getObjectType()
      */
 	unsigned int getObjectType() const;
+
 
 protected:
 
@@ -70,6 +71,18 @@ protected:
 	 */
 	bool _cameraIsRGB;
 
+	/**
+	 * Ros service server for setting camera parameters from ros.
+	 */
+	ros::ServiceServer _service;
+
+    /**
+     * Service handler for setting camera parameters from ros.
+     * @param req The desired camera parameters.
+     * @param res res.success is true if the parameters have been set properly, false otherwise. Some more information may be contained in res.status_message.
+     * @return Same as res.success
+     */
+    bool setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res);
 };
 
 
