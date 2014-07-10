@@ -25,7 +25,7 @@ Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
 
 Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
 
-* Point 1.2 : choose instruction for Ubuntu 13.04 (Raring).
+* Point 1.2 : choose instructions for Ubuntu 13.04 (Raring).
 
 * Point 1.4 : Desktop-Full Install: (Recommended).
 
@@ -38,7 +38,7 @@ Now we have installed ROS and we have created our workspace.
 ###Installation ROS Indigo
 
 
-As for Hydro, follow the instruction this <a href="http://wiki.ros.org/indigo/Installation/Ubuntu" target="_parent">page</a>. 
+As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indigo/Installation/Ubuntu" target="_parent">page</a>. 
 
 
 ###Installation V-Rep
