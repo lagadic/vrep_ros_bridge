@@ -14,7 +14,7 @@ You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?dis
 
 
 Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
-* <a href="#instROS_sec" target="_parent"> Install ROS Hydro</a> 
+* <a href="#instROS_sec" target="_parent"> Install ROS </a> 
 * <a href="#instvrep_sec" target="_parent"> Install V-Rep</a>
 * <a href="#instplug" target="_parent"> Install Plugin</a>
 
@@ -61,10 +61,10 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 
 * Checkout the right branch depening on your ROS version (Hydro or Indigo)
 
-        `git checkout origin/hydro-devel`
+    `git checkout hydro-devel`
  or
 
-        `git checkout origin/indigo-devel` 
+    `git checkout indigo-devel` 
 
 
 * Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (if you don't have Telekyb installed add it in the folder imu_handler and quadrotor_tk_handler)
@@ -77,8 +77,6 @@ and in the end of the file add:
 
 `export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
 
-`export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${VREP_ROOT_DIR}/programming/ros_stacks`
- 
 
 * Go in your catkin_workspace and build it with 
 
@@ -96,11 +94,4 @@ where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 
 # How to use the plugin
 
-You will find a guide to use the plugin in the relative documentation. To create the documentation go via terminal in the source code of the package:
-`cd src/vrep_ros_bridge/`
-and use rosdoc_lite to create the documentation:
-
-`rosdoc_lite vrep_ros_plugin`
-
-This will create a the documentation in the folder `src/vrep_ros_bridge/doc`. Open the file `/doc/html/index.html` in your browser to see it. The documentation is under construction.
- 
+You will find a guide to use the plugin <a href="http://wiki.ros.org/vrep_ros_bridge" target="_parent"> here </a> .
