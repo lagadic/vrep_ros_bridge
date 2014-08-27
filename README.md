@@ -13,7 +13,7 @@ You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?dis
 ##Installation 
 
 
-Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
+Note: The Ubuntu version used is 13.04. It is tested also with 12.04 and 14.04 (with ROS Indigo).
 * <a href="#ros" target="_parent"> Install ROS </a> 
 * <a href="#installation-v-rep" target="_parent"> Install V-Rep</a>
 * <a href="#Installation-plugin" target="_parent"> Install Plugin</a>
@@ -25,7 +25,7 @@ Note: The Ubuntu version used is 13.04. It works also with 12.04 and 14.04.
 
 Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
 
-* Point 1.2 : choose instructions for Ubuntu 13.04 (Raring).
+* Point 1.2 : choose instructions for your version of Ubuntu.
 
 * Point 1.4 : Desktop-Full Install: (Recommended).
 
@@ -47,7 +47,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 * Check the <a href="http://www.coppeliarobotics.com/helpFiles/en/licensing.htm" target="_parent">licensing</a> page and download the suitable V-REP version for you.
 * To run it go to the folder of V-rep via terminal and type
 `./vrep.sh`
-* Follow <a href="http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm" target="_parent"> this </a> tutorial.
+* Follow <a href="http://www.coppeliarobotics.com/helpFiles/en/rosTutorial.htm" target="_parent"> this </a> tutorial (Optional).
 </p>
 
 
@@ -75,10 +75,14 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 	` gedit ~/.bashrc`
 and in the end of the file add:
 
-`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
+	`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
 
 
-* Go in your catkin_workspace and build it with 
+* Go in your catkin_workspace and run:
+
+	`catkin_make `
+
+* Now build again the pkg using the next instruction:
 
 	`catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo `
 
