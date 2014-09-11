@@ -111,7 +111,7 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/QuadrotorHandler.cpp
+   src/Quadrotor_tk_Handler.cpp
 )
 
 
