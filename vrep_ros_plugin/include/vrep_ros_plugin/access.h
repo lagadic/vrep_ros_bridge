@@ -118,7 +118,11 @@ public:
     const static unsigned int MANIPULATOR_DATA_CTRL_MODE = 603;
     ///@}
 
-
+    ///@name Proximity sensor defines
+    ///@{
+	/// The main identifier of a FORCE_SENSOR object.
+    const static unsigned int PROXIMITY_SENSOR_DATA_MAIN= 700;
+    ///@}
 
 	/**
 	 * Make all defined headers available in Lua.
