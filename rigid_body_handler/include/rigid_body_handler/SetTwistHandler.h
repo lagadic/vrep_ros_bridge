@@ -49,13 +49,16 @@ protected:
      * Last received TwistCommand message.
      */
 	geometry_msgs::TwistStamped _twistCommands;
+
 	/**
      * Callback for velocity commands.
      */
 	void TwistCommandCallback(const geometry_msgs::TwistStamped& msg);
 
-
-
+	/**
+	 * Specifies if the object is static or dynamically enabled
+	 */
+	simInt _isStatic;
 };
 
 

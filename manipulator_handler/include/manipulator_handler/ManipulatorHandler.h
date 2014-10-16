@@ -58,7 +58,7 @@ protected:
 	simFloat _lastPublishedStatus;
 
     /// Time of the last received joint command.
-	ros::Time _lastReceivedCmdTime;
+	simFloat _lastReceivedCmdTime;
 
     /// Time of the last message printed on the console.
     ros::Time _lastPrintedMsg;

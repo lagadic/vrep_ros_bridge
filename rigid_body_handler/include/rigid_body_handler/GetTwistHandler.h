@@ -49,7 +49,10 @@ protected:
 	 */
 	double _ObjTwistFrequency;
 
-
+	/**
+	 * Specifies if the object is static or dynamically enabled
+	 */
+	simInt _isStatic;
 
 };
 

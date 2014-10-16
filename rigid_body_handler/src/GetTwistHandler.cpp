@@ -14,7 +14,8 @@
 
 GetTwistHandler::GetTwistHandler() : GenericObjectHandler(),
     _ObjTwistFrequency(-1),
-    _lastPublishedObjTwistTime(0.0){
+    _lastPublishedObjTwistTime(0.0),
+    _isStatic(true){
 }
 
 GetTwistHandler::~GetTwistHandler(){
@@ -75,19 +76,25 @@ void GetTwistHandler::handleSimulation(){
 
     if ((currentSimulationTime-_lastPublishedObjTwistTime) >= 1.0/_ObjTwistFrequency){
 
-    	    Eigen::Quaternion< simFloat > orientation; //(x,y,z,w)
-    	    Eigen::Matrix<simFloat, 3, 1> linVelocity;
-    	    Eigen::Matrix<simFloat, 3, 1> angVelocity;
-    	// Get Position and Orientation of the object
+    	Eigen::Quaternion< simFloat > orientation; //(x,y,z,w)
+    	Eigen::Matrix<simFloat, 3, 1> linVelocity;
+    	Eigen::Matrix<simFloat, 3, 1> angVelocity;
+    	bool error = false;
 
-    	if(simGetObjectVelocity(_associatedObjectID, linVelocity.data(), angVelocity.data())!=-1 &&
-    			simGetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data())!=-1 ){
+    	// Get object velocity. If the object is not static simGetVelocity is more accurate.
+    	if (_isStatic){
+    		error = error || simGetObjectVelocity(_associatedObjectID, linVelocity.data(), angVelocity.data()) == -1;
+    	} else {
+    		error = error || simGetVelocity(_associatedObjectID, linVelocity.data(), angVelocity.data()) == -1;
+    	}
 
-    		        angVelocity = orientation.conjugate()*angVelocity; // Express angular velocity in body frame
-    		         // use only positive w (not necessary)
-    		        if (orientation.w()<0){
-    		            orientation.coeffs() *=-1;
-    		        }
+    	// Get object orientation
+    	error = error || simGetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data()) == -1;
+
+    	if(!error){
+
+    		linVelocity = orientation.conjugate()*linVelocity; // Express linear velocity in body frame
+			angVelocity = orientation.conjugate()*angVelocity; // Express angular velocity in body frame
 
     		// Fill the status msg
 			geometry_msgs::TwistStamped msg;
@@ -103,6 +110,10 @@ void GetTwistHandler::handleSimulation(){
 			_pub.publish(msg);
 			_lastPublishedObjTwistTime = currentSimulationTime;
 
+    	} else {
+    	    std::stringstream ss;
+    	    ss << "- [" << _associatedObjectName << "] Error getting object velocity and/or orientation." << std::endl;;
+    	    ConsoleHandler::printInConsole(ss);
     	}
 
     }
@@ -143,8 +154,18 @@ void GetTwistHandler::_initialize(){
 
         }
     }
-   _lastPublishedObjTwistTime = -1e5;
+    _lastPublishedObjTwistTime = -1e5;
+
+    //Check if the object is static
+    simGetObjectIntParameter(_associatedObjectID, 3003, &_isStatic);
+    if(_isStatic){
+		std::stringstream ss;
+		ss << "- [" << _associatedObjectName << "] WARNING: getting velocity of a static object might give inaccurate results." << std::endl;;
+		ConsoleHandler::printInConsole(ss);
+    }
+
     _initialized=true;
+
 }
 
 
