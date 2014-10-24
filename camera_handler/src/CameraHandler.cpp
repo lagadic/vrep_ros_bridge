@@ -66,9 +66,9 @@ void CameraHandler::handleSimulation(){
             image_msg.header.frame_id = frame_id;
 
 
-            char* cameraName = new(char[_associatedObjectName.size()]);
-            memcpy(cameraName,_associatedObjectName.c_str(),_associatedObjectName.size()*sizeof(char));
-            simReleaseBuffer(cameraName);
+//            char* cameraName = new(char[_associatedObjectName.size()]);
+//            memcpy(cameraName,_associatedObjectName.c_str(),_associatedObjectName.size()*sizeof(char));
+//            simReleaseBuffer(cameraName);
 
             image_msg.height=resol[1]; //Set the height of the image
             image_msg.width=resol[0]; //Set the width of the image
@@ -83,10 +83,11 @@ void CameraHandler::handleSimulation(){
                 const int data_len=image_msg.step*image_msg.height;
                 image_msg.data.resize(data_len);
 
-                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
-                    image(image_buf,image_msg.height,image_msg.step);
-                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
-                   imageMsg(image_msg.data.data(),image_msg.height,image_msg.step);
+//                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
+//                    image(image_buf,image_msg.height,image_msg.step);
+
+//                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
+//                   imageMsg(image_msg.data.data(),image_msg.height,image_msg.step);
 //                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::OuterStride<> >
 //                    imageMsg(image_buf+(resol[1]-1)*3*resol[0],image_msg.height,image_msg.step, Eigen::OuterStride<>(-3*(int)(resol[0])) );
 
@@ -94,7 +95,26 @@ void CameraHandler::handleSimulation(){
 //                for (uint i = 0; i<image_msg.height; ++i){
 //                    imageMsg.row(image_msg.height-i-1) = (255.1f*image.row(i)).cast<unsigned char>();
 //                }
-                imageMsg = (255.1f*image.colwise().reverse()).cast<unsigned char>();
+//                imageMsg = (255.1f*image.colwise().reverse()).cast<unsigned char>();
+//                imageMsg = (255.1f*image).cast<unsigned char>();
+
+
+//                for (uint j = 0; j<resol[0]; ++j){
+//                	for (uint i = 0; i<resol[1]*3; ++i){
+//                		image_msg.data[(resol[0]-j-1)*resol[1]*3 + i] = static_cast<unsigned char>(255.1f*image_buf[j*resol[1]*3 + i]);
+//                	}
+//                }
+
+                for (uint i = 0; i<image_msg.height; ++i){
+                	for (uint j = 0; j<image_msg.width; ++j){
+                		image_msg.data[(i*image_msg.width+(image_msg.width-j-1))*3+0] =
+                				static_cast<unsigned char>(255.1f*image_buf[(i*image_msg.width+j)*3+0]);
+                		image_msg.data[(i*image_msg.width+(image_msg.width-j-1))*3+1] =
+                				static_cast<unsigned char>(255.1f*image_buf[(i*image_msg.width+j)*3+1]);
+                		image_msg.data[(i*image_msg.width+(image_msg.width-j-1))*3+2] =
+                				static_cast<unsigned char>(255.1f*image_buf[(i*image_msg.width+j)*3+2]);
+                	}
+                }
 
 
             } else {
@@ -132,7 +152,8 @@ void CameraHandler::handleSimulation(){
 //                            +coeffs[2]*imageB.row(i)).cast<unsigned char>();
 //                }
 
-                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).colwise().reverse()).cast<unsigned char>();
+                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).rowwise().reverse()).cast<unsigned char>();
+//                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB)).cast<unsigned char>();
 
             }
 
