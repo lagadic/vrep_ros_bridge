@@ -1,7 +1,0 @@
-<library path="lib/libproximity_sensor_handler">
-  <class type="Proximity_sensorHandler" base_class_type="GenericObjectHandler">
-  <description>
-  This is a plugin for handling an proximity sensor.
-  </description>
-  </class>
-</library>
