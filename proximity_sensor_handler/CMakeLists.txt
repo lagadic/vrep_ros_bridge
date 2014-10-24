@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(quadrotor_tk_handler)
+project(proximity_sensor_handler)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  sensor_msgs
-  telekyb_msgs
-  cmake_modules
+  geometry_msgs
   vrep_ros_plugin
+  
 )
 
-find_package(cmake_modules REQUIRED)
 find_package(Eigen REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -87,7 +85,7 @@ find_package(Eigen REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp sensor_msgs telekyb_msgs vrep_ros_plugin
+  CATKIN_DEPENDS roscpp geometry_msgs vrep_ros_plugin 
   DEPENDS eigen
 )
 
@@ -113,16 +111,16 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/Quadrotor_tk_Handler.cpp
+   src/Proximity_sensorHandler.cpp
 )
 
 
 ## Declare a cpp executable
-# add_executable(quadrotor_tk_handler_node src/quadrotor_tk_handler_node.cpp)
+# add_executable(get_twist_handler_node src/get_twist_handler_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(quadrotor_tk_handler_node quadrotor_tk_handler_generate_messages_cpp)
+# add_dependencies(get_twist_handler_node get_twist_handler_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
@@ -144,7 +142,7 @@ target_link_libraries(${PROJECT_NAME}
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS quadrotor_tk_handler
+install(TARGETS ${PROJECT_NAME}
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -169,7 +167,7 @@ install(TARGETS quadrotor_tk_handler
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_quadrotor_tk_handler.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_get_twist_handler.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

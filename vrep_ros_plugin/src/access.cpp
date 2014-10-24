@@ -200,6 +200,9 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_Passive_mode", (boost::lexical_cast<std::string>(int(PASSIVE_MODE))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_Ignore_mode", (boost::lexical_cast<std::string>(int(IGNORE_MODE))).c_str());
 
+    // Force sensor defines
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_proximity_sensor_data_main", (boost::lexical_cast<std::string>(int(FORCE_SENSOR_DATA_MAIN))).c_str());
+
 }
 
 
