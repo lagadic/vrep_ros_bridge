@@ -7,12 +7,10 @@ project(force_sensor_handler)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   geometry_msgs
-  cmake_modules
   vrep_ros_plugin
   
 )
 
-find_package(cmake_modules REQUIRED)
 find_package(Eigen REQUIRED)
 
 ## System dependencies are found with CMake's conventions
