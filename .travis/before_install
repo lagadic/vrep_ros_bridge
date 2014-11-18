@@ -2,7 +2,7 @@
 set -ev
 
 export UBUNTU_CODENAME=`lsb_release -s -c`
-export ROS_VERSION=hydro
+export ROS_VERSION=indigo
 export VREP_VERSION=3_1_2
 export VREP_ROOT_DIR=/opt/vrep
 

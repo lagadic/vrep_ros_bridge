@@ -11,6 +11,8 @@
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
 
+
+
 CameraHandler::CameraHandler() : GenericObjectHandler(),
     _acquisitionFrequency(30.0),
     _lastPublishedImageTime(0.0),
@@ -66,15 +68,21 @@ void CameraHandler::handleSimulation(){
             image_msg.header.frame_id = frame_id;
 
 
-            char* cameraName = new(char[_associatedObjectName.size()]);
-            memcpy(cameraName,_associatedObjectName.c_str(),_associatedObjectName.size()*sizeof(char));
-            simReleaseBuffer(cameraName);
+//            char* cameraName = new(char[_associatedObjectName.size()]);
+//            memcpy(cameraName,_associatedObjectName.c_str(),_associatedObjectName.size()*sizeof(char));
+//            simReleaseBuffer(cameraName);
 
-            image_msg.height=resol[1]; //Set the height of the image
             image_msg.width=resol[0]; //Set the width of the image
+            image_msg.height=resol[1]; //Set the height of the image
             image_msg.is_bigendian=0;
 
-            float* image_buf = simGetVisionSensorImage(_associatedObjectID);
+            const float* image_buf = simGetVisionSensorImage(_associatedObjectID);
+            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+                imageR(image_buf,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
+            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+                imageG(image_buf+1,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
+            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+                imageB(image_buf+2,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
 
             if (_cameraIsRGB){
                 image_msg.encoding=sensor_msgs::image_encodings::RGB8; //Set the format to be RGB with 8bits per channel
@@ -83,19 +91,16 @@ void CameraHandler::handleSimulation(){
                 const int data_len=image_msg.step*image_msg.height;
                 image_msg.data.resize(data_len);
 
-                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
-                    image(image_buf,image_msg.height,image_msg.step);
-                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
-                   imageMsg(image_msg.data.data(),image_msg.height,image_msg.step);
-//                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::OuterStride<> >
-//                    imageMsg(image_buf+(resol[1]-1)*3*resol[0],image_msg.height,image_msg.step, Eigen::OuterStride<>(-3*(int)(resol[0])) );
+                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+                    imageMsgR(image_msg.data.data(),image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
+                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+					imageMsgG(image_msg.data.data()+1,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
+                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
+					imageMsgB(image_msg.data.data()+2,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
 
-//                imageMsg = (255.1f*image).cast<unsigned char>();
-//                for (uint i = 0; i<image_msg.height; ++i){
-//                    imageMsg.row(image_msg.height-i-1) = (255.1f*image.row(i)).cast<unsigned char>();
-//                }
-                imageMsg = (255.1f*image.colwise().reverse()).cast<unsigned char>();
-
+                imageMsgR = (255.1f*imageR).rowwise().reverse().cast<unsigned char>();
+                imageMsgG = (255.1f*imageG).rowwise().reverse().cast<unsigned char>();
+                imageMsgB = (255.1f*imageB).rowwise().reverse().cast<unsigned char>();
 
             } else {
                 image_msg.encoding=sensor_msgs::image_encodings::MONO8;
@@ -104,35 +109,13 @@ void CameraHandler::handleSimulation(){
                 const int data_len=image_msg.step*image_msg.height;
                 image_msg.data.resize(data_len);
 
-//                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-//                    imageR(image_buf+(resol[1]-1)*3*resol[0],image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(-3*(int)(resol[0]), 3) );
-//                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-//                    imageG(image_buf+(resol[1]-1)*3*resol[0]+1,image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(-3*(int)(resol[0]), 3) );
-//                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-//                    imageB(image_buf+(resol[1]-1)*3*resol[0]+2,image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(-3*(int)(resol[0]), 3) );
-
-                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                    imageR(image_buf,image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                    imageG(image_buf+1,image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-                Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                    imageB(image_buf+2,image_msg.height,image_msg.step, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-
                 Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
                    imageMsg(image_msg.data.data(),image_msg.height,image_msg.step);
 
 //                const Eigen::Vector3f coeffs(255.1f/3.0,255.1f/3.0,255.1f/3.0); //RGB to grayscale averaging
-                const Eigen::Vector3f coeffs(255.1*0.2126,255.1*0.7152,255.1*0.0722); //RGB to grayscale luminance
+                const Eigen::Vector3f coeffs(255.1*Eigen::Vector3f(0.2126,0.7152,0.0722)); //RGB to grayscale luminance
 
-//              imageMsg = (coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).cast<unsigned char>();
-                // Transform RGB to monochrome and flip rows
-//                for (uint i = 0; i<image_msg.height; ++i){
-//                    imageMsg.row(image_msg.height-i-1) = (coeffs[0]*imageR.row(i)
-//                            +coeffs[1]*imageG.row(i)
-//                            +coeffs[2]*imageB.row(i)).cast<unsigned char>();
-//                }
-
-                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).colwise().reverse()).cast<unsigned char>();
+                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).rowwise().reverse()).cast<unsigned char>();
 
             }
 
