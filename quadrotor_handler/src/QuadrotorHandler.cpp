@@ -38,7 +38,6 @@ unsigned int QuadrotorHandler::getObjectType() const {
 
 void QuadrotorHandler::synchronize(){
 
-
     simFloat inertia[9];
     simFloat compos[3];
 

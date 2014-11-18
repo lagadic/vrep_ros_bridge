@@ -1,17 +1,18 @@
 
-
 #include "vrep_ros_plugin/GenericObjectHandler.h"
 #include "vrep_ros_plugin/access.h"
 #include "v_repLib.h"
 
+// Constructor
 GenericObjectHandler::GenericObjectHandler():
-_id(-1),
-_associatedObjectUniqueID(-1),
-_associatedObjectID(-1),
-_initialized(false),
-_nh(ros::this_node::getName()){
+    _id(-1),
+    _associatedObjectUniqueID(-1),
+    _associatedObjectID(-1),
+    _initialized(false),
+    _nh(ros::this_node::getName()){
 }
 
+// Destructor
 GenericObjectHandler::~GenericObjectHandler(){
 }
 
@@ -38,7 +39,7 @@ int GenericObjectHandler::getAssociatedObjectUniqueId(){
 
 void GenericObjectHandler::synchronizeSceneObject(){
     // We update GenericObjectHandler's associated scene object custom data:
-//    putTagToSceneObject(_associatedObjectID,0.0);
+    //    putTagToSceneObject(_associatedObjectID,0.0);
 }
 
 void GenericObjectHandler::synchronize(){
@@ -49,7 +50,6 @@ void GenericObjectHandler::getDeveloperCustomData(std::vector<unsigned char> &de
     developerCustomData.resize(buffSize);
     simGetObjectCustomData(_associatedObjectID,CustomDataHeaders::DEVELOPER_DATA_HEADER,(simChar*)developerCustomData.data());
 }
-
 
 void GenericObjectHandler::startOfSimulation(){
     _initialize();
