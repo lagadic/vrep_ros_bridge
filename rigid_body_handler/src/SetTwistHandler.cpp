@@ -58,63 +58,55 @@ void SetTwistHandler::handleSimulation(){
     }
 
     Eigen::Quaternion < simFloat > orientation; //(x,y,z,w)
-    Eigen::Matrix< simFloat, 3, 1> Velocity((simFloat)_twistCommands.twist.linear.x ,(simFloat)_twistCommands.twist.linear.y, (simFloat)_twistCommands.twist.linear.z);
+    Eigen::Matrix< simFloat, 3, 1> linVelocity((simFloat)_twistCommands.twist.linear.x,
+    		(simFloat)_twistCommands.twist.linear.y,
+    		(simFloat)_twistCommands.twist.linear.z);
+    Eigen::Matrix< simFloat, 3, 1> angVelocity((simFloat)_twistCommands.twist.angular.x,
+    		(simFloat)_twistCommands.twist.angular.y,
+    		(simFloat)_twistCommands.twist.angular.z);
 
-   if( simGetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data())!=-1)
-
-   {
-
-
-	   Velocity = orientation * Velocity ;
-
-   }
-
-
+    // Input velocity is expected to be in body frame but V-Rep expects it to be in world frame.
+    if(simGetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data())!=-1){
+        linVelocity = orientation*linVelocity;
+	    angVelocity = orientation*angVelocity;
+    } else {
+        std::stringstream ss;
+        ss << "- [" << _associatedObjectName << "] Error getting orientation. " << std::endl;
+        ConsoleHandler::printInConsole(ss);
+    }
 
     simResetDynamicObject(_associatedObjectID);
 
-/*    // Apply the linear velocity to the object
-    if(simSetObjectFloatParameter( _associatedObjectID,3000, _twistCommands.twist.linear.x)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3001, _twistCommands.twist.linear.y)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3002, _twistCommands.twist.linear.z)==-1) {
-                   std::stringstream ss;
-                   ss << "- [" << _associatedObjectName << "] Error setting linear velocity. ";
-                   ConsoleHandler::printInConsole(ss);
-               }
-    // Apply the angular velocity to the object
-    if(simSetObjectFloatParameter( _associatedObjectID,3020, _twistCommands.twist.angular.x)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3021, _twistCommands.twist.angular.y)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3022, _twistCommands.twist.angular.z)==-1) {
-                   std::stringstream ss;
-                   ss << "- [" << _associatedObjectName << "] Error setting angular velocity. ";
-                   ConsoleHandler::printInConsole(ss);
-               }*/
-
-
-
-
-    // Apply the linear velocity to the object
-    if(simSetObjectFloatParameter( _associatedObjectID,3000, Velocity[0])
-    	&& simSetObjectFloatParameter( _associatedObjectID,3001, Velocity[1])
-    	&& simSetObjectFloatParameter( _associatedObjectID,3002, Velocity[2])==-1) {
-                   std::stringstream ss;
-                   ss << "- [" << _associatedObjectName << "] Error setting linear velocity. ";
-                   ConsoleHandler::printInConsole(ss);
-               }
-    // Apply the angular velocity to the object
-    if(simSetObjectFloatParameter( _associatedObjectID,3020, _twistCommands.twist.angular.x)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3021, _twistCommands.twist.angular.y)
-    	&& simSetObjectFloatParameter( _associatedObjectID,3022, _twistCommands.twist.angular.z)==-1) {
-                   std::stringstream ss;
-                   ss << "- [" << _associatedObjectName << "] Error setting angular velocity. ";
-                   ConsoleHandler::printInConsole(ss);
-               }
-
-
-
-
-
-
+	//Set object velocity
+    if (_isStatic){
+    	Eigen::Matrix<simFloat, 3, 1> position;
+    	simGetObjectPosition(_associatedObjectID, -1, position.data());
+    	const simFloat timeStep = simGetSimulationTimeStep();
+    	position = position + timeStep*linVelocity;
+    	simSetObjectPosition(_associatedObjectID, -1, position.data());
+    	const simFloat angle = timeStep*angVelocity.norm();
+    	if(angle > 1e-6){
+    		orientation = Eigen::Quaternion< simFloat >(Eigen::AngleAxis< simFloat >(timeStep*angVelocity.norm(), angVelocity/angVelocity.norm()))*orientation;
+    	}
+    	simSetObjectQuaternion(_associatedObjectID, -1, orientation.coeffs().data());
+    } else {
+		// Apply the linear velocity to the object
+		if(simSetObjectFloatParameter(_associatedObjectID, 3000, linVelocity[0])
+			&& simSetObjectFloatParameter(_associatedObjectID, 3001, linVelocity[1])
+			&& simSetObjectFloatParameter(_associatedObjectID, 3002, linVelocity[2])==-1) {
+			std::stringstream ss;
+			ss << "- [" << _associatedObjectName << "] Error setting linear velocity. " << std::endl;;
+			ConsoleHandler::printInConsole(ss);
+		}
+		// Apply the angular velocity to the object
+		if(simSetObjectFloatParameter(_associatedObjectID, 3020, angVelocity[0])
+			&& simSetObjectFloatParameter(_associatedObjectID, 3021, angVelocity[1])
+			&& simSetObjectFloatParameter(_associatedObjectID, 3022, angVelocity[2])==-1) {
+			std::stringstream ss;
+			ss << "- [" << _associatedObjectName << "] Error setting angular velocity. " << std::endl;;
+			ConsoleHandler::printInConsole(ss);
+		}
+    }
 
 }
 
@@ -157,7 +149,14 @@ void SetTwistHandler::_initialize(){
     std::replace( objectName.begin(), objectName.end(), '#', '_');
     _sub = _nh.subscribe(objectName+"/SetTwist", 1, &SetTwistHandler::TwistCommandCallback, this);
 
-   //_lastPublishedObjTwistTime = -1e5;
+    //Check if the object is static
+    simGetObjectIntParameter(_associatedObjectID, 3003, &_isStatic);
+    if(_isStatic){
+		std::stringstream ss;
+		ss << "- [" << _associatedObjectName << "] WARNING: setting velocity of a static object might give inaccurate results." << std::endl;;
+		ConsoleHandler::printInConsole(ss);
+    }
+
     _initialized=true;
 }
 

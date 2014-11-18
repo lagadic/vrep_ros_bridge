@@ -70,13 +70,15 @@ void ManipulatorHandler::handleSimulation(){
     }
 
     // Do the control
-    if ((now-_lastReceivedCmdTime).toSec() > 0.1){
+
+    // Set all joint velocities to zero if we haven't received any commands for a long time
+    if (currentSimulationTime-_lastReceivedCmdTime > 0.1){
         for(uint jointIdx = 0; jointIdx < _handleOfJoints.size(); ++jointIdx){
             simSetJointTargetVelocity(_handleOfJoints[jointIdx], 0.0);
         }
-        if ((now-_lastPrintedMsg).toSec() >= 1){
+        if (_lastReceivedCmdTime > 0 && (now-_lastPrintedMsg).toSec() >= 1){
             std::stringstream ss;
-            ss << "- [" << _associatedObjectName << "] No command received since more than " << (now -_lastReceivedCmdTime).toSec() << "s!" << std::endl;
+            ss << "- [" << _associatedObjectName << "] No command received since more than " << currentSimulationTime -_lastReceivedCmdTime << "s!" << std::endl;
             simAddStatusbarMessage(ss.str().c_str());
             //ConsoleHandler::printInConsole(ss);
             _lastPrintedMsg = now;
@@ -345,7 +347,7 @@ void ManipulatorHandler::_initialize(){
     ConsoleHandler::printInConsole(ss);
 
     _lastPublishedStatus = -1.0;
-    _lastReceivedCmdTime = ros::Time(-1.0);
+    _lastReceivedCmdTime = -1.0;
     _lastPrintedMsg = ros::Time(-1.0);
 
     _initialized=true;
@@ -363,7 +365,7 @@ void ManipulatorHandler::jointCommandCallback(const sensor_msgs::JointStateConst
 
     } else {
         _lastReceivedCmd = *msg;
-        _lastReceivedCmdTime = ros::Time::now();
+        _lastReceivedCmdTime = simGetSimulationTime();
     }
 }
 
@@ -377,7 +379,7 @@ void ManipulatorHandler::VelMobCommandCallback(const geometry_msgs::TwistConstPt
     _lastReceivedCmd.velocity[0]= (1/_mb_radius)*(temp.linear.x - _axle_lenght/2*temp.angular.z); // left
     _lastReceivedCmd.velocity[1]= (1/_mb_radius)*(temp.linear.x + _axle_lenght/2*temp.angular.z);  // rigth
 
-    _lastReceivedCmdTime = ros::Time::now();
+    _lastReceivedCmdTime = simGetSimulationTime();
 
 }
 
