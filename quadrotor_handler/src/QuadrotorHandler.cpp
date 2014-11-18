@@ -24,7 +24,7 @@ QuadrotorHandler::QuadrotorHandler() : GenericObjectHandler(),
     _lastPublishedStatusTime(0.0),
     _Commands(4,0)
 
-    {
+{
 
 
 }
@@ -54,9 +54,9 @@ void QuadrotorHandler::synchronize(){
     //_pub = _nh.advertise<telekyb_msgs::TKState>(objectName+"/status", 1000);
 
     // Publisher of the quadrotor pose
-	_pubPose = _nh.advertise<geometry_msgs::PoseStamped>("pose/"+objectName, 1);
+    _pubPose = _nh.advertise<geometry_msgs::PoseStamped>("pose/"+objectName, 1);
 
-	_pubTwist = _nh.advertise<geometry_msgs::TwistStamped>("twist/"+objectName, 1);
+    _pubTwist = _nh.advertise<geometry_msgs::TwistStamped>("twist/"+objectName, 1);
 
     // Publisher of the IMU
     //_pubIMU = _nh.advertise<sensor_msgs::Imu>("IMU/"+objectName, 1);
@@ -73,7 +73,7 @@ void QuadrotorHandler::handleSimulation(){
     }
 
 
-   ros::Time now = ros::Time::now();
+    ros::Time now = ros::Time::now();
 
     Eigen::Matrix <simFloat, 3, 1> position;
     Eigen::Quaternion < simFloat > orientation; //(x,y,z,w)
@@ -81,12 +81,13 @@ void QuadrotorHandler::handleSimulation(){
     Eigen::Matrix <simFloat, 3, 1> angVelocity;
     const static Eigen::Quaternion< simFloat > nwuToNed(0,1,0,0);
 
-// Turn the propellers
+    // Turn the propellers, it is just a visual thing for now. Probably in the future the propellers should turn
+    // with a speed proportional to the input given.
     for (int motorIdx = 0; motorIdx < 4; ++motorIdx){
-         if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 17.0)==-1){
+        if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 17.0)==-1){
             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
-          }
-       }
+        }
+    }
 
 
     if(simGetObjectPosition(_handleOfCoM, -1, position.data())!=-1 &&
@@ -111,30 +112,30 @@ void QuadrotorHandler::handleSimulation(){
 
 
 
-	        // Fill the status msg
-			geometry_msgs::PoseStamped msgPose;
-			msgPose.header.stamp = now;
-			msgPose.pose.position.x = position[0];
-			msgPose.pose.position.y = position[1];
-			msgPose.pose.position.z = position[2];
-			msgPose.pose.orientation.w = orientation.w();
-			msgPose.pose.orientation.x = orientation.x();
-			msgPose.pose.orientation.y = orientation.y();
-			msgPose.pose.orientation.z = orientation.z();
-		   _pubPose.publish(msgPose);
+        // Fill the status msg
+        geometry_msgs::PoseStamped msgPose;
+        msgPose.header.stamp = now;
+        msgPose.pose.position.x = position[0];
+        msgPose.pose.position.y = position[1];
+        msgPose.pose.position.z = position[2];
+        msgPose.pose.orientation.w = orientation.w();
+        msgPose.pose.orientation.x = orientation.x();
+        msgPose.pose.orientation.y = orientation.y();
+        msgPose.pose.orientation.z = orientation.z();
+        _pubPose.publish(msgPose);
 
 
-			geometry_msgs::TwistStamped msgTwist;
-			msgTwist.header.stamp = now;
-			msgTwist.twist.linear.x = linVelocity[0];
-			msgTwist.twist.linear.y = linVelocity[1];
-			msgTwist.twist.linear.z = linVelocity[2];
-			msgTwist.twist.angular.x = angVelocity[0];
-			msgTwist.twist.angular.y = angVelocity[1];
-			msgTwist.twist.angular.z = angVelocity[2];
-			_pubTwist.publish(msgTwist);
+        geometry_msgs::TwistStamped msgTwist;
+        msgTwist.header.stamp = now;
+        msgTwist.twist.linear.x = linVelocity[0];
+        msgTwist.twist.linear.y = linVelocity[1];
+        msgTwist.twist.linear.z = linVelocity[2];
+        msgTwist.twist.angular.x = angVelocity[0];
+        msgTwist.twist.angular.y = angVelocity[1];
+        msgTwist.twist.angular.z = angVelocity[2];
+        _pubTwist.publish(msgTwist);
 
-			_lastPublishedStatusTime = currentSimulationTime;
+        _lastPublishedStatusTime = currentSimulationTime;
 
         //}
 
@@ -144,34 +145,34 @@ void QuadrotorHandler::handleSimulation(){
 
 
 
-     //Do the control
-     if ((now-_lastReceivedCmdTime).toSec() > 0.1){
+    //Do the control
+    if ((now-_lastReceivedCmdTime).toSec() > 0.1){
 
-    	 simResetDynamicObject(_associatedObjectID);
-         simSetObjectIntParameter( _associatedObjectID,3003, 1);
-         simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+        simResetDynamicObject(_associatedObjectID);
+        simSetObjectIntParameter( _associatedObjectID,3003, 1);
+        simSetObjectIntParameter( _associatedObjectID,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
 
-         if ((now-_lastPrintedMsg).toSec() >= 1){
+        if ((now-_lastPrintedMsg).toSec() >= 1){
 
-             std::stringstream ss;
-             //ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
-             ss <<"- [" << _associatedObjectName << "]  No commands: Static mode activated." << std::endl;
-             simAddStatusbarMessage(ss.str().c_str());
-             //ConsoleHandler::printInConsole(ss);
-             _lastPrintedMsg = now;
+            std::stringstream ss;
+            //ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
+            ss <<"- [" << _associatedObjectName << "]  No commands: Static mode activated." << std::endl;
+            simAddStatusbarMessage(ss.str().c_str());
+            //ConsoleHandler::printInConsole(ss);
+            _lastPrintedMsg = now;
 
-         }
-         return;
-     } else
+        }
+        return;
+    } else
 
-     {
-         std::stringstream ss;
-         //simResetDynamicObject(_associatedObjectID);
-    	 simSetObjectIntParameter( _associatedObjectID,3003, 0);
-    	 ss << " Receiving and applying commands from ROS." << std::endl;
-         ConsoleHandler::printInConsole(ss);
+    {
+        std::stringstream ss;
+        //simResetDynamicObject(_associatedObjectID);
+        simSetObjectIntParameter( _associatedObjectID,3003, 0);
+        ss << " Receiving and applying commands from ROS." << std::endl;
+        ConsoleHandler::printInConsole(ss);
 
-     }
+    }
 
 
     // Command w.r.t. the quadrotor frame
@@ -185,7 +186,7 @@ void QuadrotorHandler::handleSimulation(){
 
     // Print information
     //std::cout << "FORCE BOSY:"<< std::endl;
-   // std::cout <<"x: "<< ForceCommand[0] <<" y: " << ForceCommand[1] <<"z: "<< ForceCommand[2]  << std::endl;
+    // std::cout <<"x: "<< ForceCommand[0] <<" y: " << ForceCommand[1] <<"z: "<< ForceCommand[2]  << std::endl;
 
     //std::cout << "TORQUE BODY:"<< std::endl;
     //std::cout <<"x: "<< TorqueCommand[0] <<" y: " << TorqueCommand[1] <<"z: "<< TorqueCommand[2]  << std::endl;
@@ -197,55 +198,55 @@ void QuadrotorHandler::handleSimulation(){
 
 
 
-//std::cout << "WORLD FORCE APPLIED:"<< std::endl;
-//std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z: "<< worldTorqueCommand[2]  << std::endl;
+    //std::cout << "WORLD FORCE APPLIED:"<< std::endl;
+    //std::cout <<"x: "<< worldTorqueCommand[0] <<" y: " << worldTorqueCommand[1] <<"z: "<< worldTorqueCommand[2]  << std::endl;
 
 
 
 
     // Apply force and torque to the quadrotor
-   if(simAddForceAndTorque(_associatedObjectID,worldForce.data() ,worldTorqueCommand.data() )==-1){
-          simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
-      }
- //  else
-//   {
-//       for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
-//          if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 2.5*_Commands[3])==-1){
-//             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
-//           }
-//        }
-//     }
-
-
-
-
-
-
-//    if ((now-_lastReceivedCmdTime).toSec() > 0.1){
-//        //_tkMotorCommands = std::vector<double>(4,0);
-//        // worldTorqueCommand = 0.0;
-//       // _tkCommands.roll = 0.0;
-//       // _tkCommands.yaw = 0.0;
-//        //_tkCommands.thrust = _quadrotorMass*9.8*0.8;
-//
-//
-//    	_Commands[0]= 0;
-//    	_Commands[1]= 0;
-//     	_Commands[2]= 0;
-//    	_Commands[3]= _quadrotorMass*9.81;
-//
-//        if ((now-_lastPrintedMsg).toSec() >= 1){
-//            std::stringstream ss;
-//            ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
-//            simAddStatusbarMessage(ss.str().c_str());
-//            ConsoleHandler::printInConsole(ss);
-//            _lastPrintedMsg = now;
-//        }
-//    }
-
-
-
+    if(simAddForceAndTorque(_associatedObjectID,worldForce.data() ,worldTorqueCommand.data() )==-1){
+        simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
     }
+    //  else
+    //   {
+    //       for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
+    //          if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 2.5*_Commands[3])==-1){
+    //             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
+    //           }
+    //        }
+    //     }
+
+
+
+
+
+
+    //    if ((now-_lastReceivedCmdTime).toSec() > 0.1){
+    //        //_tkMotorCommands = std::vector<double>(4,0);
+    //        // worldTorqueCommand = 0.0;
+    //       // _tkCommands.roll = 0.0;
+    //       // _tkCommands.yaw = 0.0;
+    //        //_tkCommands.thrust = _quadrotorMass*9.8*0.8;
+    //
+    //
+    //    	_Commands[0]= 0;
+    //    	_Commands[1]= 0;
+    //     	_Commands[2]= 0;
+    //    	_Commands[3]= _quadrotorMass*9.81;
+    //
+    //        if ((now-_lastPrintedMsg).toSec() >= 1){
+    //            std::stringstream ss;
+    //            ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
+    //            simAddStatusbarMessage(ss.str().c_str());
+    //            ConsoleHandler::printInConsole(ss);
+    //            _lastPrintedMsg = now;
+    //        }
+    //    }
+
+
+
+}
 
 
 
@@ -262,19 +263,19 @@ void QuadrotorHandler::_initialize(){
     std::stringstream ss;
 
     if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::QUADROTOR_DATA_MAIN,tempMainData)){
-    	int temp_freq = CAccess::pop_int(tempMainData);
-    	if (temp_freq > 0){
-    		_ObjStatusFrequency = temp_freq;
-    		//std::cout << "Found Twist target in " << _associatedObjectName << ". Frequency publisher: " << _ObjTwistFrequency << std::endl;
+        int temp_freq = CAccess::pop_int(tempMainData);
+        if (temp_freq > 0){
+            _ObjStatusFrequency = temp_freq;
+            //std::cout << "Found Twist target in " << _associatedObjectName << ". Frequency publisher: " << _ObjTwistFrequency << std::endl;
 
-    		ss << "- [Quadrotor] in '" << _associatedObjectName << "'. Frequency publisher: " << _ObjStatusFrequency << "." << std::endl;
-    		ConsoleHandler::printInConsole(ss);
-      	} else {
-      		//std::cout << "Found Twist target in " << _associatedObjectName << " at the simulation frequency. " << std::endl;
+            ss << "- [Quadrotor] in '" << _associatedObjectName << "'. Frequency publisher: " << _ObjStatusFrequency << "." << std::endl;
+            ConsoleHandler::printInConsole(ss);
+        } else {
+            //std::cout << "Found Twist target in " << _associatedObjectName << " at the simulation frequency. " << std::endl;
 
-      		ss << "- [Quadrotor] in '" << _associatedObjectName << "'. Frequency publisher: Simulation frequency. " << std::endl;
-    	    ConsoleHandler::printInConsole(ss);
-      	}
+            ss << "- [Quadrotor] in '" << _associatedObjectName << "'. Frequency publisher: Simulation frequency. " << std::endl;
+            ConsoleHandler::printInConsole(ss);
+        }
 
 
 
@@ -299,7 +300,7 @@ void QuadrotorHandler::_initialize(){
         int childHandle=simGetObjectChild(objHandle,index++);
         while (childHandle!=-1) {
             toExplore.push_back(childHandle);
-//            std::cout << "Adding " << simGetObjectName(childHandle) << " to exploration list." << std::endl;
+            //            std::cout << "Adding " << simGetObjectName(childHandle) << " to exploration list." << std::endl;
             childHandle=simGetObjectChild(objHandle,index++);
         }
         // 2. Now check if this object has one of the tags we are looking for:
@@ -317,14 +318,14 @@ void QuadrotorHandler::_initialize(){
                     _handleOfJoint[motorIdx]=objHandle; // We found the QUADROTOR_DATA_MOTOR_i tag. This is the i-th motor!
                     simGetObjectPosition(objHandle,_associatedObjectID,_jointPosition[motorIdx]);
                     ss << "- [" << _associatedObjectName << "] Found motor " << motorIdx << " in position ["
-                            << _jointPosition[motorIdx][0] << ", "
-                            << _jointPosition[motorIdx][1] << ", "
-                            << _jointPosition[motorIdx][2] << "]." <<  std::endl;
+                       << _jointPosition[motorIdx][0] << ", "
+                       << _jointPosition[motorIdx][1] << ", "
+                       << _jointPosition[motorIdx][2] << "]." <<  std::endl;
                 }
             }
             if (CAccess::extractSerializationData(developerCustomData,CustomDataHeaders::QUADROTOR_DATA_COM,quadrotorTagData)){
-                    _handleOfCoM=objHandle; // We found the QUADROTOR_DATA_MOTOR_i tag. This is the i-th motor!
-                    ss << "- [" << _associatedObjectName << "] Found CENTER OF MASS in '"<< simGetObjectName(objHandle) <<"'." << std::endl;
+                _handleOfCoM=objHandle; // We found the QUADROTOR_DATA_MOTOR_i tag. This is the i-th motor!
+                ss << "- [" << _associatedObjectName << "] Found CENTER OF MASS in '"<< simGetObjectName(objHandle) <<"'." << std::endl;
             }
         }
     }
@@ -335,16 +336,16 @@ void QuadrotorHandler::_initialize(){
     std::replace( objectName.begin(), objectName.end(), '#', '_');
 
     try
-    	{
-             _sub = _nh.subscribe("/command/"+objectName, 1000, &QuadrotorHandler::CommandsCallback, this);
-        }
+    {
+        _sub = _nh.subscribe("/command/"+objectName, 1000, &QuadrotorHandler::CommandsCallback, this);
+    }
 
     catch (ros::Exception &e)
-    	{
-            std::stringstream ss(e.what());
-            ss << std::endl;
-            ConsoleHandler::printInConsole(ss);
-        }
+    {
+        std::stringstream ss(e.what());
+        ss << std::endl;
+        ConsoleHandler::printInConsole(ss);
+    }
 
 
 
@@ -355,8 +356,8 @@ void QuadrotorHandler::_initialize(){
 void QuadrotorHandler::CommandsCallback(const sensor_msgs::JointStateConstPtr& msg){
     if ( msg->effort.size() == 4){
 
-    	_Commands = msg->effort;
-    	_lastReceivedCmdTime = ros::Time::now();
+        _Commands = msg->effort;
+        _lastReceivedCmdTime = ros::Time::now();
 
     } else {
         simSetLastError( _associatedObjectName.c_str(), "Received wrong command size.");
