@@ -81,7 +81,7 @@ void QuadrotorHandler::handleSimulation(){
     Eigen::Matrix <simFloat, 3, 1> angVelocity;
     const static Eigen::Quaternion< simFloat > nwuToNed(0,1,0,0);
 
-
+// Turn the propellers
     for (int motorIdx = 0; motorIdx < 4; ++motorIdx){
          if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], 17.0)==-1){
             simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
