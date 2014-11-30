@@ -42,7 +42,7 @@ rosdep update
 
 #rosdep install vrep_ros_bridge 
 
-rosdep install --from-paths `pwd` --ignore-src --rosdistro hydro -y
+rosdep install --from-paths `pwd` --ignore-src --rosdistro $ROS_VERSION -y
 
 wget http://coppeliarobotics.com/V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
 tar -xzf V-REP_PRO_EDU_V${VREP_VERSION}_64_Linux.tar.gz
