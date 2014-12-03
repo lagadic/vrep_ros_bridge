@@ -54,9 +54,9 @@ void QuadrotorHandler::synchronize(){
     //_pub = _nh.advertise<telekyb_msgs::TKState>(objectName+"/status", 1000);
 
     // Publisher of the quadrotor pose
-	_pubPose = _nh.advertise<geometry_msgs::PoseStamped>("pose/"+objectName, 1);
+	_pubPose = _nh.advertise<geometry_msgs::PoseStamped>(objectName+"/pose", 1);
 
-	_pubTwist = _nh.advertise<geometry_msgs::TwistStamped>("twist/"+objectName, 1);
+	_pubTwist = _nh.advertise<geometry_msgs::TwistStamped>(objectName+"/twist", 1);
 
     // Publisher of the IMU
     //_pubIMU = _nh.advertise<sensor_msgs::Imu>("IMU/"+objectName, 1);
@@ -336,7 +336,7 @@ void QuadrotorHandler::_initialize(){
 
     try
     	{
-             _sub = _nh.subscribe("/command/"+objectName, 1000, &QuadrotorHandler::CommandsCallback, this);
+             _sub = _nh.subscribe(objectName+"/command", 1000, &QuadrotorHandler::CommandsCallback, this);
         }
 
     catch (ros::Exception &e)
