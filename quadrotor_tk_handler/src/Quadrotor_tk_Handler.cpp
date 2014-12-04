@@ -30,7 +30,7 @@ Quadrotor_tk_Handler::~Quadrotor_tk_Handler(){
 }
 
 unsigned int Quadrotor_tk_Handler::getObjectType() const {
-    return CustomDataHeaders::QUADROTOR_DATA_MAIN;
+    return CustomDataHeaders::QUADROTOR_TK_DATA_MAIN;
 }
 
 /*void Quadrotor_tk_Handler::setID(int newID){
