@@ -18,7 +18,7 @@ _torqueToForceRatio(0.01738),
 _handleOfCoM(-1),
 _ctrlMode(CustomDataHeaders::DIRECT),
 _tkMotorCommands(4,0),
-_quadrotorMass(1.8),
+_quadrotorMass(0.8),
 _att_cutoff(20.0),
 _att_damping(1.1),
 _kp_yaw(10.0),
@@ -209,7 +209,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		//std::cout<<"INTERNAL MODE ";
 
 		// Compute the net force
-		TotforceZ = (simFloat)_tkCommands.thrust*0.01;
+		TotforceZ = (simFloat)_tkCommands.thrust;
 
 		Eigen::Matrix< simFloat, 3, 1> rpy = orientation.toRotationMatrix().eulerAngles(0,1,2);
 		const double cos_r = cos((double)rpy(0));
@@ -234,7 +234,8 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		//        std::stringstream ss;
 		//        ss << "applying force : [" << worldForce.transpose() << std::endl;
 		//        ConsoleHandler::printInConsole(ss);
-		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), rpyTorque.data())==-1){
+//		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), rpyTorque.data())==-1){
+		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), 0)==-1){
 			simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
 		} else {
 			for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
@@ -302,6 +303,7 @@ void Quadrotor_tk_Handler::_initialize(){
 	std::stringstream ss;
 
 	if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::IMU_DATA_MASS,tempMainData)){
+//	if (false){
 		_quadrotorMass=CAccess::pop_float(tempMainData);
 		ss << "- [" << _associatedObjectName << "] Setting mass to: " << _quadrotorMass << "." << std::endl;
 	} else {
