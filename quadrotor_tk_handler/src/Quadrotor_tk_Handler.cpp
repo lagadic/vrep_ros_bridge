@@ -18,10 +18,12 @@ _torqueToForceRatio(0.01738),
 _handleOfCoM(-1),
 _ctrlMode(CustomDataHeaders::DIRECT),
 _tkMotorCommands(4,0),
+//_tkCommands(3,0),
 _quadrotorMass(0.8),
-_att_cutoff(20.0),
-_att_damping(1.1),
-_kp_yaw(10.0),
+// Before changing the following 3 parameters be careful and look closely into the controller which is implemented below
+_att_cutoff(0.2),
+_att_damping(0.8),
+_kp_yaw(0.0),
 _lastReceivedCmdTime(ros::Time::now())
 {
 }
@@ -135,7 +137,9 @@ void Quadrotor_tk_Handler::handleSimulation(){
 
 	ros::Time now = ros::Time::now();
 
+	// Position of the quadrotor (x,y,z)
 	Eigen::Matrix<simFloat, 3, 1> position;
+	// Orientation of the quadrotor
 	Eigen::Quaternion< simFloat > orientation; //(x,y,z,w)
 	Eigen::Matrix<simFloat, 3, 1> linVelocity;
 	Eigen::Matrix<simFloat, 3, 1> angVelocity;
@@ -144,15 +148,20 @@ void Quadrotor_tk_Handler::handleSimulation(){
 	if(simGetObjectPosition(_handleOfCoM, -1, position.data())!=-1 &&
 			simGetObjectQuaternion(_handleOfCoM, -1, orientation.coeffs().data())!=-1 &&
 			simGetObjectVelocity(_handleOfCoM, linVelocity.data(), angVelocity.data())!=-1){
+		//DEBUG
+		//std::cout<<"DEBUG: Rotation ";
 
 		position = nwuToNed*position;
 		linVelocity = nwuToNed*linVelocity;
 		angVelocity = orientation.conjugate()*angVelocity; // Express angular velocity in body frame
 		orientation = nwuToNed*orientation; // change world frame to north-east-down
+
+
+		//angVelocity = nwuToNed*angVelocity;
 		// use only positive w (not necessary)
-		if (orientation.w()<0){
-			orientation.coeffs() *=-1;
-		}
+				if (orientation.w()<0){
+					orientation.coeffs() *=-1;
+				}
 
 		// Fill the status msg
 		telekyb_msgs::TKState msg;
@@ -171,11 +180,10 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		msg.twist.angular.y = angVelocity[1];
 		msg.twist.angular.z = angVelocity[2];
 		std::stringstream ss;
-//		// DEBUG:
-//		ss << "Filling the TKState msg" << std::endl;
-//		ConsoleHandler::printInConsole(ss);
-//		simAddStatusbarMessage(ss.str().c_str());
-
+		//		// DEBUG:
+		//		ss << "Filling the TKState msg" << std::endl;
+		//		ConsoleHandler::printInConsole(ss);
+		//		simAddStatusbarMessage(ss.str().c_str());
 		_pub.publish(msg);
 
 
@@ -212,39 +220,74 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		TotforceZ = (simFloat)_tkCommands.thrust;
 
 		Eigen::Matrix< simFloat, 3, 1> rpy = orientation.toRotationMatrix().eulerAngles(0,1,2);
+		//		Eigen::Matrix< simFloat, 3, 3> rotMatrix = orientation.toRotationMatrix();
+		//		Eigen::Matrix< simFloat, 3, 1> rpy(
+		//				atan2(rotMatrix(3,1),rotMatrix(3,2)),
+		//				acos(rotMatrix(3,3)),
+		//				-atan2(rotMatrix(1,3),rotMatrix(2,3)));
+		//
+		//				atan2(rotMatrix(3,2),rotMatrix(3,3)),
+		//				atan2(-rotMatrix(3,1),sqrt(rotMatrix(3,2)*rotMatrix(3,2)+rotMatrix(3,3)*rotMatrix(3,3))),
+		//				atan2(rotMatrix(2,1),rotMatrix(1,1)));
+
+		// Definition of sin_r,cos_r etc.
 		const double cos_r = cos((double)rpy(0));
+		//std::cout << "DEBUG: cos_r: " <<  cos_r <<std::endl;
 		const double sin_r = sin((double)rpy(0));
+		//std::cout << "DEBUG: sin_r: " <<  sin_r <<std::endl;
 		const double cos_p = cos((double)rpy(1));
+		//std::cout << "DEBUG: cos_p: " <<  cos_p <<std::endl;
+		const double sin_p = sin((double)rpy(1));
+		//std::cout << "DEBUG: sin_p: " <<  sin_p <<std::endl;
 		const double tan_p = tan((double)rpy(1));
+
 		const Eigen::Matrix<simFloat, 3, 3> angVelToEulerRate = (Eigen::Matrix<simFloat, 3, 3>() <<
 				1.0, sin_r*tan_p, cos_r*tan_p,
 				0.0,       cos_r,      -sin_r,
 				0.0, sin_r/cos_p, cos_r/cos_p).finished();
 
 		Eigen::Matrix< simFloat, 3, 1> rpyRate = angVelToEulerRate*angVelocity;
-		const simFloat kp_att = _att_cutoff*_att_cutoff;
-		const simFloat kd_att = 2*_att_damping*_att_cutoff;
-		Eigen::Matrix< simFloat, 3, 1> rpyTorque(kp_att*(_tkCommands.roll - rpy(0)) - kd_att*(rpyRate(0)),
-				kp_att*(_tkCommands.pitch - rpy(1)) - kd_att*(rpyRate(1)),
-				_kp_yaw*(_tkCommands.yaw - rpyRate(2)));  //sign is the opposite of the yaw angular velocity
+		const simFloat kp_att = _att_cutoff;
+		const simFloat kd_att = _att_damping;
+
+		// Errors
+		const simFloat error_roll = sin(_tkCommands.roll)-sin(rpy(0));
+		const simFloat error_pitch = sin(_tkCommands.pitch)-sin(rpy(1));
+
+		Eigen::Matrix< simFloat, 3, 1> rpyTorque(
+				//roll
+				kp_att*(error_roll) + kd_att*(0-rpyRate(0)),
+				//pitch
+				0*kp_att*(error_pitch) + 0*kd_att*(0-rpyRate(1)),
+				//yaw
+				_kp_yaw*(- rpyRate(2)));  //sign is the opposite of the yaw angular velocity
+
+		//DEBUG
+		std::cout << "DEBUG: sin(_tkCommands.roll): " <<  sin(_tkCommands.roll) <<std::endl;
+		std::cout << "DEBUG: sin(rpy(0)): " << sin(rpy(0)) <<std::endl;
+		std::cout << "DEBUG: sin(_tkCommands.pitch): " <<  sin(_tkCommands.pitch) <<std::endl;
+		std::cout << "DEBUG: sin(rpy(1)): " << sin(rpy(1)) <<std::endl;
+		std::cout << "DEBUG: Error_Roll: " << error_roll <<std::endl;
+		std::cout << "DEBUG: Error_Pitch: " << error_pitch <<std::endl;
 
 		rpyTorque = nwuToNed*orientation*rpyTorque; //rotate torque to world frame
+		//const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 		const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 
 		//        std::stringstream ss;
 		//        ss << "applying force : [" << worldForce.transpose() << std::endl;
 		//        ConsoleHandler::printInConsole(ss);
-//		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), rpyTorque.data())==-1){
-		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), 0)==-1){
+		if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), rpyTorque.data())==-1){
+			//							if(simAddForceAndTorque(_associatedObjectID, worldForce.data(), 0)==-1){
 			simSetLastError( _associatedObjectName.c_str(), "Error applying force.");
 		} else {
 			for (uint motorIdx = 0; motorIdx < 4; ++motorIdx){
+				// the following is needed to rotate the propellers
 				if(simSetJointTargetVelocity(_handleOfJoint[motorIdx], _tkCommands.thrust)==-1){
 					simSetLastError( simGetObjectName(_handleOfJoint[motorIdx]), "Error applying velocity.");
 				}
 			}
 		}
-
 	}
 
 	Eigen::Matrix<simFloat, 3, 1> TotCommandforces(0.0, 0.0, TotforceZ);
@@ -303,7 +346,7 @@ void Quadrotor_tk_Handler::_initialize(){
 	std::stringstream ss;
 
 	if (CAccess::extractSerializationData(developerCustomData, CustomDataHeaders::IMU_DATA_MASS,tempMainData)){
-//	if (false){
+		//	if (false){
 		_quadrotorMass=CAccess::pop_float(tempMainData);
 		ss << "- [" << _associatedObjectName << "] Setting mass to: " << _quadrotorMass << "." << std::endl;
 	} else {
@@ -399,7 +442,10 @@ void Quadrotor_tk_Handler::_initialize(){
 	} else if (_ctrlMode == CustomDataHeaders::INTERNAL){
 		try{
 			//_sub = _nh.subscribe(objectName+"/command", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
+			std::cout<< "Subscribed to Commands";
+//					_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this);
 			_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
+
 		} catch (ros::Exception &e) {
 			std::stringstream ss(e.what());
 			ss << std::endl;
