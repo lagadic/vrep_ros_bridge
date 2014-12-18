@@ -25,7 +25,9 @@ _att_cutoff(0.2),
 _att_damping(0.8),
 _kp_yaw(0.0),
 _lastReceivedCmdTime(ros::Time::now()),
-_previousTime(ros::Time::now())
+_previousTime(ros::Time::now()),
+_integralTermRoll(0.0),
+_integralTermPitch(0.0)
 {
 }
 
@@ -136,10 +138,12 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		_initialize();
 	}
 
+	// TimeStep Computation
 	ros::Time now = ros::Time::now();
 	ros::Duration timeStep = now - _previousTime;
 	//DEBUG
 	std::cout<< "DEBUG: TimeStep: " << timeStep << std::endl;
+
 	// Position of the quadrotor (x,y,z)
 	Eigen::Matrix<simFloat, 3, 1> position;
 	// Orientation of the quadrotor
@@ -184,11 +188,8 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		msg.twist.angular.z = angVelocity[2];
 		std::stringstream ss;
 		//DEBUG:
-		//		std::cout << "Filling the TKState msg" << std::endl;
+		//std::cout << "Filling the TKState msg" << std::endl;
 		_pub.publish(msg);
-
-
-
 	}
 
 	simFloat TotforceZ = 0.0;
@@ -256,14 +257,28 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		const simFloat kd_att = _att_damping;
 
 		// Errors
-		const simFloat error_roll = sin(_tkCommands.roll)-sin(rpy(0));
-		const simFloat error_pitch = sin(_tkCommands.pitch)-sin(rpy(1));
+		const simFloat errorRoll = sin(_tkCommands.roll)-sin(rpy(0));
+		const simFloat errorPitch = sin(_tkCommands.pitch)-sin(rpy(1));
+
+		// Computaton of the integral terms
+		_integralTermRoll = _integralTermRoll + timeStep.toSec() * errorRoll;
+		_integralTermPitch = _integralTermPitch + timeStep.toSec() * errorPitch;
+		if(_integralTermRoll<0.0001)_integralTermRoll=0.0;
+		if(_integralTermPitch<0.0001)_integralTermPitch=0.0;
+
+		//DEBUG
+		std::cout<< "DEBUG: _integralTermRoll: " << _integralTermRoll << std::endl;
+		std::cout<< "DEBUG: _integralTermPitch: " << _integralTermPitch << std::endl;
+
+
+
 
 		Eigen::Matrix< simFloat, 3, 1> rpyTorque(
 				//roll
-				kp_att*(error_roll) + kd_att*(0-rpyRate(0)),
+				kp_att*(errorRoll) + kd_att*(0-rpyRate(0))+0.001*_integralTermRoll,
 				//pitch
-				2*kp_att*(error_pitch) + 0.015*kd_att*(0-rpyRate(1)),
+//				0.1*kp_att*(errorPitch) + 0.02*kd_att*(0-rpyRate(1))+0*0.002*_integralTermPitch,
+				0*kp_att*(errorPitch) + 0.02*kd_att*(0-rpyRate(1))+0*0.002*_integralTermPitch,
 				//yaw
 				_kp_yaw*(- rpyRate(2)));  //sign is the opposite of the yaw angular velocity
 
@@ -272,12 +287,21 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		std::cout << "DEBUG: sin(rpy(0)): " << sin(rpy(0)) <<std::endl;
 		std::cout << "DEBUG: sin(_tkCommands.pitch): " <<  sin(_tkCommands.pitch) <<std::endl;
 		std::cout << "DEBUG: sin(rpy(1)): " << sin(rpy(1)) <<std::endl;
-		std::cout << "DEBUG: Error_Roll: " << error_roll <<std::endl;
-		std::cout << "DEBUG: Error_Pitch: " << error_pitch <<std::endl;
+		std::cout << "DEBUG: errorRoll: " << errorRoll <<std::endl;
+		std::cout << "DEBUG: errorPitch: " << errorPitch <<std::endl;
 
 		rpyTorque = nwuToNed*orientation*rpyTorque; //rotate torque to world frame
 		//const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
-		const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
+
+		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
+
+		if(worldForce(0)<0.0001 && worldForce(0)>-0.0001)worldForce(0)=0;
+		if(worldForce(1)<0.0001 && worldForce(1)>-0.0001)worldForce(1)=0;
+
+
+		//DEBUG torques and forces
+		std::cout << "DEBUG: rpyTorque: " << rpyTorque(0) <<"|"<< rpyTorque(1) <<"|"<< rpyTorque(2) <<"|" <<std::endl;
+		std::cout << "DEBUG: forces: " << worldForce(0) <<"|"<< worldForce(1) <<"|"<< worldForce(2) <<"|" <<std::endl;
 
 		//        std::stringstream ss;
 		//        ss << "applying force : [" << worldForce.transpose() << std::endl;
@@ -293,7 +317,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 				}
 			}
 		}
-	_previousTime=now;
+		_previousTime=now;
 	}
 
 	Eigen::Matrix<simFloat, 3, 1> TotCommandforces(0.0, 0.0, TotforceZ);
