@@ -40,7 +40,11 @@ public:
 protected:
 
 	void _initialize();
-
+	/**
+	 * This variable is needed to store the previousTime to perform an Integral of the angles to use an
+	 * Integral part into the controller.
+	 */
+	ros::Time _previousTime;
 	/**
 	 * Ratio between force (\f$ f\f$) and torque (\f$\tau\f$) produced by the propeller, i.e. \f$\tau = \alpha f\f$
 	 */

@@ -24,7 +24,8 @@ _quadrotorMass(0.8),
 _att_cutoff(0.2),
 _att_damping(0.8),
 _kp_yaw(0.0),
-_lastReceivedCmdTime(ros::Time::now())
+_lastReceivedCmdTime(ros::Time::now()),
+_previousTime(ros::Time::now())
 {
 }
 
@@ -130,13 +131,15 @@ void Quadrotor_tk_Handler::synchronize(){
 //}
 
 void Quadrotor_tk_Handler::handleSimulation(){
-	// called when the main script calls: simHandleModule
+	// called when the main script calls: simHandleModule (it is called time by time)
 	if(!_initialized){
 		_initialize();
 	}
 
 	ros::Time now = ros::Time::now();
-
+	ros::Duration timeStep = now - _previousTime;
+	//DEBUG
+	std::cout<< "DEBUG: TimeStep: " << timeStep << std::endl;
 	// Position of the quadrotor (x,y,z)
 	Eigen::Matrix<simFloat, 3, 1> position;
 	// Orientation of the quadrotor
@@ -159,9 +162,9 @@ void Quadrotor_tk_Handler::handleSimulation(){
 
 		//angVelocity = nwuToNed*angVelocity;
 		// use only positive w (not necessary)
-				if (orientation.w()<0){
-					orientation.coeffs() *=-1;
-				}
+		if (orientation.w()<0){
+			orientation.coeffs() *=-1;
+		}
 
 		// Fill the status msg
 		telekyb_msgs::TKState msg;
@@ -180,10 +183,8 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		msg.twist.angular.y = angVelocity[1];
 		msg.twist.angular.z = angVelocity[2];
 		std::stringstream ss;
-		//		// DEBUG:
-		//		ss << "Filling the TKState msg" << std::endl;
-		//		ConsoleHandler::printInConsole(ss);
-		//		simAddStatusbarMessage(ss.str().c_str());
+		//DEBUG:
+		//		std::cout << "Filling the TKState msg" << std::endl;
 		_pub.publish(msg);
 
 
@@ -213,6 +214,10 @@ void Quadrotor_tk_Handler::handleSimulation(){
 			}
 		}
 	} else if (_ctrlMode == CustomDataHeaders::INTERNAL){
+
+		//		timeStep=now-previousTime;
+		//DEBUG
+		//		std::cout<<"INTERNAL MODE "<< timeStep;
 		//DEBUG
 		//std::cout<<"INTERNAL MODE ";
 
@@ -258,7 +263,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 				//roll
 				kp_att*(error_roll) + kd_att*(0-rpyRate(0)),
 				//pitch
-				0.25*kp_att*(error_pitch) + 0.006*kd_att*(0-rpyRate(1)),
+				2*kp_att*(error_pitch) + 0.015*kd_att*(0-rpyRate(1)),
 				//yaw
 				_kp_yaw*(- rpyRate(2)));  //sign is the opposite of the yaw angular velocity
 
@@ -288,6 +293,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 				}
 			}
 		}
+	_previousTime=now;
 	}
 
 	Eigen::Matrix<simFloat, 3, 1> TotCommandforces(0.0, 0.0, TotforceZ);
@@ -443,7 +449,7 @@ void Quadrotor_tk_Handler::_initialize(){
 		try{
 			//_sub = _nh.subscribe(objectName+"/command", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
 			std::cout<< "Subscribed to Commands";
-//					_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this);
+			//					_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this);
 			_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
 
 		} catch (ros::Exception &e) {
