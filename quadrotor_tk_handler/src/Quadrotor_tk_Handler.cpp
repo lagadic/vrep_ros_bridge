@@ -258,7 +258,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 				//roll
 				kp_att*(error_roll) + kd_att*(0-rpyRate(0)),
 				//pitch
-				0*kp_att*(error_pitch) + 0*kd_att*(0-rpyRate(1)),
+				0.25*kp_att*(error_pitch) + 0.006*kd_att*(0-rpyRate(1)),
 				//yaw
 				_kp_yaw*(- rpyRate(2)));  //sign is the opposite of the yaw angular velocity
 
