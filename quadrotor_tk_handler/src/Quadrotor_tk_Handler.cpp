@@ -295,8 +295,10 @@ void Quadrotor_tk_Handler::handleSimulation(){
 
 		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 
-		if(worldForce(0)<0.0001 && worldForce(0)>-0.0001)worldForce(0)=0;
-		if(worldForce(1)<0.0001 && worldForce(1)>-0.0001)worldForce(1)=0;
+
+		// To Delete Probably
+		if(worldForce(0)<0.001 && worldForce(0)>-0.001)worldForce(0)=0;
+		if(worldForce(1)<0.001 && worldForce(1)>-0.001)worldForce(1)=0;
 
 
 		//DEBUG torques and forces
