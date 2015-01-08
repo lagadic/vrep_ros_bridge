@@ -86,7 +86,7 @@ void Quadrotor_tk_Handler::synchronize(){
 	simFloat intertia[9];
 	simFloat compos[3];
 
-	// Get the mass of the quadropter
+	// Get the mass of the quadcopter
 	simGetShapeMassAndInertia(_associatedObjectID,&_quadrotorMass,intertia,compos,NULL);
 
 	// Remove # chars for compatibility with ROS
