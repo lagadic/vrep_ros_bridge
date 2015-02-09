@@ -19,10 +19,10 @@ _handleOfCoM(-1),
 _ctrlMode(CustomDataHeaders::DIRECT),
 _tkMotorCommands(4,0),
 //_tkCommands(3,0),
-_quadrotorMass(0.8),
+_quadrotorMass(1.0),
 // Before changing the following 3 parameters be careful and look closely into the controller which is implemented below
-_att_cutoff(2.9),
-_att_damping(1.0),
+_att_cutoff(5),
+_att_damping(0.45),
 _kp_yaw(1),
 _lastReceivedCmdTime(ros::Time::now()),
 _previousTime(ros::Time::now()),
@@ -279,12 +279,6 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		if(_integralTermRoll<0.0001)_integralTermRoll=0.0;
 		if(_integralTermPitch<0.0001)_integralTermPitch=0.0;
 
-		//DEBUG
-		//		std::cout<< "DEBUG: _integralTermRoll: " << _integralTermRoll << std::endl;
-		//		std::cout<< "DEBUG: _integralTermPitch: " << _integralTermPitch << std::endl;
-
-
-
 
 		Eigen::Matrix< simFloat, 3, 1> rpyTorque(
 				//roll
@@ -308,7 +302,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 
 		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 
-
+//		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,-9.81);
 		// To Delete Probably
 		//		if(worldForce(0)<0.001 && worldForce(0)>-0.001)worldForce(0)=0;
 		//		if(worldForce(1)<0.001 && worldForce(1)>-0.001)worldForce(1)=0;
