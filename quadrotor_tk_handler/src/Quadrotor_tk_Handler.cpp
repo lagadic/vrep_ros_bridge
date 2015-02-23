@@ -21,8 +21,8 @@ _tkMotorCommands(4,0),
 //_tkCommands(3,0),
 _quadrotorMass(1.0),
 // Before changing the following 3 parameters be careful and look closely into the controller which is implemented below
-_att_cutoff(5),
-_att_damping(0.45),
+_att_cutoff(5.2),
+_att_damping(0.8),
 _kp_yaw(1),
 _lastReceivedCmdTime(ros::Time::now()),
 _previousTime(ros::Time::now()),
@@ -272,6 +272,17 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		// Errors
 		const simFloat errorRoll = (_tkCommands.roll)-(rpy(0));
 		const simFloat errorPitch = (_tkCommands.pitch)-(rpy(1));
+
+		// Debug: the 2 following instructions are needed to give to the quadrotor a commanded
+		// 		  roll angle of 0 deg and a commanded pitch angle of -20 deg.
+		//        To apply these angles you should also comment the line:
+		// 		  Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
+		//        and substitute it with the following line:
+		// 	      Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,-9.81);
+		// 		  which is needed to keep the quadrotor at the desired angles.
+	/*	const simFloat errorRoll = (-40*3.14/180)-(rpy(0));
+		const simFloat errorPitch = (-40*3.14/180)-(rpy(1));*/
+
 
 		// Computaton of the integral terms
 		_integralTermRoll = _integralTermRoll + timeStep.toSec() * errorRoll;
