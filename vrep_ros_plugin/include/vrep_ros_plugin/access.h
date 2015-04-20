@@ -118,6 +118,12 @@ public:
     const static unsigned int MANIPULATOR_DATA_CTRL_MODE = 603;
     ///@}
 
+    ///@name Contact sensor defines
+    ///@{
+    /// The main identifier of a CONTACT object.
+    const static unsigned int CONTACT_DATA_MAIN= 650;
+    ///@}
+
 
 
 	/**
