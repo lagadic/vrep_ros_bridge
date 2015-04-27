@@ -1,0 +1,7 @@
+<library path="lib/libcontact_handler">
+  <class type="ContactHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for handling an object contacts.
+  </description>
+  </class>
+</library>
