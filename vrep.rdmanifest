@@ -1,0 +1,12 @@
+uri: http://coppeliarobotics.com/V-REP_PRO_EDU_V3_2_0_rev6_64_Linux.tar.gz
+md5sum: 945bf36a2200e576c99b6a0cb4b42362 
+install-script: |
+    #!/bin/bash
+    sudo mv V-REP_PRO_EDU_V3_2_0_rev6_64_Linux /opt/vrep
+check-presence-script: |
+    #!/bin/bash
+    if [ -d /opt/vrep ]; then
+        exit 0
+    else
+        exit 1
+    fi
