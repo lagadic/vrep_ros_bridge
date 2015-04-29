@@ -95,6 +95,13 @@ where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 
 * In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
+###Update the vrep_ros_bridge according to a new V-REP release
+
+V-REP is a software undergoing through rapid development and there can be different releases in a short period of time. <br>
+If the user wants to use the vrep_ros_bridge always with the latest version of V-REP he/she has just to follow the following steps:
+* Download the last version of V-REP <a href="http://www.coppeliarobotics.com/downloads.html" target="_parent"> here </a>.
+</p>
+* Go back to the <a href="#Installation-plugin" target="_parent"> Install Plugin</a> section of this page and change the path to the one corresponding to the new version of V-REP.
 
 # How to use the plugin
 
