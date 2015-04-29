@@ -16,7 +16,7 @@ You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?dis
 Note: The Ubuntu version used is 13.04. It is tested also with 12.04 and 14.04 (with ROS Indigo).
 * <a href="#ros" target="_parent"> Install ROS </a> 
 * <a href="#installation-v-rep" target="_parent"> Install V-Rep</a>
-* <a href="#Installation-plugin" target="_parent"> Install Plugin</a>
+* <a href="#installation-plugin" target="_parent"> Install Plugin</a>
 
 ###ROS 
 
@@ -101,7 +101,7 @@ V-REP is a software undergoing through rapid development and there can be differ
 If the user wants to use the vrep_ros_bridge always with the latest version of V-REP he/she has just to follow the following steps:
 * Download the last version of V-REP <a href="http://www.coppeliarobotics.com/downloads.html" target="_parent"> here </a>.
 </p>
-* Go back to the <a href="#Installation-plugin" target="_parent"> Install Plugin</a> section of this page and change the path to the one corresponding to the new version of V-REP.
+* Go back to the <a href="#installation-plugin" target="_parent"> Install Plugin</a> section of this page and change the path to the one corresponding to the new version of V-REP.
 
 # How to use the plugin
 
