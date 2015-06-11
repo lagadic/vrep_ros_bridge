@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package>
+  <name>contact_handler</name>
+  <version>1.0.0</version>
+  <description>
+      The contact_handler package. It reports the dynamic-engine-reported contacts between
+      all scene objects on a topic called "contacts".
+
+      This package uses gazebo_msgs/ContactsState message type to report body contacts.
+      This is because ROS doesn't have any standardized contact reporting messages.
+      However, to have gazebo_msgs, you don't need to install whole Gazebo, you just need to
+      install the single package ros-indigo-gazebo-msgs.
+  </description>
+
+  <maintainer email="peckama2@ciirc.cvut.cz">Martin Pecka</maintainer>
+  <author email="peckama2@ciirc.cvut.cz">Martin Pecka</author>
+
+  <license>BSD</license>
+
+  <url type="repository">git://github.com/lagadic/vrep_ros_bridge.git</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>vrep_ros_plugin</build_depend>
+  <build_depend>gazebo_msgs</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>vrep_ros_plugin</run_depend>
+  <run_depend>gazebo_msgs</run_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- You can specify that this package is a metapackage here: -->
+	 <vrep_ros_plugin plugin="${prefix}/plugin.xml" />
+
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>
