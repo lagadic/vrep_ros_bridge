@@ -150,6 +150,7 @@ void CustomDataHeaders::registerCustomDataHeaders(){
 
     // Quadrotor defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_quadrotor_data_main", (boost::lexical_cast<std::string>(int(QUADROTOR_DATA_MAIN))).c_str());
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_quadrotor_tk_data_main", (boost::lexical_cast<std::string>(int(QUADROTOR_TK_DATA_MAIN))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_quadrotor_data_motor_0", (boost::lexical_cast<std::string>(int(QUADROTOR_DATA_MOTOR_0))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_quadrotor_data_motor_1", (boost::lexical_cast<std::string>(int(QUADROTOR_DATA_MOTOR_1))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_quadrotor_data_motor_2", (boost::lexical_cast<std::string>(int(QUADROTOR_DATA_MOTOR_2))).c_str());

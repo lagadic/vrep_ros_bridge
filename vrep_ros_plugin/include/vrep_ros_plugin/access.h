@@ -41,6 +41,8 @@ public:
     ///@{
 	///The main identifier of a Quadrotor object.
     const static unsigned int QUADROTOR_DATA_MAIN=10;
+	///The main identifier of a Telekyb Quadrotor object.
+    const static unsigned int QUADROTOR_TK_DATA_MAIN=20;
 	///The identifier of motor[0] joint.
     const static unsigned int QUADROTOR_DATA_MOTOR_0=0;
     ///The identifier of motor[1] joint.

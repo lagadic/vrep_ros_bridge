@@ -184,7 +184,7 @@ void GenericObjectContainer::actualizeForSceneContent(){
                             simGetObjectUniqueIdentifier(objHandle,&uniqueID);
                             objectHandler->setAssociatedObject(objHandle,uniqueID);
                             objectHandler->synchronize();
-                            ss << "Instantiating new " << it->first << " for "  << simGetObjectName(uniqueID) << "." << std::endl;
+                            ss << "Instantiating new " << it->first << " for "  << simGetObjectName(objHandle) << "." << std::endl;
                             ConsoleHandler::printInConsole(ss);
                         } catch(pluginlib::PluginlibException& ex){
                           //handle the class failing to load

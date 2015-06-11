@@ -40,6 +40,16 @@ public:
 protected:
 
 	void _initialize();
+	/**
+	 * This variable is needed to store the previousTime to perform an Integral of the angles to use an
+	 * Integral part into the controller.
+	 */
+	ros::Time _previousTime;
+	/**
+	 * The following variables are needed for the Integral part of the PID (roll and pitch respectively)
+	 */
+	float _integralTermRoll;
+	float _integralTermPitch;
 
 	/**
 	 * Ratio between force (\f$ f\f$) and torque (\f$\tau\f$) produced by the propeller, i.e. \f$\tau = \alpha f\f$
@@ -62,8 +72,8 @@ protected:
 	simFloat _quadrotorMass;
 
 	/**
-     * Position of the four propellers w.r.t. the robot CoM.
-     */
+	 * Position of the four propellers w.r.t. the robot CoM.
+	 */
 	simFloat _jointPosition[4][3];
 
 	/**
@@ -86,10 +96,10 @@ protected:
 	 */
 	ros::Time _lastReceivedCmdTime;
 
-    /**
-     * Timer for printing messages.
-     */
-    ros::Time _lastPrintedMsg;
+	/**
+	 * Timer for printing messages.
+	 */
+	ros::Time _lastPrintedMsg;
 
 	/**
 	 * Last received TKMotorCommands commands.
@@ -97,28 +107,28 @@ protected:
 	std::vector<double> _tkMotorCommands;
 
 	/**
-     * Last received TKCommands message.
-     */
+	 * Last received TKCommands message.
+	 */
 	telekyb_msgs::TKCommands _tkCommands;
 
 	/**
-	* Internal roll/pitch control cutoff frequency.
-	*/
+	 * Internal roll/pitch control cutoff frequency.
+	 */
 	simFloat _att_cutoff;
 
 	/**
-	* Internal roll/pitch control damping factor.
-	*/
-    simFloat _att_damping;
+	 * Internal roll/pitch control damping factor.
+	 */
+	simFloat _att_damping;
 
-    /**
-    * Internal yaw rate control proportional gain.
-    */
-    simFloat _kp_yaw;
+	/**
+	 * Internal yaw rate control proportional gain.
+	 */
+	simFloat _kp_yaw;
 
-    /**
-    * Quadrotor control mode. See \ref QuadrotorCtrlMode.
-    */
+	/**
+	 * Quadrotor control mode. See \ref QuadrotorCtrlMode.
+	 */
 	CustomDataHeaders::QuadrotorCtrlMode _ctrlMode;
 
 	/**
@@ -127,11 +137,11 @@ protected:
 	 */
 	void tkMotorCommandsCallback(const telekyb_msgs::TKMotorCommands::ConstPtr& msg);
 
-    /**
-     * Callback for thrust/roll/pitch/yaw command (TKCommands) message reception.
-     * @param msg Received thrust/roll/pitch/yaw command message.
-     */
-    void tkCommandsCallback(const telekyb_msgs::TKCommands::ConstPtr& msg);
+	/**
+	 * Callback for thrust/roll/pitch/yaw command (TKCommands) message reception.
+	 * @param msg Received thrust/roll/pitch/yaw command message.
+	 */
+	void tkCommandsCallback(const telekyb_msgs::TKCommands::ConstPtr& msg);
 };
 
 

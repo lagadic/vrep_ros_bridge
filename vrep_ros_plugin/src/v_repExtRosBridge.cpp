@@ -21,7 +21,6 @@
 
 #include "vrep_ros_plugin/GenericObjectContainer.h"
 
-//#include "QuadrotorHandler.h"
 #include <ros/ros.h>
 #include <boost/bind.hpp>
 
