@@ -95,6 +95,17 @@ where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 
 * In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
+####Update the vrep_ros_bridge according to a new V-REP release
+
+V-REP is a software undergoing through rapid development and there can be different releases in a short period of time. <br>
+If the user wants to use the vrep_ros_bridge always with the latest version of V-REP he/she has just to follow the following steps:
+* Download the last version of V-REP <a href="http://www.coppeliarobotics.com/downloads.html" target="_parent"> here </a>.
+</p>
+* Go back to the <a href="#installation-plugin" target="_parent"> Install Plugin</a> section of this page and change the path to the one corresponding to the new version of V-REP.
+
+Note: 
+* The vrep_ros_bridge was tested up to the version 3.2.1 of V-REP released the May 4th 2015. 
+* If you encounter some problems of speed in the your simulations of V-REP (e.g. jumps in the frames) you could try to change the following parameter. In V-REP version 3.2.1 there is a feature that was mistakenly disabled, which will actually accelerate visualization of your scene. If you go in Tools-> User settings, under Adjust OpenGl settings, under VBO operation, make sure that default (recommended) is selected.
 
 # How to use the plugin
 
