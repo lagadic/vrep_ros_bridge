@@ -21,8 +21,8 @@ _tkMotorCommands(4,0),
 //_tkCommands(3,0),
 _quadrotorMass(1.0),
 // Before changing the following 3 parameters be careful and look closely into the controller which is implemented below
-_att_cutoff(5.2),
-_att_damping(0.8),
+_att_cutoff(5.0),
+_att_damping(0.42),
 _kp_yaw(1),
 _lastReceivedCmdTime(ros::Time::now()),
 _previousTime(ros::Time::now()),
@@ -307,6 +307,8 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		//		std::cout << "DEBUG: sin(rpy(1)): " << sin(rpy(1)) <<std::endl;
 		//		std::cout << "DEBUG: errorRoll: " << errorRoll <<std::endl;
 		//		std::cout << "DEBUG: errorPitch: " << errorPitch <<std::endl;
+//		std::cout <<  _associatedObjectName.c_str() << " " << "_tkCommands.yaw: " << _tkCommands.yaw <<std::endl;
+//		std::cout <<  _associatedObjectName.c_str() << " " << "rpyRate(2): " << rpyRate(2) <<std::endl;
 
 		rpyTorque = nwuToNed*orientation*rpyTorque; //rotate torque to world frame
 		//const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
