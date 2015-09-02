@@ -19,10 +19,10 @@ _handleOfCoM(-1),
 _ctrlMode(CustomDataHeaders::DIRECT),
 _tkMotorCommands(4,0),
 //_tkCommands(3,0),
-_quadrotorMass(0.8),
+_quadrotorMass(1.0),
 // Before changing the following 3 parameters be careful and look closely into the controller which is implemented below
-_att_cutoff(2.9),
-_att_damping(1.0),
+_att_cutoff(5.0),
+_att_damping(0.42),
 _kp_yaw(1),
 _lastReceivedCmdTime(ros::Time::now()),
 _previousTime(ros::Time::now()),
@@ -142,7 +142,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 	ros::Time now = ros::Time::now();
 	ros::Duration timeStep = now - _previousTime;
 	//DEBUG
-//	std::cout<< "DEBUG: TimeStep: " << timeStep << std::endl;
+	//	std::cout<< "DEBUG: TimeStep: " << timeStep << std::endl;
 
 	// Position of the quadrotor (x,y,z)
 	Eigen::Matrix<simFloat, 3, 1> position;
@@ -225,7 +225,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		// Compute the net force
 		TotforceZ = (simFloat)_tkCommands.thrust;
 
-//		Eigen::Matrix< simFloat, 3, 1> rpy = orientation.toRotationMatrix().eulerAngles(2,1,0);
+		//		Eigen::Matrix< simFloat, 3, 1> rpy = orientation.toRotationMatrix().eulerAngles(2,1,0);
 		//		Eigen::Matrix< simFloat, 3, 3> rotMatrix = orientation.toRotationMatrix();
 		//		Eigen::Matrix< simFloat, 3, 1> rpy(
 		//				atan2(rotMatrix(3,1),rotMatrix(3,2)),
@@ -242,13 +242,13 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		rpy(1) = atan2(-R(2,0), sqrt( R(2,1)*R(2,1) + R(2,2)*R(2,2) ) );
 		rpy(2) = atan2((double)R(1,0),(double)R(0,0));
 
-//		std::cout << "DEBUG: (_tkCommands.roll): " <<  (_tkCommands.roll) <<std::endl;
-//		std::cout << "DEBUG: rpy: " << rpy(0) << "  "<< rpy(1) << "  " << rpy(2) <<std::endl;
-//		std::cout << "DEBUG: R: " << R <<std::endl;
-//
-//		std::cout << "DEBUG: R(3,1): " << R(3,1) <<std::endl;
-//		std::cout << "DEBUG: R(3,2): " << R(3,2) <<std::endl;
-//		std::cout << "DEBUG: R(3,3): " << R(3,3) <<std::endl;
+		//		std::cout << "DEBUG: (_tkCommands.roll): " <<  (_tkCommands.roll) <<std::endl;
+		//		std::cout << "DEBUG: rpy: " << rpy(0) << "  "<< rpy(1) << "  " << rpy(2) <<std::endl;
+		//		std::cout << "DEBUG: R: " << R <<std::endl;
+		//
+		//		std::cout << "DEBUG: R(3,1): " << R(3,1) <<std::endl;
+		//		std::cout << "DEBUG: R(3,2): " << R(3,2) <<std::endl;
+		//		std::cout << "DEBUG: R(3,3): " << R(3,3) <<std::endl;
 		// Definition of sin_r,cos_r etc.
 		const double cos_r = cos((double)rpy(0));
 		//std::cout << "DEBUG: cos_r: " <<  cos_r <<std::endl;
@@ -273,50 +273,57 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		const simFloat errorRoll = (_tkCommands.roll)-(rpy(0));
 		const simFloat errorPitch = (_tkCommands.pitch)-(rpy(1));
 
+		// Debug: the 2 following instructions are needed to give to the quadrotor a commanded
+		// 		  roll angle of 0 deg and a commanded pitch angle of -20 deg.
+		//        To apply these angles you should also comment the line:
+		// 		  Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
+		//        and substitute it with the following line:
+		// 	      Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,-9.81);
+		// 		  which is needed to keep the quadrotor at the desired angles.
+	/*	const simFloat errorRoll = (-40*3.14/180)-(rpy(0));
+		const simFloat errorPitch = (-40*3.14/180)-(rpy(1));*/
+
+
 		// Computaton of the integral terms
 		_integralTermRoll = _integralTermRoll + timeStep.toSec() * errorRoll;
 		_integralTermPitch = _integralTermPitch + timeStep.toSec() * errorPitch;
 		if(_integralTermRoll<0.0001)_integralTermRoll=0.0;
 		if(_integralTermPitch<0.0001)_integralTermPitch=0.0;
 
-		//DEBUG
-//		std::cout<< "DEBUG: _integralTermRoll: " << _integralTermRoll << std::endl;
-//		std::cout<< "DEBUG: _integralTermPitch: " << _integralTermPitch << std::endl;
-
-
-
 
 		Eigen::Matrix< simFloat, 3, 1> rpyTorque(
 				//roll
 				kp_att*(errorRoll) + kd_att*(0-rpyRate(0))+0*0.001*_integralTermRoll,
 				//pitch
-//				0.1*kp_att*(errorPitch) + 0.02*kd_att*(0-rpyRate(1))+0*0.002*_integralTermPitch,
+				//				0.1*kp_att*(errorPitch) + 0.02*kd_att*(0-rpyRate(1))+0*0.002*_integralTermPitch,
 				kp_att*(errorPitch) + kd_att*(0-rpyRate(1))+0*0.002*_integralTermPitch,
 				//yaw
 				_kp_yaw*(_tkCommands.yaw- rpyRate(2)));  //sign is the opposite of the yaw angular velocity
 
 		//DEBUG
-//		std::cout << "DEBUG: (_tkCommands.roll): " <<  (_tkCommands.roll) <<std::endl;
-//		std::cout << "DEBUG: rpy: " << rpy(0) << "  "<< rpy(1) << "  " << rpy(2) <<std::endl;
-//		std::cout << "DEBUG: sin(_tkCommands.pitch): " <<  sin(_tkCommands.pitch) <<std::endl;
-//		std::cout << "DEBUG: sin(rpy(1)): " << sin(rpy(1)) <<std::endl;
-//		std::cout << "DEBUG: errorRoll: " << errorRoll <<std::endl;
-//		std::cout << "DEBUG: errorPitch: " << errorPitch <<std::endl;
+		//		std::cout << "DEBUG: (_tkCommands.roll): " <<  (_tkCommands.roll) <<std::endl;
+		//		std::cout << "DEBUG: rpy: " << rpy(0) << "  "<< rpy(1) << "  " << rpy(2) <<std::endl;
+		//		std::cout << "DEBUG: sin(_tkCommands.pitch): " <<  sin(_tkCommands.pitch) <<std::endl;
+		//		std::cout << "DEBUG: sin(rpy(1)): " << sin(rpy(1)) <<std::endl;
+		//		std::cout << "DEBUG: errorRoll: " << errorRoll <<std::endl;
+		//		std::cout << "DEBUG: errorPitch: " << errorPitch <<std::endl;
+//		std::cout <<  _associatedObjectName.c_str() << " " << "_tkCommands.yaw: " << _tkCommands.yaw <<std::endl;
+//		std::cout <<  _associatedObjectName.c_str() << " " << "rpyRate(2): " << rpyRate(2) <<std::endl;
 
 		rpyTorque = nwuToNed*orientation*rpyTorque; //rotate torque to world frame
 		//const Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 
 		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*orientation*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,(simFloat)_tkCommands.thrust);
 
-
+//		Eigen::Matrix< simFloat, 3, 1> worldForce = nwuToNed*Eigen::Matrix< simFloat, 3, 1>(0.0,0.0,-9.81);
 		// To Delete Probably
-//		if(worldForce(0)<0.001 && worldForce(0)>-0.001)worldForce(0)=0;
-//		if(worldForce(1)<0.001 && worldForce(1)>-0.001)worldForce(1)=0;
+		//		if(worldForce(0)<0.001 && worldForce(0)>-0.001)worldForce(0)=0;
+		//		if(worldForce(1)<0.001 && worldForce(1)>-0.001)worldForce(1)=0;
 
 
 		//DEBUG torques and forces
-//		std::cout << "DEBUG: rpyTorque: " << rpyTorque(0) <<"|"<< rpyTorque(1) <<"|"<< rpyTorque(2) <<"|" <<std::endl;
-//		std::cout << "DEBUG: forces: " << worldForce(0) <<"|"<< worldForce(1) <<"|"<< worldForce(2) <<"|" <<std::endl;
+		//		std::cout << "DEBUG: rpyTorque: " << rpyTorque(0) <<"|"<< rpyTorque(1) <<"|"<< rpyTorque(2) <<"|" <<std::endl;
+		//		std::cout << "DEBUG: forces: " << worldForce(0) <<"|"<< worldForce(1) <<"|"<< worldForce(2) <<"|" <<std::endl;
 
 		//        std::stringstream ss;
 		//        ss << "applying force : [" << worldForce.transpose() << std::endl;
@@ -356,10 +363,11 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		_tkCommands.roll = 0.0;
 		_tkCommands.yaw = 0.0;
 		_tkCommands.thrust = _quadrotorMass*9.8;
-		std::stringstream ss;
-		ss << "I am here" << std::endl;
-		simAddStatusbarMessage(ss.str().c_str());
-		ConsoleHandler::printInConsole(ss);
+		// Debug Print
+		//		std::stringstream ss;
+		//		ss << "I am here" << std::endl;
+		//		simAddStatusbarMessage(ss.str().c_str());
+		//		ConsoleHandler::printInConsole(ss);
 		if ((now-_lastPrintedMsg).toSec() >= 1){
 			std::stringstream ss;
 			ss << "- [" << _associatedObjectName << "] No command received since more than " << (now-_lastReceivedCmdTime).toSec() << "s!" << std::endl;
@@ -486,10 +494,17 @@ void Quadrotor_tk_Handler::_initialize(){
 
 	} else if (_ctrlMode == CustomDataHeaders::INTERNAL){
 		try{
-			//_sub = _nh.subscribe(objectName+"/command", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
-			std::cout<< "Subscribed to Commands";
-			//					_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this);
-			_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
+			std::string objectIdExtracted = objectName.substr(objectName.find('_')+1,objectName.size());
+
+			std::cout<< std::endl << "- [" << objectName <<"] Subscribed for Commands (INTERNAL mode) on the ROS Topic: ";
+			std::string rosTopicCommands = "/TeleKyb/TeleKybCore_" + objectIdExtracted + "/Commands";
+			std::cout << rosTopicCommands << std::endl;
+
+			// Subscribe to the Right topic according to the objectName.
+			_sub = _nh.subscribe(rosTopicCommands, 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
+
+			// Example of right subscription for the object with objectName 'quadrotor_0'
+			//_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this)
 
 		} catch (ros::Exception &e) {
 			std::stringstream ss(e.what());
