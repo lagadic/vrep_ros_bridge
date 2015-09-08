@@ -83,10 +83,6 @@ and, if you want to avoid to type the following command every time:
 	`source /opt/ros/indigo/setup.bash`
 	`source /path_to_catkin_ws/catkin_ws/devel/setup.bash`
 
-#V-REP
-export VREP_ROOT_DIR=/home/jokla/Romeo/SOFT/3rd_PARTY/V-REP
-
-
 * Go in your catkin_workspace and run:
 
 	`catkin_make `
