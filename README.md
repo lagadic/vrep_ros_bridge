@@ -73,10 +73,15 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 
 * Open the file bashrc:
 	` gedit ~/.bashrc`
-and in the end of the file add:
+in the end of the file add:
 
 	`export VREP_ROOT_DIR=/ChangeWithyourPathToVrep/ `
 
+and, if you want to avoid to type the following command every time:	
+	
+	`export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/path_to_catkin_ws/catkin_ws/src`
+	`source /opt/ros/indigo/setup.bash`
+	`source /path_to_catkin_ws/catkin_ws/devel/setup.bash`
 
 * Go in your catkin_workspace and run:
 
