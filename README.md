@@ -67,7 +67,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
     `git checkout indigo-devel` 
 
 
-* Add the file CATKIN_IGNORE in the sub-plugin folder that you don't need (as it is done in quadrotor_tk_handler). To do it go via terminal in the sub-plugin folder and execute: 
+* It is possible that you will not need all the sub-plugins provided by the vrep_ros_bridge. A common case is the one in which you do not need to use the TeleKyb framework (if you do not know what TeleKyb is, it is likely that you will not need it). To ignore this sub-plugin you need to add the file CATKIN_IGNORE in the sub-plugin folder that you do not need (as it is done in quadrotor_tk_handler). To do it go via terminal in the sub-plugin folder and execute: 
 
 	`touch CATKIN_IGNORE`
 
