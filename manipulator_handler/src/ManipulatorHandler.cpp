@@ -4,6 +4,7 @@
 #include <manipulator_handler/ManipulatorHandler.h>
 #include <v_repLib.h>
 #include <vrep_ros_plugin/access.h>
+#include <vrep_ros_plugin/v_repExtRosBridge.h>
 
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
@@ -315,8 +316,15 @@ void ManipulatorHandler::_initialize(){
                     simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::MOT_VELOCITY){
+
+#if VREP_VERSION_MAJOR*10000+VREP_VERSION_MINOR*100+VREP_VERSION_PATCH <= 3*10000+2*100+0
                     simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion, 0);
                     simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled,1);
+#else
+                    ss << " WARNING: " << namectrlmode << " is deprecated!" << std::endl;
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion_deprecated, 0);
+                    simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled_deprecated,1);
+#endif
 
                     int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
                     simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
