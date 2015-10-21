@@ -27,6 +27,7 @@ public:
         TF_EFFORT = 2,
         MOT_VELOCITY = 3,
         PASSIVE_MODE = 4,
+        PASSIVE_MODE_VELOCITY = 5,
         IGNORE_MODE = 20
 
     } ManipulatorCtrlMode;

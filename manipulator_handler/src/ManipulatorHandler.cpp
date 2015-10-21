@@ -4,6 +4,7 @@
 #include <manipulator_handler/ManipulatorHandler.h>
 #include <v_repLib.h>
 #include <vrep_ros_plugin/access.h>
+#include <vrep_ros_plugin/v_repExtRosBridge.h>
 
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
@@ -134,7 +135,27 @@ void ManipulatorHandler::handleSimulation(){
                 ConsoleHandler::printInConsole(ss);
             }
 
-        }
+
+        } else if (_jointCtrlMode[jointIdx] == CustomDataHeaders::PASSIVE_MODE_VELOCITY){
+
+            ROS_DEBUG("Apply new velocity to joint %s: %f.", _jointNames[jointIdx].c_str(), _lastReceivedCmd.velocity[jointIdx]);
+            //_tempjoint = _tempjoint+0.001;
+
+             float cur_pos;
+             simGetJointPosition(_handleOfJoints[jointIdx], &cur_pos);
+             float pos = cur_pos + _lastReceivedCmd.velocity[jointIdx] *  simGetSimulationTimeStep();
+
+            if(simSetJointPosition(_handleOfJoints[jointIdx], pos)==-1){
+                std::stringstream ss;
+                ss << "- [" << _associatedObjectName << "] Error setting velocity for joint "<<
+                        jointIdx <<" (" << _jointNames[jointIdx] <<")." <<std::endl;
+                ConsoleHandler::printInConsole(ss);
+            }
+
+    }
+
+
+
 
     }
 
@@ -194,9 +215,12 @@ void ManipulatorHandler::_initialize(){
 
         } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
             _defaultModeCtrl = CustomDataHeaders::PASSIVE_MODE;
-            ss << " Using control in Passive Mode." << std::endl;
-            namectrlmode = "Control in Passive Mode." ;
-
+            ss << " Using Position control in Passive Mode." << std::endl;
+            namectrlmode = "Position control in Passive Mode." ;
+        } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE_VELOCITY)){
+            _defaultModeCtrl = CustomDataHeaders::PASSIVE_MODE_VELOCITY;
+            ss << " Using velocity control in Passive Mode." << std::endl;
+            namectrlmode = " Velocity control in Passive Mode." ;
         } else {
             _defaultModeCtrl = CustomDataHeaders::TF_POSITION;
             ss << " Invalid control mode specified. Using POSITION as default." << std::endl;
@@ -286,7 +310,11 @@ void ManipulatorHandler::_initialize(){
 
                     } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE)){
                         _jointCtrlMode[jointID] = CustomDataHeaders::PASSIVE_MODE;
-                        ss << " Using control in Passive Mode." << std::endl;
+                        ss << " Using Position control in Passive Mode." << std::endl;
+
+                    } else if (ctrlMode == (int)(CustomDataHeaders::PASSIVE_MODE_VELOCITY)){
+                        _jointCtrlMode[jointID] = CustomDataHeaders::PASSIVE_MODE_VELOCITY;
+                        ss << " Using velocity control in Passive Mode." << std::endl;
 
                     } else {
                         _jointCtrlMode[jointID] = _defaultModeCtrl;
@@ -315,8 +343,15 @@ void ManipulatorHandler::_initialize(){
                     simSetObjectIntParameter(_handleOfJoints[jointID],2001,0);
 
                 } else if (_jointCtrlMode[jointID] == CustomDataHeaders::MOT_VELOCITY){
+
+#if VREP_VERSION_MAJOR*10000+VREP_VERSION_MINOR*100+VREP_VERSION_PATCH <= 3*10000+2*100+0
                     simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion, 0);
                     simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled,1);
+#else
+                    ss << " WARNING: " << namectrlmode << " is deprecated! Use Passive_mode_velocity instead." << std::endl;
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_motion_deprecated, 0);
+                    simSetBooleanParameter(sim_boolparam_joint_motion_handling_enabled_deprecated,1);
+#endif
 
                     int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
                     simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
@@ -327,6 +362,14 @@ void ManipulatorHandler::_initialize(){
                     int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
                     simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
                     simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+
+                } else if (_jointCtrlMode[jointID] == CustomDataHeaders::PASSIVE_MODE_VELOCITY){
+                    simSetJointMode(_handleOfJoints[jointID], sim_jointmode_passive, 0);
+                    int childHandle = simGetObjectChild(_handleOfJoints[jointID],0);
+                    simSetObjectIntParameter( childHandle,3003, 1); // Set the shape relative to the joint as STATIC
+                    simSetObjectIntParameter( childHandle,3004, 0); // Set the shape relative to the joint as NOT RESPONSABLE
+
+
                 }
 
             } else 	{

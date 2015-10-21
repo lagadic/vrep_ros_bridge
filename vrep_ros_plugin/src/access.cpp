@@ -199,6 +199,7 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_TF_effort", (boost::lexical_cast<std::string>(int(TF_EFFORT))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_MOT_velocity", (boost::lexical_cast<std::string>(int(MOT_VELOCITY))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_Passive_mode", (boost::lexical_cast<std::string>(int(PASSIVE_MODE))).c_str());
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_Passive_mode_velocity", (boost::lexical_cast<std::string>(int(PASSIVE_MODE_VELOCITY))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_ctrl_mode_Ignore_mode", (boost::lexical_cast<std::string>(int(IGNORE_MODE))).c_str());
 
     // Contact defines
