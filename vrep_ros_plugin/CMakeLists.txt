@@ -21,8 +21,13 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(cmake_modules REQUIRED)
-find_package(Eigen REQUIRED)
+find_package(Eigen3)
+if(NOT EIGEN3_FOUND)
+  find_package(cmake_modules REQUIRED)
+  find_package(Eigen REQUIRED)
+else()
+  set(Eigen_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -127,7 +132,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/v_repExtRosBridge.h.cmake ${CMA
 
 
 include_directories( include
-  ${catkin_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS} ${VREP_ROOT_DIR}/programming/include/
+  ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${VREP_ROOT_DIR}/programming/include/
 )
 
 add_subdirectory(src)
