@@ -135,6 +135,18 @@ include_directories( include
   ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${VREP_ROOT_DIR}/programming/include/
 )
 
+# copy model files in the vrep folder
+file(GLOB_RECURSE MODEL_FILES_SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} models/*.ttm)
+foreach(MODEL_FILE ${MODEL_FILES_SRC})
+  get_filename_component(MODEL_FILE_NAME ${MODEL_FILE} NAME_WE)
+  list(APPEND MODEL_FILES_DST "${VREP_ROOT_DIR}/${MODEL_FILE}")
+  add_custom_command(OUTPUT "${VREP_ROOT_DIR}/${MODEL_FILE}"
+	  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${MODEL_FILE} ${VREP_ROOT_DIR}/${MODEL_FILE}
+	  DEPENDS ${MODEL_FILE} 
+    COMMENT "Copying model file ${MODEL_FILE_NAME}")
+endforeach(MODEL_FILE)
+add_custom_target(copy_models DEPENDS ${MODEL_FILES_DST})
+
 add_subdirectory(src)
 
 ## Declare a cpp library
