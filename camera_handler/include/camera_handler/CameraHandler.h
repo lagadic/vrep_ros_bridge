@@ -48,6 +48,11 @@ protected:
 	image_transport::CameraPublisher _pubIT;
 
 	/**
+	 * Publisher for depth maps.
+	 */
+	image_transport::Publisher _pubDepth;
+
+	/**
 	 *  Preconstructed msg containing camera information.
 	 */
 	sensor_msgs::CameraInfo _camera_info;
@@ -70,6 +75,11 @@ protected:
 	 * Camera is RGB or not
 	 */
 	bool _cameraIsRGB;
+
+	/**
+	 * Camera has depth sensor
+	 */
+	bool _cameraHasDepth;
 
 	/**
 	 * Ros service server for setting camera parameters from ros.

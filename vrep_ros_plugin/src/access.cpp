@@ -177,6 +177,7 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_main", (boost::lexical_cast<std::string>(int(CAMERA_DATA_MAIN))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_freq", (boost::lexical_cast<std::string>(int(CAMERA_DATA_FREQ))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_rgb", (boost::lexical_cast<std::string>(int(CAMERA_DATA_RGB))).c_str());
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_has_depth", (boost::lexical_cast<std::string>(int(CAMERA_DATA_HAS_DEPTH))).c_str());
 
     // Object Pose defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_obj_pose_data_main", (boost::lexical_cast<std::string>(int(OBJ_POSE_DATA_MAIN))).c_str());

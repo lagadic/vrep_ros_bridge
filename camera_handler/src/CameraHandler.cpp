@@ -17,6 +17,7 @@ CameraHandler::CameraHandler() : GenericObjectHandler(),
     _acquisitionFrequency(30.0),
     _lastPublishedImageTime(0.0),
     _cameraIsRGB(true),
+	_cameraHasDepth(false),
     _it(_nh){
 }
 
@@ -122,6 +123,32 @@ void CameraHandler::handleSimulation(){
             simReleaseBuffer((char*)image_buf);
             _camera_info.header.stamp = now;
             _pubIT.publish(image_msg, _camera_info, now);
+
+            // Publish depth map. Mind that it reuses the same image message
+            if(_cameraHasDepth){
+            	sensor_msgs::Image depth_msg;
+            	depth_msg.header.stamp = now;
+            	depth_msg.header.frame_id = frame_id;
+            	depth_msg.width=resol[0]; //Set the width of the image
+            	depth_msg.height=resol[1]; //Set the height of the image
+            	depth_msg.is_bigendian=0;
+            	depth_msg.encoding=sensor_msgs::image_encodings::TYPE_32FC1;
+            	depth_msg.step=depth_msg.width*sizeof(simFloat);
+            	depth_msg.data.resize(depth_msg.height*depth_msg.step);
+				const simFloat* depth_buf = simGetVisionSensorDepthBuffer(_associatedObjectID);
+				simFloat* depth_img = reinterpret_cast<simFloat*>(depth_msg.data.data());
+
+				for (unsigned int i = 0; i < depth_msg.height; ++i){
+					for (unsigned int j = 0; j < depth_msg.width; ++j){
+						depth_img[i*depth_msg.width+j] = depth_buf[(i+1)*depth_msg.width-j-1];
+					}
+				}
+
+				simReleaseBuffer((char*)depth_buf);
+				_pubDepth.publish(depth_msg);
+
+            }
+
             _lastPublishedImageTime = currentSimulationTime;
         }
     }
@@ -222,11 +249,23 @@ void CameraHandler::_initialize(){
         if (_cameraIsRGB){
             ss << "- [" << _associatedObjectName << "] Camera is RGB." << std::endl;
         } else {
-            ss << "- [" << _associatedObjectName << "] Camera is grayscale." << std::endl;
+        	ss << "- [" << _associatedObjectName << "] Camera is grayscale." << std::endl;
         }
     } else {
         _cameraIsRGB = true;
         ss << "- [" << _associatedObjectName << "] Camera color type not specified. Using rgb as default" << std::endl;
+    }
+
+    if (CAccess::extractSerializationData(developerCustomData,CustomDataHeaders::CAMERA_DATA_HAS_DEPTH,tempMainData)){
+		_cameraHasDepth=CAccess::pop_int(tempMainData);
+		if (_cameraHasDepth){
+			ss << "- [" << _associatedObjectName << "] Camera has a depth sensor." << std::endl;
+		    std::string objectName(_associatedObjectName);
+		    std::replace( objectName.begin(), objectName.end(), '#', '_');
+			_pubDepth = _it.advertise(objectName + "/depthMap", 1);
+		} else {
+			ss << "- [" << _associatedObjectName << "] Camera does not have a depth sensor." << std::endl;
+		}
     }
 
     if (CAccess::extractSerializationData(developerCustomData,CustomDataHeaders::CAMERA_DATA_FREQ,tempMainData)){
