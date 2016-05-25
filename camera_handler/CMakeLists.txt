@@ -12,14 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   vrep_ros_plugin
 )
 
-find_package(Eigen3)
-if(NOT EIGEN3_FOUND)
-  find_package(cmake_modules REQUIRED)
-  find_package(Eigen REQUIRED)
-else()
-  set(Eigen_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-endif()
-
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -93,7 +85,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS roscpp sensor_msgs image_transport vrep_ros_plugin
-  DEPENDS eigen
+  DEPENDS
 )
 
 ###########
@@ -112,7 +104,6 @@ endif()
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Eigen_INCLUDE_DIRS}
   ${VREP_ROOT_DIR}/programming/include/
 )
 

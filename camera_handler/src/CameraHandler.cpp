@@ -7,7 +7,6 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/distortion_models.h>
-#include <Eigen/Geometry>
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
 
@@ -78,46 +77,37 @@ void CameraHandler::handleSimulation(){
             image_msg.is_bigendian=0;
 
             const float* image_buf = simGetVisionSensorImage(_associatedObjectID);
-            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                imageR(image_buf,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                imageG(image_buf+1,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-            Eigen::Map< const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                imageB(image_buf+2,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
 
             if (_cameraIsRGB){
                 image_msg.encoding=sensor_msgs::image_encodings::RGB8; //Set the format to be RGB with 8bits per channel
-                image_msg.step=image_msg.width*3; //Set the image stride in bytes
+                image_msg.step=image_msg.width*sensor_msgs::image_encodings::numChannels(image_msg.encoding); //Set the image stride in bytes
 
                 const int data_len=image_msg.step*image_msg.height;
                 image_msg.data.resize(data_len);
 
-                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-                    imageMsgR(image_msg.data.data(),image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-					imageMsgG(image_msg.data.data()+1,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-                Eigen::Map< Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>, 0, Eigen::Stride< Eigen::Dynamic, 3> >
-					imageMsgB(image_msg.data.data()+2,image_msg.height,image_msg.width, Eigen::Stride<Eigen::Dynamic, 3>(3*(int)(resol[0]), 3) );
-
-                imageMsgR = (255.1f*imageR).rowwise().reverse().cast<unsigned char>();
-                imageMsgG = (255.1f*imageG).rowwise().reverse().cast<unsigned char>();
-                imageMsgB = (255.1f*imageB).rowwise().reverse().cast<unsigned char>();
+                for(unsigned int i=0; i<image_msg.height; ++i){
+                	for(unsigned int j=0; j<image_msg.step; ++j){
+                		image_msg.data[i*image_msg.step+j] =
+                				static_cast<unsigned char>(255.1f*image_buf[(image_msg.height-i-1)*image_msg.step+j]);
+                	}
+                }
 
             } else {
                 image_msg.encoding=sensor_msgs::image_encodings::MONO8;
-                image_msg.step=image_msg.width; //Set the image stride in bytes
+                image_msg.step=image_msg.width*sensor_msgs::image_encodings::numChannels(image_msg.encoding); //Set the image stride in bytes
 
                 const int data_len=image_msg.step*image_msg.height;
                 image_msg.data.resize(data_len);
 
-                Eigen::Map<Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >
-                   imageMsg(image_msg.data.data(),image_msg.height,image_msg.step);
-
-//                const Eigen::Vector3f coeffs(255.1f/3.0,255.1f/3.0,255.1f/3.0); //RGB to grayscale averaging
-                const Eigen::Vector3f coeffs(255.1*Eigen::Vector3f(0.2126,0.7152,0.0722)); //RGB to grayscale luminance
-
-                imageMsg = ((coeffs[0]*imageR+coeffs[1]*imageG+coeffs[2]*imageB).rowwise().reverse()).cast<unsigned char>();
-
+                for(unsigned int i=0; i<image_msg.height; ++i){
+                	for(unsigned int j=0; j<image_msg.step; ++j){
+                		image_msg.data[i*image_msg.step+j] =
+                				static_cast<unsigned char>(255.1f*
+                						(0.2126*image_buf[(image_msg.height-i-1)*image_msg.step*3+3*j]+
+                						 0.7152*image_buf[(image_msg.height-i-1)*image_msg.step*3+3*j+1]+
+										 0.0722*image_buf[(image_msg.height-i-1)*image_msg.step*3+3*j+2]));
+                	}
+                }
             }
 
             simReleaseBuffer((char*)image_buf);
@@ -140,7 +130,7 @@ void CameraHandler::handleSimulation(){
 
 				for (unsigned int i = 0; i < depth_msg.height; ++i){
 					for (unsigned int j = 0; j < depth_msg.width; ++j){
-						depth_img[i*depth_msg.width+j] = depth_buf[(i+1)*depth_msg.width-j-1];
+						depth_img[i*depth_msg.width+j] = depth_buf[(depth_msg.height-i-1)*depth_msg.width+j];
 					}
 				}
 
@@ -279,8 +269,12 @@ void CameraHandler::_initialize(){
     // Compute the intrinsic parameters of the camera
     computeCameraInfo();
 
-    Eigen::Map<Eigen::Matrix3d> K(&_camera_info.K[0]);
-    ss << "- [" << _associatedObjectName << "] Camera intrinsic matrix K = " << std::endl << K <<  std::endl;
+    ss << "- [" << _associatedObjectName << "] Camera intrinsic matrix K = [";
+    for (unsigned i=0; i<3;++i){
+    	for (unsigned j=0; j<3;++j){
+    		ss << _camera_info.K[3*i+j] << (j<2 ? ", " : (i<2 ? "; " : "]\n"));
+    	}
+    }
 
     // Print in the external console
     ConsoleHandler::printInConsole(ss);
