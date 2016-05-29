@@ -118,6 +118,10 @@ VREP_DLLEXPORT unsigned char v_repStart(void* reservedPointer,int reservedInt)
     simRegisterCustomLuaFunction("simExtSetFloatCustomDataFromHeader",
             "number data=simExtSetFloatCustomDataFromHeader(number objectHandle, number dataHeader, number value)",
             inArgsSimExtSetFloatCustomDataFromHeader, GenericObjectContainer::simExtSetFloatCustomDataFromHeader);
+    const int inArgsSimExtSetFloatArrayCustomDataFromHeader[]={3,sim_lua_arg_int,sim_lua_arg_int,sim_lua_arg_float|sim_lua_arg_table};
+    simRegisterCustomLuaFunction("simExtSetFloatArrayCustomDataFromHeader",
+            "number data=simExtSetFloatArrayCustomDataFromHeader(number objectHandle, number dataHeader, table value)",
+            inArgsSimExtSetFloatArrayCustomDataFromHeader, GenericObjectContainer::simExtSetFloatArrayCustomDataFromHeader);
     const int inArgsSimExtSetIntCustomDataFromHeader[]={3,sim_lua_arg_int,sim_lua_arg_int,sim_lua_arg_int};
     simRegisterCustomLuaFunction("simExtSetIntCustomDataFromHeader",
             "number data=simExtSetIntCustomDataFromHeader(number objectHandle, number dataHeader, number value)",

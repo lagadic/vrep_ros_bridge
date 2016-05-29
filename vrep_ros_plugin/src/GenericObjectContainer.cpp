@@ -405,7 +405,79 @@ simVoid GenericObjectContainer::simExtSetFloatCustomDataFromHeader(SLuaCallBack*
 //    }
 }
 
+simVoid GenericObjectContainer::simExtSetFloatArrayCustomDataFromHeader(SLuaCallBack* p){
 
+    if (p->inputArgCount!=3){
+        simSetLastError(pluginName,"This function requires 2 input arguments.");
+        return;
+    }
+
+    if (p->outputArgCount>1){
+        simSetLastError(pluginName,"This function accepts 1 output argument.");
+        return;
+    }
+
+    if(p->inputArgTypeAndSize[0]!=sim_lua_arg_int || p->inputInt[0]<0 ||
+            p->inputArgTypeAndSize[2]!=sim_lua_arg_int ||
+            p->inputArgTypeAndSize[4]!=(sim_lua_arg_float | sim_lua_arg_table)){
+        simSetLastError(pluginName,"Wrong input argument type.");
+        return;
+    }
+
+    if (p->outputArgCount==1 &&
+            p->outputArgTypeAndSize[0]!=sim_lua_arg_float){
+        simSetLastError(pluginName,"Wrong output argument type.");
+        return;
+    }
+
+    // if inputs are correct go ahead
+    const int objectHandle = p->inputInt[0];
+    const int dataHeader = p->inputInt[1];
+
+    const uint buffSize=simGetObjectCustomDataLength(objectHandle, CustomDataHeaders::DEVELOPER_DATA_HEADER);
+
+    if (buffSize<0){
+        simSetLastError(pluginName,"Error getting custom data from the object.");
+        return;
+    }
+
+    std::vector<unsigned char> developerCustomData(buffSize);
+    simGetObjectCustomData(objectHandle,CustomDataHeaders::DEVELOPER_DATA_HEADER,(simChar*)developerCustomData.data());
+
+    // 2. From that retrieved data, extract sub-data with the dataHeader tag, update it, and add it back to the retrieved data:
+    std::vector<unsigned char> tempData;
+    CAccess::extractSerializationData(developerCustomData, dataHeader, tempData);
+
+    tempData.clear(); // we discard the old value (if present)
+
+//    const float dataValue = p->inputFloat[0];
+    std::vector<simFloat> dataValue(p->inputArgTypeAndSize[5]);
+    memcpy(dataValue.data(), p->inputFloat, p->inputArgTypeAndSize[5]*sizeof(simFloat));
+    CAccess::push_float(tempData, dataValue); // we replace it with the new value
+
+    CAccess::insertSerializationData(developerCustomData,dataHeader,tempData);
+
+    // 3. We add/update the scene object with the updated custom data:
+    simAddObjectCustomData(objectHandle,CustomDataHeaders::DEVELOPER_DATA_HEADER,
+            (simChar*)developerCustomData.data(),int(developerCustomData.size()));
+
+    ///TODO: add output bool to indicate success
+//    std::vector<unsigned char> tempData;
+//    if(extractSerializationData(developerCustomData, dataHeader, tempData)){
+//
+//        p->outputArgCount=1; // 1 return value (function succeeded)
+//
+//        p->outputArgTypeAndSize=(simInt*)simCreateBuffer(p->outputArgCount*2*sizeof(simInt)); // x return values takes x*2 simInt for the type and size buffer
+//
+//        p->outputArgTypeAndSize[2*0+0]=sim_lua_arg_float;   // The first return value is an int
+//        p->outputArgTypeAndSize[2*0+1]=sim_lua_arg_nil;     // Not used (table size if the return value was a table)
+//
+//        p->outputFloat=(simFloat*)simCreateBuffer(1*sizeof(simFloat)); // 1 float return value
+//        p->outputFloat[0] = (simFloat)CAccess::pop_float(tempData);
+//    } else {
+//        simSetLastError(pluginName,"The data was not found.");
+//    }
+}
 
 simVoid GenericObjectContainer::simExtSetIntCustomDataFromHeader(SLuaCallBack* p){
 

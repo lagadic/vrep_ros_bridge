@@ -91,18 +91,24 @@ void CAccess::insertSerializationData(std::vector<unsigned char>& buffer,int dat
 //		buffer.push_back(data[i]);
 }
 
-void CAccess::push_int(std::vector<unsigned char>& buffer,int data){
+void CAccess::push_int(std::vector<unsigned char>& buffer, const int data){
 //	for (unsigned int i=0;i<sizeof(data);i++)
 //		buffer.push_back(((unsigned char*)&data)[i]);
 	buffer.resize(buffer.size()+sizeof(int));
 	*((int*)(&(*buffer.end()))-1) = data;
 }
 
-void CAccess::push_float(std::vector<unsigned char>& buffer,float data){
+void CAccess::push_float(std::vector<unsigned char>& buffer, const float data){
 //	for (unsigned int i=0;i<sizeof(data);i++)
 //		buffer.push_back(((unsigned char*)&data)[i]);
     buffer.resize(buffer.size()+sizeof(float));
     *((float*)(&(*buffer.end()))-1) = data;
+}
+
+void CAccess::push_float(std::vector<unsigned char>& buffer, const std::vector<float> data){
+    buffer.resize(buffer.size()+sizeof(float)*data.size());
+	float * buf = ((float*)(&(*buffer.end()))) - data.size();
+	memcpy(buf, data.data(), sizeof(float)*data.size());
 }
 
 int CAccess::pop_int(std::vector<unsigned char>& buffer){
@@ -141,6 +147,17 @@ float CAccess::pop_float(std::vector<unsigned char>& buffer){
         buffer.resize(buffer.size()-sizeof(float));
         return retVal;
     }
+}
+
+std::vector<float> CAccess::pop_float(std::vector<unsigned char>& buffer, const unsigned int n){
+	std::vector<float> out;
+	if (buffer.size()>=sizeof(float)*n){
+		out.resize(n);
+		const float * buf = ((const float*)(&(*buffer.end()))) - n;
+		memcpy(out.data(), buf, sizeof(float)*n);
+		buffer.resize(buffer.size()-sizeof(float)*n);
+	}
+	return out;
 }
 
 void CustomDataHeaders::registerCustomDataHeaders(){
