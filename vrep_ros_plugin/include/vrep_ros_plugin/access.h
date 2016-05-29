@@ -90,6 +90,8 @@ public:
     const static unsigned int CAMERA_DATA_RGB = 302;
 	/// Set to 0 if the depth should be ignored; set to any other value otherwise.
     const static unsigned int CAMERA_DATA_HAS_DEPTH = 303;
+	/// Set to 0 if the image should be published with a 8-bit encoding; set to any other value to use a 32 bit float encoding instead.
+    const static unsigned int CAMERA_DATA_USE_FLOAT = 304;
     ///@}
 
     ///@name Object Pose defines

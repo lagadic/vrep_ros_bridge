@@ -82,6 +82,11 @@ protected:
 	bool _cameraHasDepth;
 
 	/**
+	 * Camera image is published as a 32 bit float
+	 */
+	bool _cameraIsFloat;
+
+	/**
 	 * Ros service server for setting camera parameters from ros.
 	 */
 	ros::ServiceServer _service;
