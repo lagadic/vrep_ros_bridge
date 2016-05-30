@@ -106,13 +106,6 @@ public:
     const static unsigned int OBJ_TWIST_DATA_MAIN=500;
     ///@}
 
-    ///@name Set Object Twist defines
-    ///@{
-    /// The main identifier of a Set Twist object.
-    const static unsigned int SET_OBJ_TWIST_DATA_MAIN=550;
-    ///@}
-
-
     ///@name Manipulator defines
     ///@{
     /// The main identifier of a manipulator object.

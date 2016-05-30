@@ -18,26 +18,31 @@ public:
 	SetTwistHandler();
 	~SetTwistHandler();
 
-    /**
-     * @copydoc GenericObjectHandler::synchronize()
-     */
+	/**
+	 * @copydoc GenericObjectHandler::synchronize()
+	 */
 	void synchronize();
 
 	/**
-     * @copydoc GenericObjectHandler::handleSimulation()
+	 * @copydoc GenericObjectHandler::handleSimulation()
 	 */
 	void handleSimulation();
 
 	/**
-     * @copydoc GenericObjectHandler::getObjectType()
-     */
+	 * @copydoc GenericObjectHandler::getObjectType()
+	 */
 	unsigned int getObjectType() const;
+
+	/// The main identifier of a Set Twist object.
+	const static unsigned int SET_OBJ_TWIST_DATA_MAIN=550;
+	const static unsigned int SET_OBJ_TWIST_DATA_LIN_GAIN=SET_OBJ_TWIST_DATA_MAIN+1;
+	const static unsigned int SET_OBJ_TWIST_DATA_ANG_GAIN=SET_OBJ_TWIST_DATA_LIN_GAIN+1;
 
 protected:
 
-    /**
-     * @copydoc GenericObjectHandler::_initialize()
-     */
+	/**
+	 * @copydoc GenericObjectHandler::_initialize()
+	 */
 	void _initialize();
 
 	/**
@@ -46,19 +51,22 @@ protected:
 	ros::Subscriber _sub;
 
 	/**
-     * Last received TwistCommand message.
-     */
+	 * Last received TwistCommand message.
+	 */
 	geometry_msgs::TwistStamped _twistCommands;
 
 	/**
-     * Callback for velocity commands.
-     */
+	 * Callback for velocity commands.
+	 */
 	void TwistCommandCallback(const geometry_msgs::TwistStamped& msg);
 
 	/**
 	 * Specifies if the object is static or dynamically enabled
 	 */
 	simInt _isStatic;
+
+	simFloat _linGain;
+	simFloat _angGain;
 };
 
 

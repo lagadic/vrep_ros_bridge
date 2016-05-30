@@ -203,9 +203,6 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     // Object twist defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_obj_twist_data_main", (boost::lexical_cast<std::string>(int(OBJ_TWIST_DATA_MAIN))).c_str());
 
-    // Set Object twist defines
-    simRegisterCustomLuaVariable("sim_ext_ros_bridge_set_obj_twist_data_main", (boost::lexical_cast<std::string>(int(SET_OBJ_TWIST_DATA_MAIN))).c_str());
-
     // Manipulator defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_data_main", (boost::lexical_cast<std::string>(int(MANIPULATOR_DATA_MAIN))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_data_freq", (boost::lexical_cast<std::string>(int(MANIPULATOR_DATA_FREQ))).c_str());
