@@ -88,6 +88,10 @@ public:
     const static unsigned int CAMERA_DATA_FREQ = 301;
 	/// Set to 0 if the camera is gray-scale; set to any other value otherwise.
     const static unsigned int CAMERA_DATA_RGB = 302;
+	/// Set to 0 if the depth should be ignored; set to any other value otherwise.
+    const static unsigned int CAMERA_DATA_HAS_DEPTH = 303;
+	/// Set to 0 if the image should be published with a 8-bit encoding; set to any other value to use a 32 bit float encoding instead.
+    const static unsigned int CAMERA_DATA_USE_FLOAT = 304;
     ///@}
 
     ///@name Object Pose defines
@@ -101,13 +105,6 @@ public:
     /// The main identifier of a Twist measurement object.
     const static unsigned int OBJ_TWIST_DATA_MAIN=500;
     ///@}
-
-    ///@name Set Object Twist defines
-    ///@{
-    /// The main identifier of a Set Twist object.
-    const static unsigned int SET_OBJ_TWIST_DATA_MAIN=550;
-    ///@}
-
 
     ///@name Manipulator defines
     ///@{
@@ -180,14 +177,21 @@ public:
 	 * @param buffer The custom data.
 	 * @param data The integer to be inserted.
 	 */
-	static void push_int(std::vector<unsigned char>& buffer,int data);
+	static void push_int(std::vector<unsigned char>& buffer, const int data);
 
 	/**
      * Insert a float in the custom data.
      * @param buffer The custom data.
      * @param data The float to be inserted.
      */
-	static void push_float(std::vector<unsigned char>& buffer,float data);
+	static void push_float(std::vector<unsigned char>& buffer, const float data);
+
+	/**
+     * Insert a float array in the custom data.
+     * @param buffer The custom data.
+     * @param data The float array to be inserted.
+     */
+	static void push_float(std::vector<unsigned char>& buffer, const std::vector<float> data);
 
     /**
      * Extract an integer from the custom data. Returns 0 if the \p buffer is smaller than sizeof(int).
@@ -204,6 +208,15 @@ public:
      * @return The extracted float.
      */
 	static float pop_float(std::vector<unsigned char>& buffer);
+
+    /**
+     * Extract a float array from the custom data. Returns 0 if the \p buffer is smaller than sizeof(float)*N.
+     * If the buffer is larger than sizeof(float)*N only the last sizeof(float)*N bytes are considered.
+     * @param buffer The custom data.
+     * @param n Number of floats to pop.
+     * @return The extracted float.
+     */
+	static std::vector<float> pop_float(std::vector<unsigned char>& buffer, const unsigned int n);
 
 };
 

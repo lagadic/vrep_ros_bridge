@@ -109,6 +109,13 @@ public:
     static void simExtSetFloatCustomDataFromHeader(SLuaCallBack* p);
 
     /**
+     * A Lua custom command that sets the floating point vector custom data corresponding to a certain header (among those defined in \p CustomDataHeaders) from an object.
+     * TODO: use binding to pass the object container so that the object can be initialized each time the custom data are modified.
+     * @param p Lua callback parameter. See V-REP main documentation for details.
+     */
+    static void simExtSetFloatArrayCustomDataFromHeader(SLuaCallBack* p);
+
+    /**
      * A Lua custom command that sets the integer point custom data corresponding to a certain header (among those defined in \p CustomDataHeaders) from an object.
      * TODO: use binding to pass the object container so that the object can be initialized each time the custom data are modified.
      * @param p Lua callback parameter. See V-REP main documentation for details.

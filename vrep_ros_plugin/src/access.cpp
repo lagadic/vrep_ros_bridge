@@ -91,18 +91,24 @@ void CAccess::insertSerializationData(std::vector<unsigned char>& buffer,int dat
 //		buffer.push_back(data[i]);
 }
 
-void CAccess::push_int(std::vector<unsigned char>& buffer,int data){
+void CAccess::push_int(std::vector<unsigned char>& buffer, const int data){
 //	for (unsigned int i=0;i<sizeof(data);i++)
 //		buffer.push_back(((unsigned char*)&data)[i]);
 	buffer.resize(buffer.size()+sizeof(int));
 	*((int*)(&(*buffer.end()))-1) = data;
 }
 
-void CAccess::push_float(std::vector<unsigned char>& buffer,float data){
+void CAccess::push_float(std::vector<unsigned char>& buffer, const float data){
 //	for (unsigned int i=0;i<sizeof(data);i++)
 //		buffer.push_back(((unsigned char*)&data)[i]);
     buffer.resize(buffer.size()+sizeof(float));
     *((float*)(&(*buffer.end()))-1) = data;
+}
+
+void CAccess::push_float(std::vector<unsigned char>& buffer, const std::vector<float> data){
+    buffer.resize(buffer.size()+sizeof(float)*data.size());
+	float * buf = ((float*)(&(*buffer.end()))) - data.size();
+	memcpy(buf, data.data(), sizeof(float)*data.size());
 }
 
 int CAccess::pop_int(std::vector<unsigned char>& buffer){
@@ -143,6 +149,17 @@ float CAccess::pop_float(std::vector<unsigned char>& buffer){
     }
 }
 
+std::vector<float> CAccess::pop_float(std::vector<unsigned char>& buffer, const unsigned int n){
+	std::vector<float> out;
+	if (buffer.size()>=sizeof(float)*n){
+		out.resize(n);
+		const float * buf = ((const float*)(&(*buffer.end()))) - n;
+		memcpy(out.data(), buf, sizeof(float)*n);
+		buffer.resize(buffer.size()-sizeof(float)*n);
+	}
+	return out;
+}
+
 void CustomDataHeaders::registerCustomDataHeaders(){
 
 
@@ -177,15 +194,14 @@ void CustomDataHeaders::registerCustomDataHeaders(){
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_main", (boost::lexical_cast<std::string>(int(CAMERA_DATA_MAIN))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_freq", (boost::lexical_cast<std::string>(int(CAMERA_DATA_FREQ))).c_str());
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_rgb", (boost::lexical_cast<std::string>(int(CAMERA_DATA_RGB))).c_str());
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_has_depth", (boost::lexical_cast<std::string>(int(CAMERA_DATA_HAS_DEPTH))).c_str());
+    simRegisterCustomLuaVariable("sim_ext_ros_bridge_camera_data_use_float", (boost::lexical_cast<std::string>(int(CAMERA_DATA_USE_FLOAT))).c_str());
 
     // Object Pose defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_obj_pose_data_main", (boost::lexical_cast<std::string>(int(OBJ_POSE_DATA_MAIN))).c_str());
 
     // Object twist defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_obj_twist_data_main", (boost::lexical_cast<std::string>(int(OBJ_TWIST_DATA_MAIN))).c_str());
-
-    // Set Object twist defines
-    simRegisterCustomLuaVariable("sim_ext_ros_bridge_set_obj_twist_data_main", (boost::lexical_cast<std::string>(int(SET_OBJ_TWIST_DATA_MAIN))).c_str());
 
     // Manipulator defines
     simRegisterCustomLuaVariable("sim_ext_ros_bridge_manipulator_data_main", (boost::lexical_cast<std::string>(int(MANIPULATOR_DATA_MAIN))).c_str());

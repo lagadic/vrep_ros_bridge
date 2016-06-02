@@ -1,0 +1,12 @@
+<library path="lib/libdrawing_handler">
+  <class type="DrawLineHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for drawing a line.
+  </description>
+  </class>
+    <class type="DrawMeshHandler" base_class_type="GenericObjectHandler">
+  <description>
+  This is a plugin for drawing a triangle mesh.
+  </description>
+  </class>
+</library>

@@ -362,7 +362,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 		_tkCommands.pitch = 0.0;
 		_tkCommands.roll = 0.0;
 		_tkCommands.yaw = 0.0;
-		_tkCommands.thrust = _quadrotorMass*9.8;
+		_tkCommands.thrust = 0.0;//_quadrotorMass*9.8;
 		// Debug Print
 		//		std::stringstream ss;
 		//		ss << "I am here" << std::endl;
@@ -485,7 +485,7 @@ void Quadrotor_tk_Handler::_initialize(){
 
 	if (_ctrlMode == CustomDataHeaders::DIRECT){
 		try{
-			_sub = _nh.subscribe(objectName+"/command", 1000, &Quadrotor_tk_Handler::tkMotorCommandsCallback, this);
+			_sub = _nh.subscribe(objectName+"/Commands", 1000, &Quadrotor_tk_Handler::tkMotorCommandsCallback, this);
 		} catch (ros::Exception &e) {
 			std::stringstream ss(e.what());
 			ss << std::endl;
@@ -494,14 +494,14 @@ void Quadrotor_tk_Handler::_initialize(){
 
 	} else if (_ctrlMode == CustomDataHeaders::INTERNAL){
 		try{
-			std::string objectIdExtracted = objectName.substr(objectName.find('_')+1,objectName.size());
-
-			std::cout<< std::endl << "- [" << objectName <<"] Subscribed for Commands (INTERNAL mode) on the ROS Topic: ";
-			std::string rosTopicCommands = "/TeleKyb/TeleKybCore_" + objectIdExtracted + "/Commands";
-			std::cout << rosTopicCommands << std::endl;
+//			std::string objectIdExtracted = objectName.substr(objectName.find('_')+1,objectName.size());
+//
+//			std::cout<< std::endl << "- [" << objectName <<"] Subscribed for Commands (INTERNAL mode) on the ROS Topic: ";
+//			std::string rosTopicCommands = "/TeleKyb/TeleKybCore_" + objectIdExtracted + "/Commands";
+//			std::cout << rosTopicCommands << std::endl;
 
 			// Subscribe to the Right topic according to the objectName.
-			_sub = _nh.subscribe(rosTopicCommands, 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
+			_sub = _nh.subscribe(objectName+"/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback, this);
 
 			// Example of right subscription for the object with objectName 'quadrotor_0'
 			//_sub = _nh.subscribe("/TeleKyb/TeleKybCore_0/Commands", 1000, &Quadrotor_tk_Handler::tkCommandsCallback(), this)

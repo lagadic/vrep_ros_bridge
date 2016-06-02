@@ -1,23 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(manipulator_handler)
+project(drawing_handler)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  sensor_msgs
-  cmake_modules
+  geometry_msgs
+  shape_msgs
   vrep_ros_plugin
 )
-
-find_package(Eigen3)
-if(NOT EIGEN3_FOUND)
-  find_package(cmake_modules REQUIRED)
-  find_package(Eigen REQUIRED)
-else()
-  set(Eigen_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-endif()
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -91,8 +83,8 @@ endif()
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp sensor_msgs vrep_ros_plugin
-  DEPENDS eigen
+  CATKIN_DEPENDS roscpp geometry_msgs shape_msgs vrep_ros_plugin
+  DEPENDS
 )
 
 ###########
@@ -111,13 +103,13 @@ endif()
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Eigen_INCLUDE_DIRS}
   ${VREP_ROOT_DIR}/programming/include/
 )
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-   src/ManipulatorHandler.cpp
+   src/DrawLineHandler.cpp
+   src/DrawMeshHandler.cpp
 )
 
 

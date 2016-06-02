@@ -12,8 +12,13 @@ find_package(catkin REQUIRED COMPONENTS
   ##telekyb_base
 )
 
-find_package(cmake_modules REQUIRED)
-find_package(Eigen REQUIRED)
+find_package(Eigen3)
+if(NOT EIGEN3_FOUND)
+  find_package(cmake_modules REQUIRED)
+  find_package(Eigen REQUIRED)
+else()
+  set(Eigen_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
