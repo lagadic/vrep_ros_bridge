@@ -23,12 +23,12 @@
 
   <build_depend>roscpp</build_depend>
   <build_depend>geometry_msgs</build_depend>
-  <build_depend>nav_msgs</build_depend>
+  <build_depend>shape_msgs</build_depend>
   <build_depend>vrep_ros_plugin</build_depend>
 
   <run_depend>roscpp</run_depend>
   <run_depend>geometry_msgs</run_depend>
-  <run_depend>nav_msgs</run_depend>
+  <run_depend>shape_msgs</run_depend>
   <run_depend>vrep_ros_plugin</run_depend>
 
 
