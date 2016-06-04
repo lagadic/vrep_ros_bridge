@@ -79,9 +79,9 @@ in the end of the file add:
 
 and, if you want to avoid to type the following command every time:	
 	
-	`export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/path_to_catkin_ws/catkin_ws/src`
-	`source /opt/ros/indigo/setup.bash`
-	`source /path_to_catkin_ws/catkin_ws/devel/setup.bash`
+	`export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/path_to_catkin_ws/catkin_ws/src
+	source /opt/ros/indigo/setup.bash
+	source /path_to_catkin_ws/catkin_ws/devel/setup.bash`
 
 * Go in your catkin_workspace and run:
 
@@ -97,6 +97,10 @@ and, if you want to avoid to type the following command every time:
 	`ln -s /YOUR_CATKIN_WS_PATH/devel/lib/libv_repExtRosBridge.so`
 
 where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
+
+* If you are using a new version of V-REP (V3_3_1_64_Linux) we need an additional step. We need to create a link pointing to the file compiledRosPlugins/libv_repExtRos.so in the V-REP root folder. Go via terminal to the installation folder of V-Rep and type:
+
+	`ln -s compiledRosPlugins/libv_repExtRos.so`	
 
 * In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
