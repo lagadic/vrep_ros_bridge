@@ -1,4 +1,4 @@
-# vrep_ros_bridge
+# V-Rep ROS Bridge
 
 V-Rep ROS Bridge is a plugin for V-Rep developed by the Inria
 <a href="http://www.irisa.fr/lagadic" target="_parent">Lagadic</a> team located at <a href="http://www.inria.fr/rennes" target="_parent">Inria Rennes</a>.
@@ -59,12 +59,11 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 
 	`git clone https://github.com/lagadic/vrep_ros_bridge.git`
 
-* Checkout the right branch depening on your ROS version (Hydro or Indigo)
+* Use the branch `master` if you are using ROS Indigo or ROS Jade
+* If you are using Hydro:
 
     `git checkout hydro-devel`
- or
 
-    `git checkout indigo-devel` 
 
 
 * It is possible that you will not need all the sub-plugins provided by the vrep_ros_bridge. A common case is the one in which you do not need to use the TeleKyb framework (if you do not know what TeleKyb is, it is likely that you will not need it). To ignore this sub-plugin you need to add the file CATKIN_IGNORE in the sub-plugin folder that you do not need (as it is done in quadrotor_tk_handler). To do it go via terminal in the sub-plugin folder and execute: 
