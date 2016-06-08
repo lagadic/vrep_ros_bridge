@@ -191,11 +191,19 @@ void DrawMeshHandler::msgCallback(shape_msgs::MeshConstPtr msg){
 }
 
 void DrawMeshHandler::registerCustomVariables() const{
+#if VREP_VERSION_MAJOR*10000 + VREP_VERSION_MINOR*100 + VREP_VERSION_PATCH < 3*10000 + 3*100 + 1
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_mesh_data_main", (boost::lexical_cast<std::string>(int(DATA_MAIN))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_mesh_data_width", (boost::lexical_cast<std::string>(int(DATA_WIDTH))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_mesh_data_diffuse", (boost::lexical_cast<std::string>(int(DATA_DIFFUSE))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_mesh_data_specular", (boost::lexical_cast<std::string>(int(DATA_SPECULAR))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_mesh_data_emission", (boost::lexical_cast<std::string>(int(DATA_EMISSION))).c_str());
+#else
 	simRegisterScriptVariable("sim_ext_ros_bridge_draw_mesh_data_main", (boost::lexical_cast<std::string>(int(DATA_MAIN))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_draw_mesh_data_width", (boost::lexical_cast<std::string>(int(DATA_WIDTH))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_draw_mesh_data_diffuse", (boost::lexical_cast<std::string>(int(DATA_DIFFUSE))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_draw_mesh_data_specular", (boost::lexical_cast<std::string>(int(DATA_SPECULAR))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_draw_mesh_data_emission", (boost::lexical_cast<std::string>(int(DATA_EMISSION))).c_str(),0);
+#endif	
 }
 
 PLUGINLIB_EXPORT_CLASS(DrawMeshHandler, GenericObjectHandler)

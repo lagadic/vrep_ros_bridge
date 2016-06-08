@@ -116,23 +116,45 @@ void CameraHandler::handleSimulation(){
 					simReleaseBuffer((simChar*)image_buf);
 				}
 			} else {
-				if (_cameraIsFloat){
-					const simFloat* image_buf = simGetVisionSensorImage(_associatedObjectID+sim_handleflag_greyscale);
+				if (_cameraIsFloat){					
 					simFloat* image_msg_pt = (simFloat*)(image_msg.data.data());
+#if VREP_VERSION_MAJOR*10000 + VREP_VERSION_MINOR*100 + VREP_VERSION_PATCH < 3*10000 + 3*100 + 1
+					const simFloat* image_buf = simGetVisionSensorImage(_associatedObjectID);
+					for(unsigned int i=0; i<image_msg.height; ++i){
+						for(unsigned int j=0; j<pixPerLine; ++j){
+							image_msg_pt[i*pixPerLine+j] = image_buf[3*((image_msg.height-i-1)*pixPerLine+j)]*0.2126f + 
+								image_buf[3*((image_msg.height-i-1)*pixPerLine+j)+1]*0.7152f +
+								image_buf[3*((image_msg.height-i-1)*pixPerLine+j)+2]*0.0722f;
+						}
+					}
+#else
+					const simFloat* image_buf = simGetVisionSensorImage(_associatedObjectID+sim_handleflag_greyscale);
 					for(unsigned int i=0; i<image_msg.height; ++i){
 						for(unsigned int j=0; j<pixPerLine; ++j){
 							image_msg_pt[i*pixPerLine+j] = image_buf[(image_msg.height-i-1)*pixPerLine+j];
 						}
 					}
+#endif
 					simReleaseBuffer((simChar*)image_buf);
 				} else {
-					const simUChar* image_buf = simGetVisionSensorCharImage(_associatedObjectID+sim_handleflag_greyscale, resol, resol+1);
 					simUChar* image_msg_pt = static_cast<simUChar*>(image_msg.data.data());
+#if VREP_VERSION_MAJOR*10000 + VREP_VERSION_MINOR*100 + VREP_VERSION_PATCH < 3*10000 + 3*100 + 1
+					const simUChar* image_buf = simGetVisionSensorCharImage(_associatedObjectID, resol, resol+1);
+					for(unsigned int i=0; i<image_msg.height; ++i){
+						for(unsigned int j=0; j<pixPerLine; ++j){
+							image_msg_pt[i*pixPerLine+j] = (simUChar)((float)image_buf[3*((image_msg.height-i-1)*pixPerLine+j)]*0.2126f + 
+								(float)image_buf[3*((image_msg.height-i-1)*pixPerLine+j)+1]*0.7152f +
+								(float)image_buf[3*((image_msg.height-i-1)*pixPerLine+j)+2]*0.0722f);
+						}
+					}
+#else
+					const simUChar* image_buf = simGetVisionSensorCharImage(_associatedObjectID+sim_handleflag_greyscale, resol, resol+1);
 					for(unsigned int i=0; i<image_msg.height; ++i){
 						for(unsigned int j=0; j<pixPerLine; ++j){
 							image_msg_pt[i*pixPerLine+j] = image_buf[(image_msg.height-i-1)*pixPerLine+j];
 						}
 					}
+#endif
 					simReleaseBuffer((simChar*)image_buf);
 				}
 			}

@@ -173,6 +173,20 @@ void DrawLineHandler::lineCallback(geometry_msgs::PolygonStampedConstPtr msg){
 }
 
 void DrawLineHandler::registerCustomVariables() const{
+#if VREP_VERSION_MAJOR*10000 + VREP_VERSION_MINOR*100 + VREP_VERSION_PATCH < 3*10000 + 3*100 + 1
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str());
+
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str());
+
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_DIFFUSE))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_SPECULAR))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_EMISSION))).c_str());
+
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str());
+#else
 	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str(),0);
 
 	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str(),0);
@@ -185,6 +199,7 @@ void DrawLineHandler::registerCustomVariables() const{
 	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str(),0);
 	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str(),0);
+#endif
 }
 
 PLUGINLIB_EXPORT_CLASS(DrawLineHandler, GenericObjectHandler)
