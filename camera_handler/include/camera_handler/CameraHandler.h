@@ -14,27 +14,30 @@ public:
 	CameraHandler();
 	~CameraHandler();
 
-    /**
-     * @copydoc GenericObjectHandler::synchronize()
-     */
+	/**
+	 * @copydoc GenericObjectHandler::synchronize()
+	 */
 	void synchronize();
 
 	/**
-     * @copydoc GenericObjectHandler::handleSimulation()
+	 * @copydoc GenericObjectHandler::handleSimulation()
 	 */
 	void handleSimulation();
 
 	/**
-     * @copydoc GenericObjectHandler::getObjectType()
-     */
+	 * @copydoc GenericObjectHandler::getObjectType()
+	 */
 	unsigned int getObjectType() const;
+
+
+	bool endOfSimulation();
 
 
 protected:
 
-    /**
-     * @copydoc GenericObjectHandler::_initialize()
-     */
+	/**
+	 * @copydoc GenericObjectHandler::_initialize()
+	 */
 	void _initialize();
 
 	/**
@@ -91,13 +94,13 @@ protected:
 	 */
 	ros::ServiceServer _service;
 
-    /**
-     * Service handler for setting camera parameters from ros.
-     * @param req The desired camera parameters.
-     * @param res res.success is true if the parameters have been set properly, false otherwise. Some more information may be contained in res.status_message.
-     * @return Same as res.success
-     */
-    bool setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res);
+	/**
+	 * Service handler for setting camera parameters from ros.
+	 * @param req The desired camera parameters.
+	 * @param res res.success is true if the parameters have been set properly, false otherwise. Some more information may be contained in res.status_message.
+	 * @return Same as res.success
+	 */
+	bool setCameraInfo(sensor_msgs::SetCameraInfo::Request &req, sensor_msgs::SetCameraInfo::Response &res);
 };
 
 

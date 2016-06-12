@@ -32,11 +32,6 @@ void CameraHandler::synchronize(){
 
 	_associatedObjectName = simGetObjectName(_associatedObjectID);
 
-	// Remove # chars for compatibility with ROS
-	std::string objectName(_associatedObjectName);
-	std::replace( objectName.begin(), objectName.end(), '#', '_');
-	_pubIT = _it.advertiseCamera(objectName, 1);
-	_service = _nh.advertiseService(objectName + "/set_camera_info", &CameraHandler::setCameraInfo, this);
 }
 
 void CameraHandler::handleSimulation(){
@@ -278,6 +273,12 @@ void CameraHandler::_initialize(){
 	if (_initialized)
 		return;
 
+	// Remove # chars for compatibility with ROS
+	std::string objectName(_associatedObjectName);
+	std::replace( objectName.begin(), objectName.end(), '#', '_');
+	_pubIT = _it.advertiseCamera(objectName, 1);
+	_service = _nh.advertiseService(objectName + "/set_camera_info", &CameraHandler::setCameraInfo, this);
+
 	// get some data from the main object
 	std::vector<unsigned char> developerCustomData;
 	getDeveloperCustomData(developerCustomData);
@@ -348,6 +349,13 @@ void CameraHandler::_initialize(){
 
 	_lastPublishedImageTime = -1e5;
 	_initialized=true;
+}
+
+
+bool CameraHandler::endOfSimulation(){
+	_pubIT.shutdown();
+	_pubDepth.shutdown();
+	return GenericObjectHandler::endOfSimulation();
 }
 
 
