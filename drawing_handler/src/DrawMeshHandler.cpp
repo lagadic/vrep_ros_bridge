@@ -83,7 +83,7 @@ void DrawMeshHandler::handleSimulation(){
 
 		ss << "Drawing mesh at t=" << currentSimulationTime <<  std::endl;
 
-		_drawingObject = simAddDrawingObject(sim_drawing_triangles+sim_drawing_followparentvisibility, _width, 0.0,
+		_drawingObject = simAddDrawingObject(sim_drawing_triangles+sim_drawing_painttag+sim_drawing_followparentvisibility, _width, 0.0,
 				_associatedObjectID, msg->triangles.size(), _diffuse, NULL, _specular, _emission);
 
 		simFloat data[9];

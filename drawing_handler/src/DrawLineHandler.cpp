@@ -69,13 +69,15 @@ void DrawLineHandler::handleSimulation(){
 
 	const simFloat currentSimulationTime = simGetSimulationTime();
 
-	if ((currentSimulationTime-_lastTime) >= 1.0/_frequency && _line != NULL){
+	geometry_msgs::PolygonStampedConstPtr line = _line;
+	_line.reset(); //only draw new meshes TODO: we might loose a message if it arrives between this and the previous line!
 
-		geometry_msgs::PolygonStampedConstPtr line = _line;
+	if ((currentSimulationTime-_lastTime) >= 1.0/_frequency && line != NULL){
+
 
 		if(_drawingObject>0)
 			simRemoveDrawingObject(_drawingObject);
-		_drawingObject = simAddDrawingObject(sim_drawing_lines+sim_drawing_followparentvisibility, _width, 0.0,
+		_drawingObject = simAddDrawingObject(sim_drawing_lines+sim_drawing_painttag+sim_drawing_followparentvisibility, _width, 0.0,
 				_associatedObjectID, line->polygon.points.size()-1, _diffuse, NULL, _specular, _emission);
 
 		simFloat data[6];
