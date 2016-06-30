@@ -35,9 +35,10 @@ public:
 	const static unsigned int DATA_MAIN=900;
 
 	const static unsigned int DATA_WIDTH = DATA_MAIN+1;
-	const static unsigned int DATA_DIFFUSE = DATA_MAIN+1;
+	const static unsigned int DATA_DIFFUSE = DATA_WIDTH+1;
 	const static unsigned int DATA_SPECULAR = DATA_DIFFUSE+1;
 	const static unsigned int DATA_EMISSION = DATA_SPECULAR+1;
+	const static unsigned int DATA_TRANSPARENCY = DATA_EMISSION+1;
 
 
 protected:
@@ -83,8 +84,9 @@ protected:
 	simInt _drawingObject;
 
 
-	simInt _width; /// Line width
-	simFloat _diffuse[3]; /// Line diffuse color
-	simFloat _specular[3]; /// Line specular color
-	simFloat _emission[3]; /// Line emission color
+	simInt _width; /// Mesh line width
+	simFloat _diffuse[3]; /// Mesh diffuse color
+	simFloat _specular[3]; /// Mesh specular color
+	simFloat _emission[3]; /// Mesh emission color
+	simInt _transparency; /// Mesh transparency level: 0=100%, 1=50%, 2=25%, 3=12.5%
 };
