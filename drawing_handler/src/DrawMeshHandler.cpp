@@ -77,8 +77,6 @@ void DrawMeshHandler::handleSimulation() {
 		if (_drawingObject > 0)
 			simRemoveDrawingObject(_drawingObject);
 
-		ss << "Drawing mesh at t=" << currentSimulationTime << std::endl;
-
 		_drawingObject = simAddDrawingObject(
 				sim_drawing_triangles + sim_drawing_painttag
 						+ sim_drawing_followparentvisibility + _transparency,
