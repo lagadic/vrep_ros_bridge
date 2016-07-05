@@ -32,14 +32,12 @@ public:
 	 */
 	unsigned int getObjectType() const;
 
-	const static unsigned int DATA_MAIN=900;
-
-	const static unsigned int DATA_WIDTH = DATA_MAIN+1;
-	const static unsigned int DATA_DIFFUSE = DATA_WIDTH+1;
-	const static unsigned int DATA_SPECULAR = DATA_DIFFUSE+1;
-	const static unsigned int DATA_EMISSION = DATA_SPECULAR+1;
-	const static unsigned int DATA_TRANSPARENCY = DATA_EMISSION+1;
-
+	static const unsigned int DATA_MAIN; ///< Main custom data. Also used to specify drawing frequency.
+	static const unsigned int DATA_WIDTH; ///< Custom data used to specify line width.
+	static const unsigned int DATA_DIFFUSE; ///< Custom data used to specify surface diffuse color component.
+	static const unsigned int DATA_SPECULAR; ///< Custom data used to specify surface specular color component.
+	static const unsigned int DATA_EMISSION; ///< Custom data used to specify surface emissive color component.
+	static const unsigned int DATA_TRANSPARENCY; ///< Custom data used to specify surface transparency.
 
 protected:
 

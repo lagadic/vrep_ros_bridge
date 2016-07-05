@@ -5,7 +5,6 @@
 #include <vrep_ros_plugin/GenericObjectHandler.h>
 #include <geometry_msgs/PolygonStamped.h>
 
-
 class DrawLineHandler : public GenericObjectHandler
 {
 public:
@@ -32,18 +31,15 @@ public:
 	 */
 	unsigned int getObjectType() const;
 
-	const static unsigned int DRAWING_DATA_MAIN=800;
-
-	const static unsigned int DRAWING_DATA_WIDTH=DRAWING_DATA_MAIN+1;
-
-	const static unsigned int DRAWING_DATA_DIFFUSE=DRAWING_DATA_WIDTH+1;
-	const static unsigned int DRAWING_DATA_SPECULAR=DRAWING_DATA_DIFFUSE+1;
-	const static unsigned int DRAWING_DATA_EMISSION=DRAWING_DATA_SPECULAR+1;
-
-	const static unsigned int DRAWING_DATA_MARKERS=DRAWING_DATA_EMISSION+1;
-	const static unsigned int DRAWING_DATA_MARKERS_DIFFUSE=DRAWING_DATA_MARKERS+1;
-	const static unsigned int DRAWING_DATA_MARKERS_SPECULAR=DRAWING_DATA_MARKERS_DIFFUSE+1;
-	const static unsigned int DRAWING_DATA_MARKERS_EMISSION=DRAWING_DATA_MARKERS_SPECULAR+1;
+	static const unsigned int DRAWING_DATA_MAIN; ///< Main custom data. Also used to specify drawing frequency.
+	static const unsigned int DRAWING_DATA_WIDTH; ///< Custom data used to specify line width.
+	static const unsigned int DRAWING_DATA_DIFFUSE; ///< Custom data used to specify line diffuse color component.
+	static const unsigned int DRAWING_DATA_SPECULAR; ///< Custom data used to specify line specular color component.
+	static const unsigned int DRAWING_DATA_EMISSION; ///< Custom data used to specify line emissive color component.
+	static const unsigned int DRAWING_DATA_MARKERS; ///< Custom data used to specify if markers should be drawn. Not implemented yet.
+	static const unsigned int DRAWING_DATA_MARKERS_DIFFUSE; ///< Custom data used to specify markers diffuse color component. Not implemented yet.
+	static const unsigned int DRAWING_DATA_MARKERS_SPECULAR; ///< Custom data used to specify markers specular color component. Not implemented yet.
+	static const unsigned int DRAWING_DATA_MARKERS_EMISSION; ///< Custom data used to specify markers emissive color component. Not implemented yet.
 
 protected:
 
@@ -88,8 +84,8 @@ protected:
 	simInt _drawingObject;
 
 
-	simInt _width; /// Line width
-	simFloat _diffuse[3]; /// Line diffuse color
-	simFloat _specular[3]; /// Line specular color
-	simFloat _emission[3]; /// Line emission color
+	simInt _width; ///< Line width
+	simFloat _diffuse[3]; ///< Line diffuse color
+	simFloat _specular[3]; ///< Line specular color
+	simFloat _emission[3]; ///< Line emission color
 };

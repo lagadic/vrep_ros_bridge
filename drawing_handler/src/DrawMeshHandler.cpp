@@ -6,6 +6,15 @@
 
 #include <vrep_ros_plugin/ConsoleHandler.h>
 
+#include <boost/functional/hash.hpp>
+
+const unsigned int DrawMeshHandler::DATA_MAIN = boost::hash<std::string>()("DrawMeshHandler");
+const unsigned int DrawMeshHandler::DATA_WIDTH = DrawMeshHandler::DATA_MAIN+1;
+const unsigned int DrawMeshHandler::DATA_DIFFUSE = DrawMeshHandler::DATA_WIDTH+1;
+const unsigned int DrawMeshHandler::DATA_SPECULAR = DrawMeshHandler::DATA_DIFFUSE+1;
+const unsigned int DrawMeshHandler::DATA_EMISSION = DrawMeshHandler::DATA_SPECULAR+1;
+const unsigned int DrawMeshHandler::DATA_TRANSPARENCY = DrawMeshHandler::DATA_EMISSION+1;
+
 DrawMeshHandler::DrawMeshHandler() :
 		GenericObjectHandler(), _lastTime(0.0), _frequency(-1), _drawingObject(
 				-1), _width(10) {

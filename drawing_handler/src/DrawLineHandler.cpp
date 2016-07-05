@@ -8,6 +8,21 @@
 #include <vrep_ros_plugin/ConsoleHandler.h>
 
 
+#include <boost/functional/hash.hpp>
+
+const unsigned int DrawLineHandler::DRAWING_DATA_MAIN = boost::hash<std::string>()("DrawLineHandler");
+const unsigned int DrawLineHandler::DRAWING_DATA_WIDTH = DrawLineHandler::DRAWING_DATA_MAIN + 1;
+
+const unsigned int DrawLineHandler::DRAWING_DATA_DIFFUSE = DrawLineHandler::DRAWING_DATA_WIDTH + 1;
+const unsigned int DrawLineHandler::DRAWING_DATA_SPECULAR = DrawLineHandler::DRAWING_DATA_DIFFUSE + 1;
+const unsigned int DrawLineHandler::DRAWING_DATA_EMISSION = DrawLineHandler::DRAWING_DATA_SPECULAR + 1;
+
+const unsigned int DrawLineHandler::DRAWING_DATA_MARKERS = DrawLineHandler::DRAWING_DATA_EMISSION + 1;
+const unsigned int DrawLineHandler::DRAWING_DATA_MARKERS_DIFFUSE = DrawLineHandler::DRAWING_DATA_MARKERS + 1;
+const unsigned int DrawLineHandler::DRAWING_DATA_MARKERS_SPECULAR = DrawLineHandler::DRAWING_DATA_MARKERS_DIFFUSE + 1;
+const unsigned int DrawLineHandler::DRAWING_DATA_MARKERS_EMISSION = DrawLineHandler::DRAWING_DATA_MARKERS_SPECULAR + 1;
+
+
 DrawLineHandler::DrawLineHandler() : GenericObjectHandler(),
 _lastTime(0.0),
 _frequency(-1),
@@ -176,31 +191,31 @@ void DrawLineHandler::lineCallback(geometry_msgs::PolygonStampedConstPtr msg){
 
 void DrawLineHandler::registerCustomVariables() const{
 #if VREP_VERSION_MAJOR*10000 + VREP_VERSION_MINOR*100 + VREP_VERSION_PATCH < 3*10000 + 3*100 + 1
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str());
 
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str());
 
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_DIFFUSE))).c_str());
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_SPECULAR))).c_str());
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_EMISSION))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_DIFFUSE))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_SPECULAR))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_EMISSION))).c_str());
 
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS))).c_str());
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str());
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str());
-	simRegisterCustomLuaVariable("sim_ext_ros_bridge_drawing_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_markers", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str());
+	simRegisterCustomLuaVariable("sim_ext_ros_bridge_draw_line_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str());
 #else
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_main", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MAIN))).c_str(),0);
 
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_width", (boost::lexical_cast<std::string>(int(DRAWING_DATA_WIDTH))).c_str(),0);
 
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_DIFFUSE))).c_str(),0);
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_SPECULAR))).c_str(),0);
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_EMISSION))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_DIFFUSE))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_SPECULAR))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_EMISSION))).c_str(),0);
 
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS))).c_str(),0);
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str(),0);
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str(),0);
-	simRegisterScriptVariable("sim_ext_ros_bridge_drawing_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_markers", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_markers_diffuse", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_DIFFUSE))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_markers_specular", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_SPECULAR))).c_str(),0);
+	simRegisterScriptVariable("sim_ext_ros_bridge_draw_line_data_markers_emission", (boost::lexical_cast<std::string>(int(DRAWING_DATA_MARKERS_EMISSION))).c_str(),0);
 #endif
 }
 
