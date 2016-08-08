@@ -8,6 +8,8 @@
 
 #include <map>
 
+#include <rosgraph_msgs/Clock.h>
+
 class GenericObjectContainer
 {
 
@@ -128,6 +130,10 @@ protected:
 
 	pluginlib::ClassLoader<GenericObjectHandler> _object_handler_loader;
 	std::map<std::string, boost::shared_ptr<GenericObjectHandler> > _allExistingPlugins;
+
+  ros::NodeHandle _nh;
+  ros::Publisher _pubClock;
+  rosgraph_msgs::Clock _clock_msg;
 };
 
 #endif // GENERIC_OBJECT_CONTAINER_H

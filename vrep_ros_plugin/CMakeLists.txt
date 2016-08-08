@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   pluginlib
   cmake_modules
+  rosgraph_msgs
 )
 
 ## System dependencies are found with CMake's conventions
