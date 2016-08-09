@@ -8,7 +8,8 @@
 
 
 GenericObjectContainer::GenericObjectContainer():
-	_object_handler_loader("vrep_ros_plugin", "GenericObjectHandler"){
+	_object_handler_loader("vrep_ros_plugin", "GenericObjectHandler"),
+  _nh(ros::this_node::getName()){
 
     std::vector< std::string > plugins = _object_handler_loader.getDeclaredClasses();
 
@@ -23,6 +24,8 @@ GenericObjectContainer::GenericObjectContainer():
           ROS_ERROR("The plugin %s failed to load for some reason. Error: %s", plugins[i].c_str(), ex.what());
         }
     }
+
+    _pubClock = _nh.advertise<rosgraph_msgs::Clock>("/clock", 1);
 
     ConsoleHandler::printInConsole(ss);
 }
@@ -104,6 +107,9 @@ void GenericObjectContainer::handleSimulation(){
     // Relay the message to all GenericObjectHandler objects:
 	for (int i=0;i<getCount();i++)
 		_allObjects[i]->handleSimulation();
+
+  _clock_msg.clock = ros::Time(simGetSimulationTime());
+  _pubClock.publish(_clock_msg);
 }
 
 void GenericObjectContainer::actualizeForSceneContent(){
