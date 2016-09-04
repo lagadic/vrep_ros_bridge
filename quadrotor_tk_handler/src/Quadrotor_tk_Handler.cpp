@@ -196,7 +196,7 @@ void Quadrotor_tk_Handler::handleSimulation(){
 
 	if (_ctrlMode == CustomDataHeaders::DIRECT){
 		//DEBUG
-		std::cout<<"DEBUG: DIRECT MODE ";
+		//std::cout<<"DEBUG: DIRECT MODE ";
 
 		for(uint motorIdx = 0; motorIdx < 4; ++motorIdx){
 			const simFloat force[3] = {0.0, 0.0, -(simFloat)_tkMotorCommands[motorIdx]};
