@@ -355,6 +355,14 @@ void Quadrotor_tk_Handler::handleSimulation(){
 	msg1.linear_acceleration.x = TotCommandforces[0]/_quadrotorMass + VectorG[0];
 	msg1.linear_acceleration.y = TotCommandforces[1]/_quadrotorMass + VectorG[1];
 	msg1.linear_acceleration.z = TotCommandforces[2]/_quadrotorMass + VectorG[2];
+
+	Eigen::Vector3d acc(msg1.linear_acceleration.x, msg1.linear_acceleration.y, msg1.linear_acceleration.z);
+	Eigen::Quaterniond q = Eigen::Quaterniond::FromTwoVectors(acc, Eigen::Vector3d(0,0,1));
+	msg1.orientation.w = q.w();
+	msg1.orientation.x = q.x();
+	msg1.orientation.y = q.y();
+	msg1.orientation.z = q.z();
+
 	_pubIMU.publish(msg1); // Publish the Imu message in ROS
 
 	if ((now-_lastReceivedCmdTime).toSec() > 0.1){
