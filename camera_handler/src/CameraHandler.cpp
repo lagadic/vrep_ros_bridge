@@ -170,7 +170,7 @@ void CameraHandler::handleSimulation(){
 				depth_msg.height=resol[1]; //Set the height of the image
 				depth_msg.is_bigendian=0;
 				depth_msg.encoding=sensor_msgs::image_encodings::TYPE_32FC1;
-				depth_msg.step=depth_msg.width*sizeof(simFloat);
+				depth_msg.step=depth_msg.width*sensor_msgs::image_encodings::bitDepth(depth_msg.encoding)/8;
 				depth_msg.data.resize(depth_msg.height*depth_msg.step);
 				const simFloat* depth_buf = simGetVisionSensorDepthBuffer(_associatedObjectID);
 				simFloat* depth_img = reinterpret_cast<simFloat*>(depth_msg.data.data());
