@@ -10,7 +10,7 @@ V-Rep is a General purpose 3D robot simulator with integrated development enviro
 You will find the documentation <a href="http://wiki.ros.org/vrep_ros_bridge?distro=hydro" target="_parent">here</a>.
 
 
-##Installation 
+## Installation 
 
 
 Note: The Ubuntu version used is 13.04. It is tested also with 12.04 and 14.04 (with ROS Indigo).
