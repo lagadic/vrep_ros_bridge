@@ -18,14 +18,14 @@ Note: The Ubuntu version used is 13.04. It is tested also with 12.04 and 14.04 (
 * <a href="#installation-v-rep" target="_parent"> Install V-Rep</a>
 * <a href="#installation-plugin" target="_parent"> Install Plugin</a>
 
-###ROS 
+### ROS 
 
-####Installation ROS Hydro 
+#### Installation ROS Hydro 
 
 
-Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installation/Ubuntu" target="_parent">page</a>.
+Follow instructions you find in this <a href="http://wiki.ros.org/ROS/Installation" target="_parent">page</a>.
 
-* Point 1.2 : choose instructions for your version of Ubuntu.
+* Point 1.2 : choose instructions for your version of Ubuntu (or other OS).
 
 * Point 1.4 : Desktop-Full Install: (Recommended).
 
@@ -33,15 +33,15 @@ Follow instructions you find in this <a href="http://wiki.ros.org/hydro/Installa
 
 * Complete the tutorial <a href="http://wiki.ros.org/ROS/Tutorials" target="_parent">page</a>. It is mandatory to follow the tutorial number 1 "Installing and Configuring Your ROS Environment".
 
-Now we have installed ROS and we have created our workspace.
+Now we have installed ROS and we have created our workspace (`catkin_ws`).
 
-####Installation ROS Indigo
+#### Installation ROS Indigo
 
 
 As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indigo/Installation/Ubuntu" target="_parent">page</a>. 
 
 
-###Installation V-Rep
+### Installation V-Rep
 
 * Go in <a href="http://www.coppeliarobotics.com/" target="_parent">http://www.coppeliarobotics.com/ </a>.
 * Check the <a href="http://www.coppeliarobotics.com/helpFiles/en/licensing.htm" target="_parent">licensing</a> page and download the suitable V-REP version for you.
@@ -51,7 +51,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 </p>
 
 
-###Installation Plugin 
+### Installation Plugin 
 
 
 * Go in the src folder of your catkin workspace in catkin_ws/src via terminal
@@ -82,7 +82,7 @@ and, if you want to avoid to type the following command every time:
 export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/path_to_catkin_ws/catkin_ws/src
 source /opt/ros/indigo/setup.bash
 source /path_to_catkin_ws/catkin_ws/devel/setup.bash
-````
+```
 
 * Go in your catkin_workspace and run:
 
@@ -105,7 +105,7 @@ where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 
 * In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
-####Update the vrep_ros_bridge according to a new V-REP release
+#### Update the vrep_ros_bridge according to a new V-REP release
 
 V-REP is a software undergoing through rapid development and there can be different releases in a short period of time. <br>
 If the user wants to use the vrep_ros_bridge always with the latest version of V-REP he/she has just to follow the following steps:
