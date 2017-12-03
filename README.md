@@ -59,7 +59,7 @@ As for Hydro, follow the instructions in this <a href="http://wiki.ros.org/indig
 
 	`git clone https://github.com/lagadic/vrep_ros_bridge.git`
 
-* Use the branch `master` if you are using ROS Indigo or ROS Jade
+* Use the branch `master` if you are using ROS Kinetic, Indigo or ROS Jade
 * If you are using Hydro:
 
     `git checkout hydro-devel`
@@ -102,6 +102,9 @@ where `/YOUR_CATKIN_WS_PATH` is your actual path to reach your workspace.
 * If you are using a new version of V-REP (V3_3_1_64_Linux) we need an additional step. We need to create a link pointing to the file compiledRosPlugins/libv_repExtRos.so in the V-REP root folder. Go via terminal to the installation folder of V-Rep and type:
 
 	`ln -s compiledRosPlugins/libv_repExtRos.so`	
+	
+* If you are using the last version of V-REP (V3_4_0_Linux) and you are under Ubuntu 14.04 you have to download an older version of V-REP (V-REP_PRO_V3_3_2_64_Linux for example) and copy paste the file compiledRosPlugins/libv_repExtRos.so from here. If you are using Ubuntu 16.04 and ROS Kinetic you will need to compile the plugin by yourself: Copy the folders vrep_plugin and vrep_common from home/user/Desktop/V-REP_PRO_V3_3_2_64_Linux/programming/ros_packages in your catkin_ws/src and do a catkin_make. You will find in devel the file libv_repExtRos.so. You will need to copy it in the root of the new V-REP Folder.
+	
 
 * In order to test if the installation was succesfull go  <a href="http://wiki.ros.org/vrep_ros_bridge#Installation_test" target="_parent"> here </a> 
 
