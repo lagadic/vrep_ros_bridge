@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <ros/ros.h>
-#include <v_repTypes.h>
+#include <simTypes.h>
 
 /**
  * Handler of a generic V-REP scene object. This should never be used directly but always inherited by specific handlers.

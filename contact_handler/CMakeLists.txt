@@ -10,11 +10,19 @@ set(PROJECT_DEPS
 
 find_package(catkin REQUIRED COMPONENTS ${PROJECT_DEPS})
 
+find_package(Eigen3)
+if(NOT EIGEN3_FOUND)
+  find_package(cmake_modules REQUIRED)
+  find_package(Eigen REQUIRED)
+else()
+  set(Eigen_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS ${PROJECT_DEPS}
-  DEPENDS eigen
+  DEPENDS Eigen
 )
 
 ###########

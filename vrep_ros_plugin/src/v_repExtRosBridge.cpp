@@ -15,7 +15,7 @@
 #include "vrep_ros_plugin/v_repExtRosBridge.h"
 #include "vrep_ros_plugin/access.h"
 #include <iostream>
-#include "v_repLib.h"
+#include "simLib.h"
 
 #include <time.h>
 
@@ -62,28 +62,28 @@ VREP_DLLEXPORT unsigned char v_repStart(void* reservedPointer,int reservedInt)
 	temp+="/libv_rep.dylib";
 #endif /* __linux || __APPLE__ */
 
-	vrepLib=loadVrepLibrary(temp.c_str());
+	vrepLib=loadSimLibrary(temp.c_str());
 	if (vrepLib==NULL)
 	{
 		std::cout << "Error, could not find or correctly load v_rep.dll. Cannot start '" << pluginName << "' plugin.\n";
 		return(0); // Means error, V-REP will unload this plugin
 	}
-	if (getVrepProcAddresses(vrepLib)==0)
+	if (getSimProcAddresses(vrepLib)==0)
 	{
 		std::cout << "Error, could not find all required functions in v_rep.dll. Cannot start '" << pluginName << "' plugin.\n";
-		unloadVrepLibrary(vrepLib);
+		unloadSimLibrary(vrepLib);
 		return(0); // Means error, V-REP will unload this plugin
 	}
 
 	// Check the V-REP version:
 	int vrepVer;
 	simGetIntegerParameter(sim_intparam_program_version,&vrepVer);
-	if (vrepVer<VREP_VERSION_MAJOR*1e4+VREP_VERSION_MINOR*1e2+VREP_VERSION_PATCH)
+	if (vrepVer<VREP_VERSION_MAJOR*1e4+VREP_VERSION_MINOR*1e2)
 	{
 		std::cout << "Sorry, your V-REP copy is somewhat old, V-REP" <<
 		        VREP_VERSION_MAJOR << "." << VREP_VERSION_MINOR << "." << VREP_VERSION_PATCH <<
 		        "or higher is required. Cannot start '" << pluginName << "' plugin.\n";
-		unloadVrepLibrary(vrepLib);
+		unloadSimLibrary(vrepLib);
 		return(0); // Means error, V-REP will unload this plugin
 	}
 
@@ -144,7 +144,7 @@ VREP_DLLEXPORT void v_repEnd()
 	delete objectContainer;
 	objectContainer=NULL;
 
-	unloadVrepLibrary(vrepLib); // release the library
+	unloadSimLibrary(vrepLib); // release the library
 }
 
 VREP_DLLEXPORT void* v_repMessage(int message,int* auxiliaryData,void* customData,int* replyData)

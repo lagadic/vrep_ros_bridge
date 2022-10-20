@@ -2,7 +2,7 @@
 #include <pluginlib/class_list_macros.h>
 
 #include <imu_handler/ImuHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 
 #include <sensor_msgs/Imu.h>

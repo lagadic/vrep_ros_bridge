@@ -1,7 +1,7 @@
 
 #include <pluginlib/class_list_macros.h>
 #include <camera_handler/CameraHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 
 #include <sensor_msgs/Image.h>

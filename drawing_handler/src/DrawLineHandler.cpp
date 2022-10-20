@@ -2,7 +2,7 @@
 #include <pluginlib/class_list_macros.h>
 
 #include <drawing_handler/DrawLineHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 
 #include <vrep_ros_plugin/ConsoleHandler.h>

@@ -1,6 +1,6 @@
 
 #include "vrep_ros_plugin/access.h"
-#include "v_repLib.h"
+#include "simLib.h"
 
 #include <vrep_ros_plugin/GenericObjectContainer.h>
 

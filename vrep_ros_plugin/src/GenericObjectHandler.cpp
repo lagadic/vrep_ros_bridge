@@ -2,7 +2,7 @@
 
 #include "vrep_ros_plugin/GenericObjectHandler.h"
 #include "vrep_ros_plugin/access.h"
-#include "v_repLib.h"
+#include "simLib.h"
 
 GenericObjectHandler::GenericObjectHandler():
 _id(-1),

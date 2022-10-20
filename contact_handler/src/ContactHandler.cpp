@@ -1,7 +1,7 @@
 #include <pluginlib/class_list_macros.h>
 
 #include <contact_handler/ContactHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 
 #include <geometry_msgs/Wrench.h>

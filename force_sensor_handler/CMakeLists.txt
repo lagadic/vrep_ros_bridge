@@ -93,7 +93,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS roscpp geometry_msgs vrep_ros_plugin 
-  DEPENDS eigen
+  DEPENDS Eigen
 )
 
 ###########

@@ -2,7 +2,7 @@
 #include <pluginlib/class_list_macros.h>
 
 #include <manipulator_handler/ManipulatorHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 #include <vrep_ros_plugin/v_repExtRosBridge.h>
 

@@ -3,7 +3,7 @@
 #include <vrep_ros_plugin/GenericObjectHandler.h>
 #include <quadrotor_handler/QuadrotorHandler.h>
 
-#include <v_repLib.h>
+#include <simLib.h>
 
 //#include <telekyb_msgs/TKState.h>
 #include <sensor_msgs/Imu.h>

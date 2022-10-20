@@ -8,7 +8,7 @@ set(SRCS
    GenericObjectContainer.cpp
    GenericObjectHandler.cpp
    ConsoleHandler.cpp
-   ${VREP_ROOT_DIR}/programming/common/v_repLib.cpp
+   ${VREP_ROOT_DIR}/programming/common/simLib.cpp
 	)
     
 

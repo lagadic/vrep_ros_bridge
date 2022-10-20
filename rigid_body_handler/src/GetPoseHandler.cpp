@@ -2,7 +2,7 @@
 #include <pluginlib/class_list_macros.h>
 
 #include <rigid_body_handler/GetPoseHandler.h>
-#include <v_repLib.h>
+#include <simLib.h>
 #include <vrep_ros_plugin/access.h>
 
 #include <geometry_msgs/PoseStamped.h>
